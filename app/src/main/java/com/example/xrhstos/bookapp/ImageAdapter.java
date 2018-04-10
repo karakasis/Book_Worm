@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 
 public class ImageAdapter extends BaseAdapter  {
     private Context mContext;
@@ -43,7 +44,7 @@ public class ImageAdapter extends BaseAdapter  {
     public View getView(int position, View convertView, ViewGroup parent) {
         ImageView imageView = new ImageView(mContext);
         imageView.setImageResource(mThumbIds[position]);
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        imageView.setScaleType(ScaleType.CENTER);
         imageView.setLayoutParams(new GridView.LayoutParams(70, 70));
         return imageView;
     }
