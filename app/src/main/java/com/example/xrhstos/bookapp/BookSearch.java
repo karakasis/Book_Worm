@@ -16,6 +16,7 @@
 package com.example.xrhstos.bookapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import java.util.ArrayList;
 import org.w3c.dom.Text;
 
 /**
@@ -50,7 +52,7 @@ public class BookSearch extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
+    setContentView(R.layout.search_layout);
 
     // Initialize all the view variables.
     mBookInput = (EditText)findViewById(R.id.bookInput);
@@ -84,6 +86,7 @@ public class BookSearch extends AppCompatActivity {
       TextView notifier = (TextView) findViewById(R.id.resultNotify);
       notifier.setText("Results: ");
       new FetchBook(this, mCollectionLayout , mBookInput).execute(queryString);
+
     }
     // Otherwise update the TextView to tell the user there is no connection or no search term.
     else {
@@ -95,5 +98,15 @@ public class BookSearch extends AppCompatActivity {
         notifier.setText(R.string.no_network);
       }
     }
+  }
+
+  public void update(ArrayList<String[]> bookData){
+    ArrayList<String> urls = new ArrayList<>();
+    for(String[] arr : bookData){
+      urls.add(arr[2]);
+    }
+    Intent intent = new Intent(this, MainActivity.class);
+    intent.putStringArrayListExtra("cover_urls", urls);
+    startActivity(intent);
   }
 }

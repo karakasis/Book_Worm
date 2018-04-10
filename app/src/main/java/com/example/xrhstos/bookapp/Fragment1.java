@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
-
+import java.util.ArrayList;
 
 
 /**
@@ -16,6 +16,8 @@ import android.widget.GridView;
 
 public class Fragment1 extends Fragment {
 
+    private ArrayList<String> urls;
+
     public Fragment1(){
 
     }
@@ -23,18 +25,25 @@ public class Fragment1 extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState){
-
-
+        /*
+        Bundle bundle = getArguments();
+        if (bundle != null){
+            urls = bundle.getStringArrayList("urls");
+        }
+        */
         return inflater.inflate(R.layout.fragment_fragment1,parent,false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
+
+        if(MainActivity.cover_url!=null)
+        urls = new ArrayList<>(MainActivity.cover_url);
        // super.onViewCreated(savedInstanceState);
         //setContentView(R.layout.fragment_fragment1);
 
         GridView gridView = (GridView) view.findViewById(R.id.grid_view);
-        ImageAdapter ia = new ImageAdapter(getActivity());
+        ImageAdapter ia = new ImageAdapter(getActivity(),urls);
         gridView.setAdapter(ia);
 
 

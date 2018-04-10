@@ -181,6 +181,8 @@ public class FetchBook extends AsyncTask<String,Void,String>{
   protected void onPostExecute(String s) {
     super.onPostExecute(s);
     collection  = xmlMyClass.parse(s);
+    parent.update(collection);
+    /*
     try {
 
       // Initialize iterator and results fields.
@@ -227,5 +229,6 @@ public class FetchBook extends AsyncTask<String,Void,String>{
     } catch (Exception e){
       e.printStackTrace();
     }
+    */
   }
 }

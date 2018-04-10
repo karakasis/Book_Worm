@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import com.squareup.picasso.Picasso;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 /**
  * Created by philip on 10/4/2018.
@@ -11,11 +14,27 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity implements Fragment1.ActivityCommunicator {
 
+    public static ArrayList<String> cover_url ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        cover_url = new ArrayList<>(getIntent().getStringArrayListExtra("cover_urls"));
+        /*
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList("urls",cover_url);
+        // set Fragmentclass Arguments
+        Fragment1 fragobj = new Fragment1();
+        fragobj.setArguments(bundle);
+
+*/
+
         setContentView(R.layout.activity_main);
-        
+
+
+
+
+
     }
 
     /*

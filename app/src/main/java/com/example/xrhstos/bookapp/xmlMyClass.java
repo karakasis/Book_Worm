@@ -14,6 +14,7 @@ public class xmlMyClass {
     char[] ca = source.toCharArray();
     String title = "";
     String author = "";
+    String bookCoverURL = "";
     ArrayList<String[]> collection = new ArrayList<>();
     int counterLock = 0;
 
@@ -61,10 +62,30 @@ public class xmlMyClass {
         }
       }
 
-      if(counterLock == 2 ){
-        collection.add(new String[]{new String(title),new String(author)});
+      if(ca[i] == '<'){
+        if(ca[i+1] == 'i'){
+          if(ca[i+2] == 'm'){
+
+            int counter = i+11;
+            counterLock++;
+
+            do{
+              bookCoverURL += ca[counter];
+              counter++;
+
+            }while(ca[counter] != '<');
+
+
+            System.out.println(bookCoverURL);
+          }
+        }
+      }
+
+      if(counterLock == 3 ){
+        collection.add(new String[]{new String(title),new String(author), new String(bookCoverURL)});
         title = "";
         author = "";
+        bookCoverURL = "";
         counterLock = 0;
       }
 
