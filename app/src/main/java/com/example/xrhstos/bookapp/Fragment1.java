@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 
 
+
 /**
  * Created by philip on 10/4/2018.
  */
@@ -22,18 +23,26 @@ public class Fragment1 extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState){
+
+
         return inflater.inflate(R.layout.fragment_fragment1,parent,false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
        // super.onViewCreated(savedInstanceState);
-       // setContentView(R.layout.grid_layout);
+        //setContentView(R.layout.fragment_fragment1);
 
-        GridView gridView;
-        gridView = (GridView) view.findViewById(R.id.grid_view);
+        GridView gridView = (GridView) view.findViewById(R.id.grid_view);
+        ImageAdapter ia = new ImageAdapter(getActivity());
+        gridView.setAdapter(ia);
+
 
         // Instance of ImageAdapter Class
-        gridView.setAdapter(new ImageAdapter(this));
+        //gridView.setAdapter(new ImageAdapter(this));
+    }
+
+    public interface ActivityCommunicator{
+        public void passDataToActivity(String someValue);
     }
 }
