@@ -4,4 +4,27 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
+
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <GridView
+        android:id="@+id/grid_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numColumns="auto_fit"
+        android:columnWidth="80dp"
+        android:horizontalSpacing="8dp"
+        android:verticalSpacing="8dp"
+        android:gravity="center"
+        android:stretchMode="columnWidth">
+
+    </GridView>
+
+
+</LinearLayout>
+
 </android.support.constraint.ConstraintLayout>
