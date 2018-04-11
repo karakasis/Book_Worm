@@ -50,17 +50,15 @@ public class FetchBook extends AsyncTask<String,Void,String>{
 
   private ArrayList<String[]> collection;
   private LinearLayout mCollectionLayout;
-  private BookSearch parent;
+  private MainMenu parent;
 
   // Class name for Log tag
   private static final String LOG_TAG = FetchBook.class.getSimpleName();
 
   // Constructor providing a reference to the views in BookSearch
-  public FetchBook(BookSearch c, LinearLayout layout,EditText bookInput) {
+  public FetchBook(MainMenu c) {
     //this.mTitleText = titleText;
     //this.mAuthorText = authorText;
-    this.mBookInput = bookInput;
-    this.mCollectionLayout = layout;
     parent = c;
   }
 

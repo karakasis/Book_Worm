@@ -5,6 +5,7 @@ package com.example.xrhstos.bookapp;
  */
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 
 public class ImageAdapter extends BaseAdapter  {
     private Context mContext;
-
+    private final MainMenu parentActivity;
     private ArrayList<String> urls;
 
     // Keep all Images in array
@@ -32,8 +33,8 @@ public class ImageAdapter extends BaseAdapter  {
     };
 
     // Constructor
-    public ImageAdapter(Context c, ArrayList<String> urls){
-
+    public ImageAdapter(MainMenu par, Context c, ArrayList<String> urls){
+        parentActivity = par;
         mContext = c;
         this.urls = urls;
     }
@@ -101,8 +102,16 @@ public class ImageAdapter extends BaseAdapter  {
         */
 
         //imageView.setImageResource(mThumbIds[position]);
+        imageView.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                parentActivity.bookClick(position);
+            }
+
+        });
         imageView.setScaleType(ScaleType.FIT_CENTER);
-        imageView.setLayoutParams(new GridView.LayoutParams(400, 550));
+        imageView.setLayoutParams(new GridView.LayoutParams(600, 550));
         return imageView;
     }
 

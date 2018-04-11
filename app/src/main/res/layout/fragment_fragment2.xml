@@ -2,7 +2,8 @@
 <android.support.constraint.ConstraintLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
-  android:layout_height="match_parent">
+  android:layout_height="match_parent"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <LinearLayout
     android:layout_width="match_parent"
@@ -11,7 +12,7 @@
 
     <RelativeLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="150dp"
       android:orientation="horizontal"
       >
 
@@ -21,34 +22,50 @@
         android:layout_height="150dp"
         android:src="@drawable/da_vinci_code"
         android:scaleType="fitCenter"
+        android:padding="4dp"
 
-        android:padding="16dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"/>
 
-      <TextView
+      <android.support.v7.widget.AppCompatTextView
         android:id = "@+id/bookTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="The Da Vinci Code"
-        android:textSize="@dimen/frag2_bookTitleTextSize"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:padding="16dp"
+        android:textAlignment="center"
 
-        android:paddingTop="16dp"
+        android:ellipsize="none"
+        android:text="Da Vinci Code Da Vinci Code Da Vinci Code Da Vinci Code Da Vinci Code"
+        android:textSize="32sp"
+        app:autoSizeMaxTextSize="40sp"
+        app:autoSizeMinTextSize="4sp"
+        app:autoSizeStepGranularity="0.5sp"
+        app:autoSizeTextType="uniform"
+
+        android:layout_toEndOf="@id/bookImage"
         android:layout_toRightOf="@id/bookImage"
-        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         />
 
-      <TextView
+      <android.support.v7.widget.AppCompatTextView
         android:id = "@+id/bookPublisher"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Dan Brown"
-        android:textSize="@dimen/frag2_bookAuthorTextSize"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:padding="16dp"
+        android:textAlignment="textEnd"
+        android:gravity="end"
 
-        android:paddingTop="16dp"
+        android:ellipsize="none"
+        android:text="Dan Brown JK Rowling"
+        android:textSize="24sp"
+        app:autoSizeMaxTextSize="32sp"
+        app:autoSizeMinTextSize="4sp"
+        app:autoSizeStepGranularity="0.5sp"
+        app:autoSizeTextType="uniform"
+
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@id/bookImage"
         android:layout_toRightOf="@id/bookImage"
-        android:layout_below="@id/bookTitle"
         android:layout_centerHorizontal="true"
         />
 
@@ -56,4 +73,12 @@
 
 
   </LinearLayout>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+  </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>

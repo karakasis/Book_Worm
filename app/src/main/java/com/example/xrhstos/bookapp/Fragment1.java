@@ -1,6 +1,7 @@
 package com.example.xrhstos.bookapp;
 
 //import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.support.v4.app.Fragment;
@@ -38,13 +39,13 @@ public class Fragment1 extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState){
 
         if(MainActivity.cover_url!=null)
-        urls = new ArrayList<>(MainActivity.cover_url);
+        urls = new ArrayList<>(MainMenu.cover_url);
        // super.onViewCreated(savedInstanceState);
         //setContentView(R.layout.fragment_fragment1);
 
         GridView gridView = (GridView) view.findViewById(R.id.grid_view);
-        ImageAdapter ia = new ImageAdapter(getActivity(),urls);
-        gridView.setAdapter(ia);
+        //ImageAdapter ia = new ImageAdapter(this, getActivity(),urls);
+        //gridView.setAdapter(ia);
 
 
         // Instance of ImageAdapter Class
@@ -54,4 +55,6 @@ public class Fragment1 extends Fragment {
     public interface ActivityCommunicator{
         public void passDataToActivity(String someValue);
     }
+
+
 }

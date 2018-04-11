@@ -85,7 +85,7 @@ public class BookSearch extends AppCompatActivity {
     if (networkInfo != null && networkInfo.isConnected() && queryString.length()!=0) {
       TextView notifier = (TextView) findViewById(R.id.resultNotify);
       notifier.setText("Results: ");
-      new FetchBook(this, mCollectionLayout , mBookInput).execute(queryString);
+      //new FetchBook(this).execute(queryString);
 
     }
     // Otherwise update the TextView to tell the user there is no connection or no search term.
@@ -105,7 +105,7 @@ public class BookSearch extends AppCompatActivity {
     for(String[] arr : bookData){
       urls.add(arr[3]);
     }
-    Intent intent = new Intent(this, MainActivity.class);
+    Intent intent = new Intent(this, MainMenu.class);
     intent.putStringArrayListExtra("cover_urls", urls);
     startActivity(intent);
   }
