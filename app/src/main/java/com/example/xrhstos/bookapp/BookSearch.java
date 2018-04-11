@@ -103,7 +103,7 @@ public class BookSearch extends AppCompatActivity {
   public void update(ArrayList<String[]> bookData){
     ArrayList<String> urls = new ArrayList<>();
     for(String[] arr : bookData){
-      urls.add(arr[2]);
+      urls.add(arr[3]);
     }
     Intent intent = new Intent(this, MainActivity.class);
     intent.putStringArrayListExtra("cover_urls", urls);

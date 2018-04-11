@@ -72,7 +72,11 @@ public class ImageAdapter extends BaseAdapter  {
                 /* Save the bitmap or do something with it here */
 
                     //Set it in the ImageView
-                    imageView.setImageBitmap(bitmap);
+                    if(urls.get(position).equals("https://s.gr-assets.com/assets/nophoto/book/111x148-bcc042a9c91a29c1d680899eff700a03.png")){
+                        imageView.setImageResource(R.drawable.placeholder_book);
+                    }else{
+                        imageView.setImageBitmap(bitmap);
+                    }
                 }
 
                 @Override

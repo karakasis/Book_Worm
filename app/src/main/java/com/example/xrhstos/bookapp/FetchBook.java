@@ -128,6 +128,7 @@ public class FetchBook extends AsyncTask<String,Void,String>{
 
       // Read the response string into a StringBuilder.
       StringBuilder builder = new StringBuilder();
+      ArrayList<String> xmlToList = new ArrayList<>();
 
       reader = new BufferedReader(new InputStreamReader(inputStream));
 
@@ -136,8 +137,11 @@ public class FetchBook extends AsyncTask<String,Void,String>{
         // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
         // but it does make debugging a *lot* easier if you print out the completed buffer for debugging.
         builder.append(line + "\n");
+        xmlToList.add(line);
         //System.out.println(line);
       }
+
+      xmlMyClass.xmlToListOfStrings = new ArrayList<>(xmlToList);
 
       if (builder.length() == 0) {
         // Stream was empty.  No point in parsing.
@@ -180,7 +184,7 @@ public class FetchBook extends AsyncTask<String,Void,String>{
   @Override
   protected void onPostExecute(String s) {
     super.onPostExecute(s);
-    collection  = xmlMyClass.parse(s);
+    collection  = xmlMyClass.parse(new String[]{"id type","title","name","image_url"}, "work");
     parent.update(collection);
     /*
     try {
