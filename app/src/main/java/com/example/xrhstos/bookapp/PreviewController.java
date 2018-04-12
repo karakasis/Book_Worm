@@ -17,23 +17,17 @@ import java.util.ArrayList;
 
 public class PreviewController{
 
-    private ArrayList<String> urls;
+    private MainMenu parent;
 
-    public PreviewController(){
-        /*
-        if(MainActivity.cover_url!=null)
-            urls = new ArrayList<>(MainMenu.cover_url);
-        // super.onViewCreated(savedInstanceState);
-        //setContentView(R.layout.preview_layout);
+    public PreviewController(GridView gv, MainMenu parent, ArrayList<String> urls){
 
-        GridView gridView = (GridView) view.findViewById(R.id.grid_view);
-        //ImageAdapter ia = new ImageAdapter(this, getActivity(),urls);
-        // gridView.setAdapter(ia);
+        this.parent = parent;
+        ImageAdapter ia = new ImageAdapter(this ,parent  ,urls);
+        gv.setAdapter(ia);
 
-
-        // Instance of ImageAdapter Class
-        //gridView.setAdapter(new ImageAdapter(this));
-        */
     }
 
+    public MainMenu getParent() {
+        return parent;
+    }
 }

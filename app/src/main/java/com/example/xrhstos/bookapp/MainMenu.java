@@ -19,12 +19,15 @@ import java.util.ArrayList;
 public class MainMenu extends AppCompatActivity{
 
   public static ArrayList<String> cover_url ;
-  public static ArrayList<String[]> books ;
+  //public static ArrayList<String[]> books ;
+  public static ArrayList<Book> books;
+  public static Bookshelf bs;
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main_menu);
     SearchView sv = (SearchView) findViewById(R.id.searchview);
+
 
     sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
       @Override
@@ -33,13 +36,16 @@ public class MainMenu extends AppCompatActivity{
         return true;
       }
 
+
       @Override
       public boolean onQueryTextChange(String s) {
         return false;
       }
 
     });
+    if (bs!=null){
 
+    }
         /*
         Bundle bundle = new Bundle();
         bundle.putStringArrayList("urls",cover_url);
@@ -88,22 +94,25 @@ public class MainMenu extends AppCompatActivity{
 
   public void bookClick(int position){
     Intent intent = new Intent(this, BookInfoActivity.class);
-    intent.putExtra("title", books.get(position)[1]);
-    intent.putExtra("author", books.get(position)[2]);
-    intent.putExtra("url", books.get(position)[3]);
+    //intent.putExtra("title", books.get(position)[1]);
+    intent.putExtra("bookObject", bs.getSingleBook(position));
+    //intent.putExtra("author", books.get(position)[2]);
+    //intent.putExtra("url", books.get(position)[3]);
     startActivity(intent);
   }
 
+
+
   public void update(ArrayList<String[]> bookData){
-    books = new ArrayList<>(bookData);
+    //books = new ArrayList<>(bookData);
+    bs.setBooks(bookData);
     ArrayList<String> urls = new ArrayList<>();
     for(String[] arr : bookData){
       urls.add(arr[3]);
     }
 
-    GridView gridView = (GridView) findViewById(R.id.grid_view);
-    ImageAdapter ia = new ImageAdapter(this , this,urls);
-    gridView.setAdapter(ia);
+
+    PreviewController pc = new PreviewController((GridView) findViewById(R.id.grid_view), this, urls);
 
     /*
     Intent intent = new Intent(this, MainMenu.class);

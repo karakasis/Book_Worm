@@ -1,10 +1,12 @@
 package com.example.xrhstos.bookapp;
 
+import java.io.Serializable;
+
 /**
  * Created by Xrhstos on 4/11/2018.
  */
 
-public class Book {
+public class Book implements Serializable {
 
   private int id;
 

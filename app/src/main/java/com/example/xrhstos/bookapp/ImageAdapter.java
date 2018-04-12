@@ -9,12 +9,14 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
+import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import java.io.IOException;
@@ -23,8 +25,10 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class ImageAdapter extends BaseAdapter  {
+
+    private final LayoutInflater layoutInflator;
     private Context mContext;
-    private final MainMenu parentActivity;
+    private final PreviewController parentController;
     private ArrayList<String> urls;
 
     // Keep all Images in array
@@ -33,10 +37,11 @@ public class ImageAdapter extends BaseAdapter  {
     };
 
     // Constructor
-    public ImageAdapter(MainMenu par, Context c, ArrayList<String> urls){
-        parentActivity = par;
+    public ImageAdapter(PreviewController par, Context c, ArrayList<String> urls){
+        parentController = par;
         mContext = c;
         this.urls = urls;
+        layoutInflator = (LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
@@ -57,62 +62,86 @@ public class ImageAdapter extends BaseAdapter  {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        //System.out.println(position);
-        final ImageView imageView = new ImageView(mContext);
+
+
+        LayoutInflater inflater = (LayoutInflater) mContext
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        View gridView;
+
         URL url = null;
         try {
             url = new URL(urls.get(position));
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        Picasso.with(mContext)
-            .load(String.valueOf(url))
-            .into(new Target() {
-                @Override
-                public void onBitmapLoaded (final Bitmap bitmap, Picasso.LoadedFrom from) {
+
+        if (convertView == null) {
+            // get layout from xml file
+            gridView = inflater.inflate(R.layout.grid_inflater, null);
+
+
+            // pull views
+            TextView titleTag = (TextView) gridView
+                    .findViewById(R.id.bookTitleTag);
+
+            // set values into views
+            titleTag.setText("test");  // using dummy data for now
+
+            TextView authorTag = (TextView) gridView
+                    .findViewById(R.id.bookPublisherTag);
+
+            // set values into views
+            authorTag.setText("test");  // using dummy data for now
+
+            final ImageView imageView = (ImageView) gridView
+                    .findViewById(R.id.bookImageTag);
+
+            Picasso.with(mContext)
+                    .load(String.valueOf(url))
+                    .into(new Target() {
+                        @Override
+                        public void onBitmapLoaded (final Bitmap bitmap, Picasso.LoadedFrom from) {
                 /* Save the bitmap or do something with it here */
 
-                    //Set it in the ImageView
-                    if(urls.get(position).equals("https://s.gr-assets.com/assets/nophoto/book/111x148-bcc042a9c91a29c1d680899eff700a03.png")){
-                        imageView.setImageResource(R.drawable.placeholder_book);
-                    }else{
-                        imageView.setImageBitmap(bitmap);
-                    }
-                }
+                            //Set it in the ImageView
+                            if(urls.get(position).equals("https://s.gr-assets.com/assets/nophoto/book/111x148-bcc042a9c91a29c1d680899eff700a03.png")){
+                                imageView.setImageResource(R.drawable.placeholder_book);
+                            }else{
+                                imageView.setImageBitmap(bitmap);
+                            }
+                        }
+
+                        @Override
+                        public void onPrepareLoad(Drawable placeHolderDrawable) {}
+
+                        @Override
+                        public void onBitmapFailed(Drawable errorDrawable) {
+
+                            System.out.println("Failed" + position);
+                        }
+                    });
+
+            imageView.setOnClickListener(new View.OnClickListener() {
 
                 @Override
-                public void onPrepareLoad(Drawable placeHolderDrawable) {}
-
-                @Override
-                public void onBitmapFailed(Drawable errorDrawable) {
-
-                    System.out.println("Failed" + position);
+                public void onClick(View view) {
+                    parentController.getParent().bookClick(position);
                 }
+
             });
-        //Load bitmaps
-        /*
 
+            imageView.setClipToOutline(true);
+            imageView.setScaleType(ScaleType.FIT_CENTER);
+            imageView.setLayoutParams(new GridView.LayoutParams(imageView.getWidth(), imageView.getHeight()));
 
-        Bitmap bmp = null;
-        try {
-            bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
+            return imageView;
+
         }
-        */
 
-        //imageView.setImageResource(mThumbIds[position]);
-        imageView.setOnClickListener(new View.OnClickListener() {
+        return null;
 
-            @Override
-            public void onClick(View view) {
-                parentActivity.bookClick(position);
-            }
 
-        });
-        imageView.setScaleType(ScaleType.FIT_CENTER);
-        imageView.setLayoutParams(new GridView.LayoutParams(600, 550));
-        return imageView;
     }
 
 }

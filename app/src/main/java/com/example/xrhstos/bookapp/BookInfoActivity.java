@@ -22,10 +22,11 @@ public class BookInfoActivity extends AppCompatActivity {
     setContentView(R.layout.book_info);
 
     Intent intent = getIntent();
-    Bundle extras = intent.getExtras();
-    String title = extras.getString("title");
-    String author = extras.getString("author");
-    final String url = extras.getString("url");
+    Book extras = (Book)intent.getSerializableExtra("bookObject");
+    String title = extras.getBookTitle();
+    String author = extras.getAuthor();
+    final String url = extras.getBookCoverURL();
+
 
     final ImageView iv = (ImageView) findViewById(R.id.bookImage);
     Picasso.with(this)
