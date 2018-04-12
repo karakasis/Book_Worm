@@ -10,6 +10,11 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.GridView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import com.example.xrhstos.bookapp.google_books.FetchBookGoogle;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -18,24 +23,23 @@ import java.util.ArrayList;
 
 public class MainMenu extends AppCompatActivity{
 
-  public static ArrayList<String> cover_url ;
   //public static ArrayList<String[]> books ;
   public static ArrayList<Book> books;
   public static Bookshelf bs;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main_menu);
-    SearchView sv = (SearchView) findViewById(R.id.searchview);
-
+    final SearchView sv = (SearchView) findViewById(R.id.searchview);
 
     sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
       @Override
       public boolean onQueryTextSubmit(String query) {
         searchBooks(query);
+        sv.setIconified(true);
         return true;
       }
-
 
       @Override
       public boolean onQueryTextChange(String s) {
@@ -43,17 +47,17 @@ public class MainMenu extends AppCompatActivity{
       }
 
     });
-    if (bs==null){
-      bs  = new Bookshelf();
+
+    if(bs==null){
+      bs = new Bookshelf();
     }else{
       update(bs.getStringBooks());
     }
-
   }
 
-  public void searchBooks(String query) {
+  public void searchBooks(final String query) {
     // Get the search string from the input field.
-    String queryString = query;
+    final String queryString = query;
 
     // Hide the keyboard when the button is pushed.
     InputMethodManager inputManager = (InputMethodManager)
@@ -70,7 +74,18 @@ public class MainMenu extends AppCompatActivity{
     if (networkInfo != null && networkInfo.isConnected() && queryString.length()!=0) {
       //TextView notifier = (TextView) findViewById(R.id.resultNotify);
       //notifier.setText("Results: ");
-      new FetchBook(this).execute(queryString);
+      new CheckConnection(new CheckConnection.AsynResponse() {
+        @Override
+        public void processFinish(Boolean isServerReachable) {
+          if(isServerReachable){
+            searchBooksOnline(queryString,true);
+          }else{
+            TextView notifier = (TextView) findViewById(R.id.resultNotify);
+            notifier.setText("Server out of reach.");
+            requestGoogle(queryString);
+          }
+        }
+      },"https://www.goodreads.com/").execute();
 
     }
     // Otherwise update the TextView to tell the user there is no connection or no search term.
@@ -85,6 +100,30 @@ public class MainMenu extends AppCompatActivity{
     }
   }
 
+  private void requestGoogle(final String queryString){
+    new CheckConnection(new CheckConnection.AsynResponse() {
+      @Override
+      public void processFinish(Boolean isServerReachable) {
+        if(isServerReachable){
+          searchBooksOnline(queryString,false);
+        }else{
+          TextView notifier = (TextView) findViewById(R.id.resultNotify);
+          notifier.setText("Server out of reach.");
+        }
+      }
+    },"https://books.google.gr/").execute();
+  }
+
+  private void searchBooksOnline(String query,boolean isGoodReads){
+    if(isGoodReads){
+      System.out.println("Source : Goodreads");
+      new FetchBook(this).execute(query);
+    }else{
+      System.out.println("Source : Google");
+      new FetchBookGoogle(this).execute(query);
+    }
+  }
+
   public void bookClick(int position){
     Intent intent = new Intent(this, BookInfoActivity.class);
     //intent.putExtra("title", books.get(position)[1]);
@@ -94,15 +133,20 @@ public class MainMenu extends AppCompatActivity{
     startActivity(intent);
   }
 
-
-
   public void update(ArrayList<String[]> bookData){
     //books = new ArrayList<>(bookData);
     bs.setBooks(bookData);
 
-    new PreviewController((GridView) findViewById(R.id.grid_view), this, bs.getBooks());
+    ArrayList<String> urls = new ArrayList<>();
+    for(String[] arr : bookData){
+      urls.add(arr[3]);
+    }
 
+
+    PreviewController pc = new PreviewController((GridView) findViewById(R.id.grid_view), this, bs.getBooks());
   }
 
 
+
 }
+

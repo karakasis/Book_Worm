@@ -112,6 +112,7 @@ public class ImageAdapter extends BaseAdapter  {
                     if(url.equals("https://s.gr-assets.com/assets/nophoto/book/111x148-bcc042a9c91a29c1d680899eff700a03.png")){
                         //container.setImageResource(R.drawable.placeholder_book);
                         container.setBackgroundResource(R.drawable.placeholder_book);
+                        container.setImageBitmap(null);
                     }else{
                         container.setImageBitmap(bitmap);
                     }
