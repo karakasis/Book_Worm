@@ -75,29 +75,30 @@ public class FetchBook extends AsyncTask<String,Void,String>{
     // Get the search string
     String queryString = params[0];
 
-
     // Set up variables for the try block that need to be closed in the finally block.
     HttpURLConnection urlConnection = null;
     BufferedReader reader = null;
-    String bookJSONString = null;
+    String bookXMLstring = null;
 
     // Attempt to query the Books API.
     try {
       // Base URI for the Books API.
-      //final String BOOK_BASE_URL =  "https://www.googleapis.com/books/v1/volumes?";
-
       final String BOOK_BASE_URL = "https://www.goodreads.com/search/index.xml";
       final String QUERY_PARAM = "q"; // The query text to match against book title, author,
       // and ISBN fields. Supports boolean operators and phrase searching.
       final String QUERY_PAGE = "page"; //Which page to return (default 1, optional)
       final String DEVELOPER_KEY = "key"; //dev key required
       final String SEARCH_FIELD = "search(field)"; //Field to search, one of 'title', 'author', or 'all' (default is 'all')
-      final String MAX_RESULTS = "maxResults"; // Parameter that limits search results.
-      final String PRINT_TYPE = "printType"; // Parameter to filter by print type.
+
+      //GOOGLE API
+      //final String BOOK_BASE_URL =  "https://www.googleapis.com/books/v1/volumes?";
+      //final String MAX_RESULTS = "maxResults"; // Parameter that limits search results.
+      //final String PRINT_TYPE = "printType"; // Parameter to filter by print type.
 
       // Build up your query URI, limiting results to 50 items and printed books.
+
             /*
-            //GOOGLE API URI
+
             Uri builtURI = Uri.parse(BOOK_BASE_URL).buildUpon()
                 .appendQueryParameter(QUERY_PARAM, queryString)
                 .appendQueryParameter(MAX_RESULTS, "20")
@@ -131,11 +132,8 @@ public class FetchBook extends AsyncTask<String,Void,String>{
 
       String line;
       while ((line = reader.readLine()) != null) {
-        // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
-        // but it does make debugging a *lot* easier if you print out the completed buffer for debugging.
         builder.append(line + "\n");
         xmlToList.add(line);
-        //System.out.println(line);
       }
 
       XmlParser.xmlToListOfStrings = new ArrayList<>(xmlToList);
@@ -145,7 +143,7 @@ public class FetchBook extends AsyncTask<String,Void,String>{
         // return null;
         return null;
       }
-      bookJSONString = builder.toString();
+      bookXMLstring = builder.toString();
 
       // Catch errors.
     } catch (IOException e) {
@@ -167,7 +165,7 @@ public class FetchBook extends AsyncTask<String,Void,String>{
     }
 
     // Return the raw response.
-    return bookJSONString;
+    return bookXMLstring;
 
   }
 
@@ -183,53 +181,6 @@ public class FetchBook extends AsyncTask<String,Void,String>{
     super.onPostExecute(s);
     collection  = XmlParser.parse(new String[]{"id type","title","name","image_url"}, "work");
     parent.update(collection);
-    /*
-    try {
 
-      // Initialize iterator and results fields.
-      int i = 0;
-      String title = "";
-      String authors = "";
-
-      //Clear layout
-
-      mCollectionLayout.removeAllViewsInLayout();
-
-      // Look for results in the items array, exiting when both the title and author
-      // are found or when all items have been checked.
-      for(String[] arr : collection){
-        // If both are found, display the result.
-        title = arr[0];
-        authors = arr[1];
-        if (title != null && authors != null){
-
-
-          TextView tv = new TextView(parent);
-          tv.setText(title);
-          tv.setTextAppearance(parent,R.style.bookResult);
-          tv.setId(i*2 );
-          tv.setLayoutParams(new LayoutParams(
-              LayoutParams.MATCH_PARENT,
-              LayoutParams.WRAP_CONTENT));
-          mCollectionLayout.addView(tv);
-
-          TextView tv2 = new TextView(parent);
-          tv2.setText(authors);
-          tv2.setTextAppearance(parent,R.style.bookResult);
-          tv2.setId(i  + 1);
-          tv2.setLayoutParams(new LayoutParams(
-              LayoutParams.MATCH_PARENT,
-              LayoutParams.WRAP_CONTENT));
-          mCollectionLayout.addView(tv2);
-        }
-        i++;
-      }
-
-      mBookInput.setText("");
-
-    } catch (Exception e){
-      e.printStackTrace();
-    }
-    */
   }
 }
