@@ -46,15 +46,6 @@ public class MainMenu extends AppCompatActivity{
     if (bs!=null){
 
     }
-        /*
-        Bundle bundle = new Bundle();
-        bundle.putStringArrayList("urls",cover_url);
-        // set Fragmentclass Arguments
-        PreviewController fragobj = new PreviewController();
-        fragobj.setArguments(bundle);
-
-*/
-
 
   }
 
@@ -114,40 +105,7 @@ public class MainMenu extends AppCompatActivity{
 
     PreviewController pc = new PreviewController((GridView) findViewById(R.id.grid_view), this, urls);
 
-    /*
-    Intent intent = new Intent(this, MainMenu.class);
-    intent.putStringArrayListExtra("cover_urls", urls);
-    startActivity(intent);
-    */
   }
-
-    /*
-    public void onPhilosopherClick(String p) {
-        View quoteFragment = findViewById(R.id.fragment2);
-        boolean mDualPane = quoteFragment != null && quoteFragment.getVisibility() == View.VISIBLE;
-        if (mDualPane) {
-            BookInfoActivity f = (BookInfoActivity) getSupportFragmentManager().findFragmentById(R.id.fragment2);
-            f.showQuote(p);
-        } else {
-            Intent intent = new Intent(this, QuoteActivity.class);
-            intent.putExtra("philospher", p);
-            startActivity(intent);
-        }
-
-    }
-    */
 
 
 }
-
-
-    /*
-        cover_url = new ArrayList<>(getIntent().getStringArrayListExtra("cover_urls"));
-
-        Bundle bundle = new Bundle();
-        bundle.putStringArrayList("urls",cover_url);
-        // set Fragmentclass Arguments
-        PreviewController fragobj = new PreviewController();
-        fragobj.setArguments(bundle);
-
-*/
