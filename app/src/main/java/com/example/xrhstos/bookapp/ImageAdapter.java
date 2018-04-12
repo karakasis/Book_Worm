@@ -5,21 +5,17 @@ package com.example.xrhstos.bookapp;
  */
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -29,7 +25,7 @@ public class ImageAdapter extends BaseAdapter  {
     private final LayoutInflater layoutInflator;
     private Context mContext;
     private final PreviewController parentController;
-    private ArrayList<String> urls;
+    private ArrayList<String[]> data;
 
     // Keep all Images in array
     public Integer[] mThumbIds = {
@@ -37,16 +33,16 @@ public class ImageAdapter extends BaseAdapter  {
     };
 
     // Constructor
-    public ImageAdapter(PreviewController par, Context c, ArrayList<String> urls){
+    public ImageAdapter(PreviewController par, Context c, ArrayList<String[]> data){
         parentController = par;
         mContext = c;
-        this.urls = urls;
+        this.data = data;
         layoutInflator = (LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
     public int getCount() {
-        return urls.size();
+        return data.size();
     }
 
     @Override
@@ -63,6 +59,7 @@ public class ImageAdapter extends BaseAdapter  {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 
+        ImageView imageView = null;
 
         LayoutInflater inflater = (LayoutInflater) mContext
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -71,7 +68,7 @@ public class ImageAdapter extends BaseAdapter  {
 
         URL url = null;
         try {
-            url = new URL(urls.get(position));
+            url = new URL(data.get(position)[2]);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -86,62 +83,65 @@ public class ImageAdapter extends BaseAdapter  {
                     .findViewById(R.id.bookTitleTag);
 
             // set values into views
-            titleTag.setText("test");  // using dummy data for now
+            titleTag.setText(data.get(position)[0]);  // using dummy data for now
 
             TextView authorTag = (TextView) gridView
                     .findViewById(R.id.bookPublisherTag);
 
             // set values into views
-            authorTag.setText("test");  // using dummy data for now
+            authorTag.setText(data.get(position)[1]);  // using dummy data for now
 
-            final ImageView imageView = (ImageView) gridView
+            imageView = (ImageView) gridView
                     .findViewById(R.id.bookImageTag);
 
-            Picasso.with(mContext)
-                    .load(String.valueOf(url))
-                    .into(new Target() {
-                        @Override
-                        public void onBitmapLoaded (final Bitmap bitmap, Picasso.LoadedFrom from) {
-                /* Save the bitmap or do something with it here */
-
-                            //Set it in the ImageView
-                            if(urls.get(position).equals("https://s.gr-assets.com/assets/nophoto/book/111x148-bcc042a9c91a29c1d680899eff700a03.png")){
-                                imageView.setImageResource(R.drawable.placeholder_book);
-                            }else{
-                                imageView.setImageBitmap(bitmap);
-                            }
-                        }
-
-                        @Override
-                        public void onPrepareLoad(Drawable placeHolderDrawable) {}
-
-                        @Override
-                        public void onBitmapFailed(Drawable errorDrawable) {
-
-                            System.out.println("Failed" + position);
-                        }
-                    });
-
-            imageView.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View view) {
-                    parentController.getParent().bookClick(position);
-                }
-
-            });
+            setImage(imageView, data.get(position)[2],position);
 
             imageView.setClipToOutline(true);
             imageView.setScaleType(ScaleType.FIT_CENTER);
-            imageView.setLayoutParams(new GridView.LayoutParams(imageView.getWidth(), imageView.getHeight()));
+            //imageView.setLayoutParams(new GridView.LayoutParams(imageView.getWidth(), imageView.getHeight()));
 
-            return imageView;
 
+        }else {
+            gridView = (View) convertView;
         }
+        return gridView;
+    }
 
-        return null;
+    private void setImage(final ImageView container, final String url,final int position){
+        Picasso.with(mContext)
+            .load(String.valueOf(url))
+            .into(new Target() {
+                @Override
+                public void onBitmapLoaded (final Bitmap bitmap, Picasso.LoadedFrom from) {
+                /* Save the bitmap or do something with it here */
 
+                    //Set it in the ImageView
+                    if(url.equals("https://s.gr-assets.com/assets/nophoto/book/111x148-bcc042a9c91a29c1d680899eff700a03.png")){
+                        //container.setImageResource(R.drawable.placeholder_book);
+                        container.setBackgroundResource(R.drawable.placeholder_book);
+                    }else{
+                        container.setImageBitmap(bitmap);
+                    }
+                }
 
+                @Override
+                public void onPrepareLoad(Drawable placeHolderDrawable) {}
+
+                @Override
+                public void onBitmapFailed(Drawable errorDrawable) {
+
+                    System.out.println("Failed loading " + url);
+                }
+            });
+
+        container.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                parentController.getParent().bookClick(position);
+            }
+
+        });
     }
 
 }

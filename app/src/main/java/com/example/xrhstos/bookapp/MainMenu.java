@@ -43,8 +43,10 @@ public class MainMenu extends AppCompatActivity{
       }
 
     });
-    if (bs!=null){
-
+    if (bs==null){
+      bs  = new Bookshelf();
+    }else{
+      update(bs.getStringBooks());
     }
 
   }
@@ -103,7 +105,7 @@ public class MainMenu extends AppCompatActivity{
     }
 
 
-    PreviewController pc = new PreviewController((GridView) findViewById(R.id.grid_view), this, urls);
+    PreviewController pc = new PreviewController((GridView) findViewById(R.id.grid_view), this, bs.getBooks());
 
   }
 

@@ -18,7 +18,6 @@
 
       android:layout_height="150dp"
 
-      android:background="@drawable/arktikos_kiklos"
 
       android:contentDescription="@string/app_name"
 
@@ -39,7 +38,6 @@
       android:gravity="start"
       android:ellipsize="none"
 
-      android:text="Arktikos Kuklos"
       android:textSize="24sp"
       app:autoSizeMaxTextSize="32sp"
       app:autoSizeMinTextSize="4sp"
@@ -55,7 +53,6 @@
       android:gravity="start"
 
       android:ellipsize="none"
-      android:text="Dan Brown"
       android:textSize="24sp"
       app:autoSizeMaxTextSize="32sp"
       app:autoSizeMinTextSize="4sp"

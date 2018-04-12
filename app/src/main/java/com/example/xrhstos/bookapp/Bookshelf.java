@@ -17,18 +17,18 @@ public class Bookshelf {
 
 
     public Bookshelf(){
-
-
+        books = new ArrayList<>();
     }
 
     public void setBooks(ArrayList<String[]> b){
         stringBooks = new ArrayList<>(b);
+        createBooks();
     }
 
     //Creates the array of Book objetcs.
-    public void createBooks(){
-        int i=0;
-        for (i=0;i<stringBooks.size();i++){
+    private void createBooks(){
+        books = new ArrayList<>();
+        for (int i=0;i<stringBooks.size();i++){
             books.add(new Book(Integer.parseInt(stringBooks.get(i)[0]),stringBooks.get(i)[1],stringBooks.get(i)[2],stringBooks.get(i)[3],""));
         }
     }
@@ -41,5 +41,9 @@ public class Bookshelf {
     //returns the book in the asked position
     public Book getSingleBook(int position){
         return books.get(position);
+    }
+
+    public ArrayList<String[]> getStringBooks(){
+        return stringBooks;
     }
 }
