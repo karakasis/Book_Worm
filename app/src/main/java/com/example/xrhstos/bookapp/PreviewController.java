@@ -22,18 +22,24 @@ public class PreviewController{
 
     public PreviewController(GridView gv, MainMenu parent, ArrayList<Book> books){
         tau = new ArrayList<>();
-        int i;
-        String[] dummy = new String[3];
-        for (i=0;i<books.size();i++){
+        //String[] dummy = new String[3];
+        for (int i=0;i<books.size();i++){
+            /*
             dummy[0] = books.get(i).getBookTitle();
             dummy[1] = books.get(i).getAuthor();
             dummy[2] = books.get(i).getBookCoverURL();
             tau.add(dummy);
             dummy = new String[3];
+            */
+            tau.add(new String[]{
+               books.get(i).getBookTitle(),
+                books.get(i).getAuthor(),
+               books.get(i).getBookCoverURL(),
+            });
 
         }
         this.parent = parent;
-        ImageAdapter ia = new ImageAdapter(this ,parent  ,tau/*domi me title author kai url olwn twn vivliwn me arraylist apo string[]*/);
+        ImageAdapter ia = new ImageAdapter(this ,parent  ,tau);
         gv.setAdapter(ia);
 
     }

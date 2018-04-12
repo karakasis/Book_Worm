@@ -99,13 +99,8 @@ public class MainMenu extends AppCompatActivity{
   public void update(ArrayList<String[]> bookData){
     //books = new ArrayList<>(bookData);
     bs.setBooks(bookData);
-    ArrayList<String> urls = new ArrayList<>();
-    for(String[] arr : bookData){
-      urls.add(arr[3]);
-    }
 
-
-    PreviewController pc = new PreviewController((GridView) findViewById(R.id.grid_view), this, bs.getBooks());
+    new PreviewController((GridView) findViewById(R.id.grid_view), this, bs.getBooks());
 
   }
 

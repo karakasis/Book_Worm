@@ -19,6 +19,7 @@ import com.squareup.picasso.Target;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import org.w3c.dom.Text;
 
 public class ImageAdapter extends BaseAdapter  {
 
@@ -31,6 +32,7 @@ public class ImageAdapter extends BaseAdapter  {
     public Integer[] mThumbIds = {
             R.drawable.george_orwell , R.drawable.arktikos_kiklos
     };
+    private NewHolder holder;
 
     // Constructor
     public ImageAdapter(PreviewController par, Context c, ArrayList<String[]> data){
@@ -59,13 +61,6 @@ public class ImageAdapter extends BaseAdapter  {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 
-        ImageView imageView = null;
-
-        LayoutInflater inflater = (LayoutInflater) mContext
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        View gridView;
-
         URL url = null;
         try {
             url = new URL(data.get(position)[2]);
@@ -75,36 +70,34 @@ public class ImageAdapter extends BaseAdapter  {
 
         if (convertView == null) {
             // get layout from xml file
-            gridView = inflater.inflate(R.layout.grid_inflater, null);
+            LayoutInflater inflater = (LayoutInflater) mContext
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
+            convertView = inflater.inflate(R.layout.grid_inflater, null);
 
-            // pull views
-            TextView titleTag = (TextView) gridView
-                    .findViewById(R.id.bookTitleTag);
+            holder = new NewHolder();
 
-            // set values into views
-            titleTag.setText(data.get(position)[0]);  // using dummy data for now
+            holder.titleView = (TextView) convertView
+                .findViewById(R.id.bookTitleTag);
+            holder.authorView = (TextView) convertView
+                .findViewById(R.id.bookPublisherTag);
+            holder.bookView = (ImageView) convertView
+                .findViewById(R.id.bookImageTag);
 
-            TextView authorTag = (TextView) gridView
-                    .findViewById(R.id.bookPublisherTag);
-
-            // set values into views
-            authorTag.setText(data.get(position)[1]);  // using dummy data for now
-
-            imageView = (ImageView) gridView
-                    .findViewById(R.id.bookImageTag);
-
-            setImage(imageView, data.get(position)[2],position);
-
-            imageView.setClipToOutline(true);
-            imageView.setScaleType(ScaleType.FIT_CENTER);
             //imageView.setLayoutParams(new GridView.LayoutParams(imageView.getWidth(), imageView.getHeight()));
 
+            convertView.setTag(holder);
 
-        }else {
-            gridView = (View) convertView;
+        }else{
+            holder = (NewHolder) convertView.getTag();
         }
-        return gridView;
+
+        setImage(holder.bookView, data.get(position)[2],position);
+        holder.titleView.setText(data.get(position)[0]);
+        holder.authorView.setText(data.get(position)[1]);
+        holder.bookView.setClipToOutline(true);
+        holder.bookView.setScaleType(ScaleType.FIT_CENTER);
+        return convertView;
     }
 
     private void setImage(final ImageView container, final String url,final int position){
