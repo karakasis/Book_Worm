@@ -1,13 +1,12 @@
 package com.example.xrhstos.bookapp;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
  * Created by Xrhstos on 4/10/2018.
  */
 
-public class xmlMyClass {
+public class XmlParser {
 
   public static ArrayList<String> xmlToListOfStrings;
 
@@ -58,7 +57,7 @@ public class xmlMyClass {
           }
           if(str.startsWith("<" + tags[i])){
             tagSkipper[i] = 1;
-            str = xmlMyClass.removeTags(str,tags[i]);
+            str = XmlParser.removeTags(str,tags[i]);
             collection.get(collection.size()-1)[i] = str;
             System.out.println(str);
             counterLock++;

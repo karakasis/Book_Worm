@@ -20,9 +20,9 @@ public class DatabaseActivity extends AppCompatActivity {
     RatingBar ratingBar;
 
     float ratingValue;
-    private static final String TAG = "MyHelper";
+    private static final String TAG = "DatabaseHelper";
 
-    MyHelper myDb;
+    DatabaseHelper myDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +42,7 @@ public class DatabaseActivity extends AppCompatActivity {
         });
         //rating = 5;
 
-        myDb = new MyHelper(this);
+        myDb = new DatabaseHelper(this);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class DatabaseActivity extends AppCompatActivity {
 
 
 
-        myDb = new MyHelper(this);
+        myDb = new DatabaseHelper(this);
         String title = bookTitle.getText().toString();
         String bookPublisher = publisher.getText().toString();
         //ratingBar.getNumStars();
@@ -90,7 +90,7 @@ public class DatabaseActivity extends AppCompatActivity {
 
 
 
-        myDb = new MyHelper(this);
+        myDb = new DatabaseHelper(this);
         String title = bookTitle.getText().toString();
         String bookPublisher = publisher.getText().toString();
         boolean result = myDb.deleteRecord(title,bookPublisher);

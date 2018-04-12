@@ -20,7 +20,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -139,7 +138,7 @@ public class FetchBook extends AsyncTask<String,Void,String>{
         //System.out.println(line);
       }
 
-      xmlMyClass.xmlToListOfStrings = new ArrayList<>(xmlToList);
+      XmlParser.xmlToListOfStrings = new ArrayList<>(xmlToList);
 
       if (builder.length() == 0) {
         // Stream was empty.  No point in parsing.
@@ -182,7 +181,7 @@ public class FetchBook extends AsyncTask<String,Void,String>{
   @Override
   protected void onPostExecute(String s) {
     super.onPostExecute(s);
-    collection  = xmlMyClass.parse(new String[]{"id type","title","name","image_url"}, "work");
+    collection  = XmlParser.parse(new String[]{"id type","title","name","image_url"}, "work");
     parent.update(collection);
     /*
     try {

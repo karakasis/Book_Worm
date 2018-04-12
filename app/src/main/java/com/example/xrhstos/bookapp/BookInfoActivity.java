@@ -14,12 +14,12 @@ import com.squareup.picasso.Target;
  * Created by Xrhstos on 4/10/2018.
  */
 
-public class Fragment2 extends AppCompatActivity {
+public class BookInfoActivity extends AppCompatActivity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.fragment_fragment2);
+    setContentView(R.layout.book_info);
 
     Intent intent = getIntent();
     Bundle extras = intent.getExtras();

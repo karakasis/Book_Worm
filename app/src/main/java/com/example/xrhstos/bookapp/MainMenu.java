@@ -6,19 +6,17 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.GridView;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 import java.util.ArrayList;
 
 /**
  * Created by Xrhstos on 4/11/2018.
  */
 
-public class MainMenu extends AppCompatActivity implements Fragment1.ActivityCommunicator{
+public class MainMenu extends AppCompatActivity{
 
   public static ArrayList<String> cover_url ;
   public static ArrayList<String[]> books ;
@@ -46,7 +44,7 @@ public class MainMenu extends AppCompatActivity implements Fragment1.ActivityCom
         Bundle bundle = new Bundle();
         bundle.putStringArrayList("urls",cover_url);
         // set Fragmentclass Arguments
-        Fragment1 fragobj = new Fragment1();
+        PreviewController fragobj = new PreviewController();
         fragobj.setArguments(bundle);
 
 */
@@ -89,7 +87,7 @@ public class MainMenu extends AppCompatActivity implements Fragment1.ActivityCom
   }
 
   public void bookClick(int position){
-    Intent intent = new Intent(this, Fragment2.class);
+    Intent intent = new Intent(this, BookInfoActivity.class);
     intent.putExtra("title", books.get(position)[1]);
     intent.putExtra("author", books.get(position)[2]);
     intent.putExtra("url", books.get(position)[3]);
@@ -119,7 +117,7 @@ public class MainMenu extends AppCompatActivity implements Fragment1.ActivityCom
         View quoteFragment = findViewById(R.id.fragment2);
         boolean mDualPane = quoteFragment != null && quoteFragment.getVisibility() == View.VISIBLE;
         if (mDualPane) {
-            Fragment2 f = (Fragment2) getSupportFragmentManager().findFragmentById(R.id.fragment2);
+            BookInfoActivity f = (BookInfoActivity) getSupportFragmentManager().findFragmentById(R.id.fragment2);
             f.showQuote(p);
         } else {
             Intent intent = new Intent(this, QuoteActivity.class);
@@ -130,7 +128,17 @@ public class MainMenu extends AppCompatActivity implements Fragment1.ActivityCom
     }
     */
 
-  public void passDataToActivity(String s){
 
-  }
 }
+
+
+    /*
+        cover_url = new ArrayList<>(getIntent().getStringArrayListExtra("cover_urls"));
+
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList("urls",cover_url);
+        // set Fragmentclass Arguments
+        PreviewController fragobj = new PreviewController();
+        fragobj.setArguments(bundle);
+
+*/

@@ -13,7 +13,7 @@ import android.database.Cursor;
  * Created by Dimitris Koufounakis on 28/3/2018.
  */
 
-public class MyHelper extends SQLiteOpenHelper {
+public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "book_db.db";
     private static final int DATABASE_VERSION = 1;
@@ -24,7 +24,7 @@ public class MyHelper extends SQLiteOpenHelper {
     private static final String BOOK_RATING = "rating";
 
 
-    public MyHelper(Context context) {
+    public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
         //TODO Auto-generated constructor stub
     }
