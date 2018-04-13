@@ -67,7 +67,7 @@ public class VolleyNetworking {
 
     Uri builtURI = Uri.parse(BOOK_BASE_URL).buildUpon()
         .appendQueryParameter(QUERY_PARAM, queryString)
-        .appendQueryParameter(QUERY_PAGE, "1")
+        .appendQueryParameter(QUERY_PAGE, String.valueOf(MainMenu.getPage()))
         .appendQueryParameter(DEVELOPER_KEY, "Y2yc0wb3LDtDVSGwlCSJDg")
         .appendQueryParameter(SEARCH_FIELD, "all")
         .build();
@@ -122,11 +122,13 @@ public class VolleyNetworking {
     final String QUERY_PARAM = "q"; // Parameter for the search string.
     final String MAX_RESULTS = "maxResults"; // Parameter that limits search results.
     final String PRINT_TYPE = "printType"; // Parameter to filter by print type.
+    final String INDEX = "startIndex";
 
     // Build up your query URI, limiting results to 10 items and printed books.
     Uri builtURI = Uri.parse(BOOK_BASE_URL).buildUpon()
         .appendQueryParameter(QUERY_PARAM, queryString)
         .appendQueryParameter(MAX_RESULTS, "40")
+        .appendQueryParameter(INDEX,String.valueOf(40*MainMenu.getPage()))
         .appendQueryParameter(PRINT_TYPE, "books")
         .build();
 

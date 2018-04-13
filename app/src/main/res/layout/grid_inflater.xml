@@ -5,62 +5,56 @@
   android:layout_height="match_parent"
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
-  <LinearLayout
+  <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ImageView
-
+    <com.example.xrhstos.bookapp.transformation.SquareImageView
       android:id="@+id/bookImageTag"
-
-      android:layout_width="100dp"
-
-      android:layout_height="150dp"
-
-
-      android:contentDescription="@string/app_name"
-
-      android:padding="2dp"
-
-      android:scaleType="fitXY"
-
-      android:src="@drawable/book_shape"
-
-      android:visibility="visible" />
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:scaleType="centerInside"
+      android:src="@drawable/arktikos_kiklos"
+      android:layout_centerHorizontal="true"/>
 
     <android.support.v7.widget.AppCompatTextView
       android:id = "@+id/bookTitleTag"
-      android:layout_width="100dp"
+      android:layout_width="200dp"
+      android:layout_height="30dp"
+      android:padding="2dp"
+      android:textAlignment="textStart"
+      android:gravity="start"
+      android:ellipsize="none"
+      android:text="12344"
+      android:textSize="24sp"
+      app:autoSizeMaxTextSize="32sp"
+      app:autoSizeMinTextSize="4sp"
+      app:autoSizeStepGranularity="0.5sp"
+      app:autoSizeTextType="uniform"
+      android:layout_below="@id/bookImageTag"
+      android:layout_centerHorizontal="true"
+      />
+    <android.support.v7.widget.AppCompatTextView
+      android:id = "@+id/bookPublisherTag"
+      android:layout_width="200dp"
       android:layout_height="20dp"
       android:padding="2dp"
       android:textAlignment="textStart"
       android:gravity="start"
-      android:ellipsize="none"
 
-      android:textSize="24sp"
-      app:autoSizeMaxTextSize="32sp"
-      app:autoSizeMinTextSize="4sp"
-      app:autoSizeStepGranularity="0.5sp"
-      app:autoSizeTextType="uniform"
-      />
-    <android.support.v7.widget.AppCompatTextView
-      android:id = "@+id/bookPublisherTag"
-      android:layout_width="100dp"
-      android:layout_height="15dp"
-      android:padding="2dp"
-      android:textAlignment="textStart"
-      android:gravity="start"
-
+      android:text="12344"
       android:ellipsize="none"
       android:textSize="24sp"
       app:autoSizeMaxTextSize="32sp"
       app:autoSizeMinTextSize="4sp"
       app:autoSizeStepGranularity="0.5sp"
       app:autoSizeTextType="uniform"
+      android:layout_below="@id/bookTitleTag"
+      android:layout_centerHorizontal="true"
       />
 
-  </LinearLayout>
+  </RelativeLayout>
 
 
 </android.support.constraint.ConstraintLayout>

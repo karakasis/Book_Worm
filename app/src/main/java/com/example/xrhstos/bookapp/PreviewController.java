@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.GridView;
 import java.util.ArrayList;
 
@@ -17,10 +18,10 @@ import java.util.ArrayList;
 
 public class PreviewController{
 
-    private MainMenu parent;
+    private final MainMenu parent;
     private ArrayList<String[]> tau;  //list of arrays with tittle, author and url of each book
 
-    public PreviewController(GridView gv, MainMenu parent, ArrayList<Book> books){
+    public PreviewController(GridView gv, final MainMenu parent, ArrayList<Book> books){
         tau = new ArrayList<>();
         //String[] dummy = new String[3];
         for (int i=0;i<books.size();i++){
@@ -41,6 +42,24 @@ public class PreviewController{
         this.parent = parent;
         ImageAdapter ia = new ImageAdapter(this ,parent  ,tau);
         gv.setAdapter(ia);
+        gv.setOnScrollListener(new AbsListView.OnScrollListener(){
+
+            @Override
+            public void onScroll(AbsListView view,
+                int firstVisibleItem, int visibleItemCount,
+                int totalItemCount) {
+                //Algorithm to check if the last item is visible or not
+                final int lastItem = firstVisibleItem + visibleItemCount;
+                if(lastItem == totalItemCount){
+                    // here you have reached end of list, load more data
+                    parent.requestMoreResults();
+                }
+            }
+            @Override
+            public void onScrollStateChanged(AbsListView view,int scrollState) {
+                //blank, not required in your case
+            }
+        });
 
     }
 

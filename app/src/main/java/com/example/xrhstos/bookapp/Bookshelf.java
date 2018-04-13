@@ -13,21 +13,22 @@ public class Bookshelf {
 
     private ArrayList<String[]> stringBooks;
     private ArrayList<Book> books;
+    private String currentQuery ;
 
 
 
     public Bookshelf(){
         books = new ArrayList<>();
-    }
-
-    public void setBooks(ArrayList<String[]> b){
-        stringBooks = new ArrayList<>(b);
-        createBooks();
+        currentQuery = "";
     }
 
     //Creates the array of Book objetcs.
-    private void createBooks(){
-        books = new ArrayList<>();
+    public void addBooks(ArrayList<String[]> stringBooks){
+        this.stringBooks = new ArrayList<>(stringBooks);
+        if(!currentQuery.equals(MainMenu.query)){
+            currentQuery = MainMenu.query;
+            books = new ArrayList<>();
+        }
         for (int i=0;i<stringBooks.size();i++){
             books.add(new Book(Integer.parseInt(stringBooks.get(i)[0]),stringBooks.get(i)[1],stringBooks.get(i)[2],stringBooks.get(i)[3],""));
         }

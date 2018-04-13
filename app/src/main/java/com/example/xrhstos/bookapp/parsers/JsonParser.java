@@ -15,6 +15,7 @@
  */
 package com.example.xrhstos.bookapp.parsers;
 
+import android.util.JsonWriter;
 import com.example.xrhstos.bookapp.MainMenu;
 import java.util.ArrayList;
 import org.json.JSONArray;
@@ -41,6 +42,7 @@ public class JsonParser {
       int i = 0;
       String title = null;
       String authors = null;
+      String url = null;
 
       // Look for results in the items array, exiting when both the title and author
       // are found or when all items have been checked.
@@ -54,7 +56,8 @@ public class JsonParser {
         try {
           title = volumeInfo.getString("title");
           authors = volumeInfo.getString("authors");
-          collection.add(new String[]{String.valueOf(i), title, authors, "url"});
+          url = volumeInfo.getJSONObject("imageLinks").getString("thumbnail");
+          collection.add(new String[]{String.valueOf(i), title, authors, url});
         } catch (Exception e) {
           e.printStackTrace();
         }

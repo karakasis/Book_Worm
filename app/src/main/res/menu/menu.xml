@@ -2,7 +2,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_settings"
-        android:title="YOUR_MENU_ITEM"
-        app:showAsAction="never"/>
+      android:id="@+id/action_search"
+      android:icon="@drawable/ic_search_white_24dp"
+      android:title="Search"
+      app:actionViewClass="android.support.v7.widget.SearchView"
+      app:showAsAction="ifRoom|collapseActionView" />
+
+    <item
+      android:id="@+id/collectionButton"
+      android:title="gallery"
+      android:icon="@drawable/ic_local_library_indigo_a200_24dp"
+      app:showAsAction="ifRoom|collapseActionView"/>
+
 </menu>

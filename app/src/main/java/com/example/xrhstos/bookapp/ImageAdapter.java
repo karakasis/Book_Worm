@@ -6,6 +6,10 @@ package com.example.xrhstos.bookapp;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +18,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.TextView;
+import com.example.xrhstos.bookapp.transformation.RoundCorners;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+import com.squareup.picasso.Transformation;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -95,7 +101,7 @@ public class ImageAdapter extends BaseAdapter  {
         setImage(holder.bookView, data.get(position)[2],position);
         holder.titleView.setText(data.get(position)[0]);
         holder.authorView.setText(data.get(position)[1]);
-        holder.bookView.setClipToOutline(true);
+        //holder.bookView.setClipToOutline(true);
         holder.bookView.setScaleType(ScaleType.FIT_CENTER);
         return convertView;
     }
@@ -103,6 +109,7 @@ public class ImageAdapter extends BaseAdapter  {
     private void setImage(final ImageView container, final String url,final int position){
         Picasso.with(mContext)
             .load(String.valueOf(url))
+            .transform(new RoundCorners(5,5))
             .into(new Target() {
                 @Override
                 public void onBitmapLoaded (final Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -110,9 +117,10 @@ public class ImageAdapter extends BaseAdapter  {
 
                     //Set it in the ImageView
                     if(url.equals("https://s.gr-assets.com/assets/nophoto/book/111x148-bcc042a9c91a29c1d680899eff700a03.png")){
-                        //container.setImageResource(R.drawable.placeholder_book);
-                        container.setBackgroundResource(R.drawable.placeholder_book);
-                        container.setImageBitmap(null);
+                        container.setImageResource(R.drawable.placeholder);
+                        //container.setBackgroundResource(R.drawable.placeholder_book);
+                        //container.setImageBitmap(null);
+                        //container.setImageResource(R.drawable.book_shape);
                     }else{
                         container.setImageBitmap(bitmap);
                     }
