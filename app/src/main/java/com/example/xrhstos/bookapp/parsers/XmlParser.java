@@ -1,6 +1,7 @@
-package com.example.xrhstos.bookapp;
+package com.example.xrhstos.bookapp.parsers;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Created by Xrhstos on 4/10/2018.
@@ -194,6 +195,12 @@ public class XmlParser {
     }
 
     return str;
+  }
+
+  public static void stringToList(String source){
+    String[] lines = source.split("\\r?\\n");
+    xmlToListOfStrings = new ArrayList<>();
+    Collections.addAll(xmlToListOfStrings, lines);
   }
 
 }

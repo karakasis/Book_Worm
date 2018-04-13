@@ -15,13 +15,10 @@
  */
 package com.example.xrhstos.bookapp;
 
-import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
+import com.example.xrhstos.bookapp.parsers.XmlParser;
 import java.util.ArrayList;
 
 import java.io.BufferedReader;
