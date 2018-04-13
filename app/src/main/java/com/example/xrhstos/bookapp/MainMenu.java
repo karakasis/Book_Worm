@@ -3,6 +3,7 @@ package com.example.xrhstos.bookapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.SearchView.OnQueryTextListener;
 import android.support.v7.widget.Toolbar;
@@ -86,16 +87,6 @@ public class MainMenu extends AppCompatActivity{
       @Override
       public boolean onQueryTextChange(String queryPiece) {
 
-        currentPage = 0;
-
-        if(queryPiece.equals("")){
-          GridView gv = (GridView) findViewById(R.id.grid_view);
-          gv.setAdapter(null);
-          footer.setVisibility(View.GONE);
-        }else{
-          tLogger = new TimingLogger("ExecutionTime","Search books typed");
-          searchBooks(queryPiece);
-        }
         return false;
       }
     });
@@ -107,8 +98,8 @@ public class MainMenu extends AppCompatActivity{
     this.query = query;
     System.out.println("Current page: " + getPage());
     footer.setVisibility(View.VISIBLE);
-    //requestGoodReads(query);
-    requestGoogle(query);
+    requestGoodReads(query);
+    //requestGoogle(query);
   }
 
   private void requestGoodReads(final String queryString){
@@ -150,7 +141,7 @@ public class MainMenu extends AppCompatActivity{
     bs.addBooks(bookData);
 
     PreviewController pc = new PreviewController(
-        (GridView) findViewById(R.id.grid_view),
+        (RecyclerView) findViewById(R.id.grid_view),
         this, bs.getBooks());
 
     if(tLogger!=null)

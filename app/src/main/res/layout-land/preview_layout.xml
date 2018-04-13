@@ -3,19 +3,19 @@
   android:id="@+id/previewGrid"
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
-  android:layout_height="match_parent"
+  android:layout_height="wrap_content"
   android:background="@color/gridColor">
 
-        <GridView
+        <android.support.v7.widget.RecyclerView
           android:id="@+id/grid_view"
           android:layout_width="match_parent"
-          android:layout_height="match_parent"
+          android:layout_height="wrap_content"
           android:verticalSpacing="0dp"
           android:horizontalSpacing="0dp"
           android:stretchMode="columnWidth"
           android:numColumns="5">
 
-        </GridView>
+        </android.support.v7.widget.RecyclerView>
 
 
 </android.support.constraint.ConstraintLayout>

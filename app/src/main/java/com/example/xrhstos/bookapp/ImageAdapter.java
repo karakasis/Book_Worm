@@ -67,13 +67,6 @@ public class ImageAdapter extends BaseAdapter  {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 
-        URL url = null;
-        try {
-            url = new URL(data.get(position)[2]);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
         if (convertView == null) {
             // get layout from xml file
             LayoutInflater inflater = (LayoutInflater) mContext
