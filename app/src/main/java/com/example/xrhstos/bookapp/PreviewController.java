@@ -26,58 +26,31 @@ public class PreviewController{
 
     private final MainMenu parent;
     private ArrayList<String[]> tau;  //list of arrays with tittle, author and url of each book
+    private GridAdapter gridAdapter;
+    private RecyclerView recyclerView;
 
-    public PreviewController(RecyclerView gv, final MainMenu parent, ArrayList<Book> books){
-        tau = new ArrayList<>();
-        //String[] dummy = new String[3];
-        for (int i=0;i<books.size();i++){
-            /*
-            dummy[0] = books.get(i).getBookTitle();
-            dummy[1] = books.get(i).getAuthor();
-            dummy[2] = books.get(i).getBookCoverURL();
-            tau.add(dummy);
-            dummy = new String[3];
-            */
-            tau.add(new String[]{
-               books.get(i).getBookTitle(),
-                books.get(i).getAuthor(),
-               books.get(i).getBookCoverURL(),
-            });
 
-        }
+    public PreviewController(RecyclerView rv, final MainMenu parent){
+
         this.parent = parent;
-        GridAdapter gridAdapter = new GridAdapter(this,parent,books);
-        gv.setAdapter(gridAdapter);
-        gv.setLayoutManager(new GridLayoutManager(
+        recyclerView = rv;
+
+
+
+    }
+
+    public void setData(ArrayList<Book> books){
+
+        gridAdapter = new GridAdapter(this,parent,books);
+        gridAdapter.notifyDataSetChanged();
+        recyclerView.setAdapter(gridAdapter);
+
+        recyclerView.setLayoutManager(new GridLayoutManager(
             parent,
             calculateNoOfColumns(parent)
         ));
 
-        /*
-        ImageAdapter ia = new ImageAdapter(this ,parent  ,tau);
-        gv.setAdapter(ia);
-        gv.setOnScrollListener(new AbsListView.OnScrollListener(){
-
-            @Override
-            public void onScroll(AbsListView view,
-                int firstVisibleItem, int visibleItemCount,
-                int totalItemCount) {
-                //Algorithm to check if the last item is visible or not
-                final int lastItem = firstVisibleItem + visibleItemCount;
-                if(lastItem == totalItemCount){
-                    // here you have reached end of list, load more data
-                    parent.requestMoreResults();
-                }
-            }
-            @Override
-            public void onScrollStateChanged(AbsListView view,int scrollState) {
-                //blank, not required in your case
-            }
-        });
-
-*/
-
-
+        recyclerView.invalidate();
     }
 
     public MainMenu getParent() {

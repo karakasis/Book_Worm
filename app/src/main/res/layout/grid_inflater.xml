@@ -15,7 +15,6 @@
       android:layout_width="140dp"
       android:layout_height="200dp"
       android:scaleType="fitXY"
-      android:src="@drawable/arktikos_kiklos"
       android:layout_centerHorizontal="true"/>
 
     <android.support.v7.widget.AppCompatTextView
@@ -25,8 +24,8 @@
       android:padding="2dp"
       android:textAlignment="textStart"
       android:gravity="start"
+
       android:ellipsize="none"
-      android:text="HOO CONTROl 121920 min milas re kanw pragmata"
       android:textSize="24sp"
       app:autoSizeMaxTextSize="32sp"
       app:autoSizeMinTextSize="4sp"
@@ -43,7 +42,6 @@
       android:textAlignment="textStart"
       android:gravity="start"
 
-      android:text="12344"
       android:ellipsize="none"
       android:textSize="24sp"
       app:autoSizeMaxTextSize="32sp"

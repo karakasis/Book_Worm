@@ -62,9 +62,11 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
     // Get the data model based on position
     Book book = data.get(position);
 
-      setImage(holder.bookView, data.get(position).getBookCoverURL(),position);
-      holder.titleView.setText(data.get(position).getBookTitle());
-      holder.authorView.setText(data.get(position).getAuthor());
+      setImage(holder.bookView, book.getBookCoverURL(),position);
+      //holder.titleView.setText(book.getBookTitle());
+      //holder.authorView.setText(book.getAuthor());
+    holder.titleView.setText(position+"");
+    holder.authorView.setText(position+"");
       //holder.bookView.setClipToOutline(true);
       //holder.bookView.setScaleType(ScaleType.FIT_CENTER);
 

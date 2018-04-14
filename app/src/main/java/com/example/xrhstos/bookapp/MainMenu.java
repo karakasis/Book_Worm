@@ -36,6 +36,8 @@ public class MainMenu extends AppCompatActivity{
 
   private View footer;
 
+  private static PreviewController previewController;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -46,10 +48,14 @@ public class MainMenu extends AppCompatActivity{
 
     notifier = (TextView) findViewById(R.id.resultNotify);
 
+    if(MainMenu.previewController == null){
+      MainMenu.previewController = new PreviewController(
+          (RecyclerView) findViewById(R.id.grid_view),this);
+    }
     if(bs==null){
       bs = new Bookshelf();
     }else{
-      update(bs.getStringBooks());
+      rotateUpdate();
     }
   }
 
@@ -95,7 +101,7 @@ public class MainMenu extends AppCompatActivity{
   }
 
   public void searchBooks(final String query) {
-    this.query = query;
+    MainMenu.query = query;
     System.out.println("Current page: " + getPage());
     footer.setVisibility(View.VISIBLE);
     requestGoodReads(query);
@@ -140,13 +146,20 @@ public class MainMenu extends AppCompatActivity{
   public void update(ArrayList<String[]> bookData){
     bs.addBooks(bookData);
 
-    PreviewController pc = new PreviewController(
-        (RecyclerView) findViewById(R.id.grid_view),
-        this, bs.getBooks());
+    MainMenu.previewController = new PreviewController(
+        (RecyclerView) findViewById(R.id.grid_view),this);
+    MainMenu.previewController.setData(bs.getBooks());
 
     if(tLogger!=null)
     tLogger.addSplit("printing images");
   }
+
+  private void rotateUpdate(){
+    MainMenu.previewController = new PreviewController(
+        (RecyclerView) findViewById(R.id.grid_view),this);
+    MainMenu.previewController.setData(bs.getBooks());
+  }
+
 
   public void requestMoreResults(){
     currentPage++;
