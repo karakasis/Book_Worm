@@ -21,38 +21,17 @@ public class BookInfoActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.book_info);
 
-    Intent intent = getIntent();
-    Book extras = (Book)intent.getSerializableExtra("bookObject");
+    //Intent intent = getIntent();
+    Bundle data = getIntent().getExtras();
+    Book extras = (Book) data.getParcelable("bookObject");
+    //Book extras = (Book)intent.getSerializableExtra("bookObject");
     String title = extras.getBookTitle();
     String author = extras.getAuthor();
-    final String url = extras.getBookCoverURL();
 
 
-    final ImageView iv = (ImageView) findViewById(R.id.bookImage);
-    Picasso.with(this)
-        .load(String.valueOf(url))
-        .into(new Target() {
-          @Override
-          public void onBitmapLoaded (final Bitmap bitmap, Picasso.LoadedFrom from) {
-                /* Save the bitmap or do something with it here */
+    ImageView iv = (ImageView) findViewById(R.id.bookImage);
+    iv.setImageBitmap(extras.getBookCover());
 
-            //Set it in the ImageView
-            if(url.equals("https://s.gr-assets.com/assets/nophoto/book/111x148-bcc042a9c91a29c1d680899eff700a03.png")){
-              iv.setImageResource(R.drawable.placeholder_book);
-            }else{
-              iv.setImageBitmap(bitmap);
-            }
-          }
-
-          @Override
-          public void onPrepareLoad(Drawable placeHolderDrawable) {}
-
-          @Override
-          public void onBitmapFailed(Drawable errorDrawable) {
-
-            System.out.println("Failed to load : " + url);
-          }
-        });
 
     TextView tv = (TextView) findViewById(R.id.bookTitle);
     tv.setText(title);

@@ -1,12 +1,21 @@
 package com.example.xrhstos.bookapp;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.media.Image;
+import android.os.Parcel;
+import android.os.Parcelable;
+import com.android.volley.toolbox.ImageRequest;
+import com.example.xrhstos.bookapp.transformation.RoundCorners;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 import java.io.Serializable;
 
 /**
  * Created by Xrhstos on 4/11/2018.
  */
 
-public class Book implements Serializable {
+public class Book implements Parcelable {
 
   private int id;
 
@@ -20,12 +29,50 @@ public class Book implements Serializable {
   private boolean isBookRead;
   private boolean isBookInWishlist;
 
+  private Bitmap bookCover;
+
   public Book(int id, String title, String author, String url , String desc){
     this.id = id;
     bookTitle = title;
     this.author = author;
     bookCoverURL = url;
     description = desc;
+  }
+
+  public void requestBookCover(MainMenu context){
+    ImageRequest ir = VolleyNetworking.getInstance(context).bitmapRequest(bookCoverURL,this);
+    VolleyNetworking.getInstance(context).addToRequestQueue(ir);
+  }
+
+  public void responseBookCover(Bitmap response){
+    bookCover = response;
+  }
+
+  /* Picasso request
+  public void setBookCover(MainMenu context){
+    Picasso.with(context)
+        .setLoggingEnabled(true)
+        .load(bookCoverURL)
+        .transform(new RoundCorners(5,5))
+        .into(new Target() {
+          @Override
+          public void onBitmapLoaded (final Bitmap bitmap, Picasso.LoadedFrom from) {
+            bookCover = bitmap;
+          }
+
+          @Override
+          public void onPrepareLoad(Drawable placeHolderDrawable) {}
+
+          @Override
+          public void onBitmapFailed(Drawable errorDrawable) {
+
+            System.out.println("Failed loading " + id);
+          }
+        });
+  }
+*/
+  public Bitmap getBookCover(){
+    return bookCover;
   }
 
   public String getBookCoverURL() {
@@ -98,5 +145,57 @@ public class Book implements Serializable {
 
   public void setId(int id) {
     this.id = id;
+  }
+
+  @Override
+  public int describeContents() {
+    return 0;
+  }
+
+  @Override
+  public void writeToParcel(Parcel dest, int flags) {
+
+    dest.writeString(bookTitle);
+    dest.writeString(author);
+    dest.writeString(bookCoverURL);
+    dest.writeString(description);
+
+    dest.writeInt(id);
+    dest.writeInt(personalRating);
+
+    dest.writeByte((byte) (isBookInCollection ? 1 : 0));
+    dest.writeByte((byte) (isBookRead ? 1 : 0));
+    dest.writeByte((byte) (isBookInWishlist ? 1 : 0));
+
+    dest.writeParcelable(bookCover,flags);
+
+  }
+
+  public static final Parcelable.Creator<Book> CREATOR
+      = new Parcelable.Creator<Book>() {
+    public Book createFromParcel(Parcel in) {
+      return new Book(in);
+    }
+
+    public Book[] newArray(int size) {
+      return new Book[size];
+    }
+  };
+
+  public Book(Parcel in) {
+    bookTitle = in.readString();
+    author = in.readString();
+    bookCoverURL = in.readString();
+    description = in.readString();
+
+    id = in.readInt();
+    personalRating = in.readInt();
+
+    isBookInCollection = in.readByte() != 0;
+    isBookRead = in.readByte() != 0;
+    isBookInWishlist = in.readByte() != 0;
+
+
+    bookCover = (Bitmap)in.readParcelable(getClass().getClassLoader());
   }
 }

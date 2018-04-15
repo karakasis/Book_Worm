@@ -25,12 +25,11 @@ import java.util.ArrayList;
 
 public class MainMenu extends AppCompatActivity{
 
-  //public static ArrayList<String[]> books ;
   public static Bookshelf bs;
-  private RequestQueue queue;
 
+  public static boolean loadingData = false;
   public static String query;
-  private static int currentPage = 0;
+  private static int currentPage = 1;
   public TextView notifier;
   public TimingLogger tLogger;
 
@@ -53,7 +52,7 @@ public class MainMenu extends AppCompatActivity{
           (RecyclerView) findViewById(R.id.grid_view),this);
     }
     if(bs==null){
-      bs = new Bookshelf();
+      bs = new Bookshelf(this);
     }else{
       rotateUpdate();
     }
@@ -73,7 +72,7 @@ public class MainMenu extends AppCompatActivity{
       @Override
       public boolean onQueryTextSubmit(String query) {
 
-        currentPage = 0;
+        currentPage = 1;
 
         tLogger = new TimingLogger("ExecutionTime","Search books clicked");
         if(query.equals("")){
@@ -135,35 +134,42 @@ public class MainMenu extends AppCompatActivity{
   }
 
   public void bookClick(int position){
+
+    // Parceable implementation
     Intent intent = new Intent(this, BookInfoActivity.class);
-    //intent.putExtra("title", books.get(position)[1]);
     intent.putExtra("bookObject", bs.getSingleBook(position));
-    //intent.putExtra("author", books.get(position)[2]);
-    //intent.putExtra("url", books.get(position)[3]);
     startActivity(intent);
+
   }
 
   public void update(ArrayList<String[]> bookData){
     bs.addBooks(bookData);
 
-    MainMenu.previewController = new PreviewController(
-        (RecyclerView) findViewById(R.id.grid_view),this);
-    MainMenu.previewController.setData(bs.getBooks());
-
+    if(MainMenu.loadingData){
+      informAdapter(bs.getNewBooksFetchedAmount());
+    }
+    else{
+      updateAdapter(bs.getBooks());
+    }
     if(tLogger!=null)
     tLogger.addSplit("printing images");
   }
 
   private void rotateUpdate(){
-    MainMenu.previewController = new PreviewController(
-        (RecyclerView) findViewById(R.id.grid_view),this);
     MainMenu.previewController.setData(bs.getBooks());
   }
-
 
   public void requestMoreResults(){
     currentPage++;
     searchBooks(query);
+  }
+
+  public void updateAdapter(ArrayList<Book> data){
+    MainMenu.previewController.setData(data);
+  }
+
+  public void informAdapter(int value){
+    MainMenu.previewController.acceptResponseFromMainThread(value);
   }
 
   public static int getPage(){

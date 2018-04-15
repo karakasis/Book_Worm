@@ -6,4 +6,8 @@
   <color name="logoBackgroundColor">#fff3e0</color>
   <color name="poweredColor">#59461b</color>
   <color name="gridColor">#303030</color>
+
+
+  <color name="primaryTextColor">#eeeeee</color>
+  <color name="secondaryTextColor">#616161</color>
 </resources>

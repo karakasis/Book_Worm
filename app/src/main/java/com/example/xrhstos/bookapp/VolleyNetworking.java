@@ -1,7 +1,13 @@
 package com.example.xrhstos.bookapp;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
+import android.content.ContextWrapper;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
 import com.android.volley.NoConnectionError;
@@ -12,11 +18,17 @@ import com.android.volley.Response;
 import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.xrhstos.bookapp.parsers.JsonParser;
 import com.example.xrhstos.bookapp.parsers.XmlParser;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import org.json.JSONObject;
 
 /**
@@ -114,7 +126,6 @@ public class VolleyNetworking {
     });
   }
 
-
   public JsonObjectRequest googleRequest(final String queryString){
 
     final String BOOK_BASE_URL =  "https://www.googleapis.com/books/v1/volumes?";
@@ -174,6 +185,84 @@ public class VolleyNetworking {
         });
 
 
+  }
+
+  public ImageRequest bitmapRequest(final String mImageURLString,final Book book){
+    return new ImageRequest(
+        mImageURLString, // Image URL
+        new Response.Listener<Bitmap>() { // Bitmap listener
+          @Override
+          public void onResponse(Bitmap response) {
+            // Do something with response
+            book.responseBookCover(response);
+
+            // Save this downloaded bitmap to internal storage
+            //Uri uri = saveImageToInternalStorage(response);
+
+            // Display the internal storage saved image to image view
+            //mImageViewInternal.setImageURI(uri);
+          }
+        },0, // Image width
+        0, // Image height
+        ScaleType.FIT_XY, // Image scale type
+        Bitmap.Config.RGB_565,
+        new Response.ErrorListener() { // Error listener
+          @Override
+          public void onErrorResponse(VolleyError error) {
+            // Do something with error response
+            //error.printStackTrace();
+            System.out.println("Failed loading " + book.getId());
+          }
+        }
+    );
+  }
+
+  // Custom method to save a bitmap into internal storage
+  protected Uri saveImageToInternalStorage(Bitmap bitmap){
+    // Initialize ContextWrapper
+    ContextWrapper wrapper = new ContextWrapper(mCtx);
+
+    // Initializing a new file
+    // The bellow line return a directory in internal storage
+    File file = wrapper.getDir("Images",MODE_PRIVATE);
+
+    // Create a file to save the image
+    file = new File(file, "UniqueFileName"+".jpg");
+
+    try{
+      // Initialize a new OutputStream
+      OutputStream stream = null;
+
+      // If the output file exists, it can be replaced or appended to it
+      try {
+        stream = new FileOutputStream(file);
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }
+
+      // Compress the bitmap
+      bitmap.compress(Bitmap.CompressFormat.JPEG,100,stream);
+
+      // Flushes the stream
+      try {
+        stream.flush();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+
+      // Closes the stream
+      stream.close();
+
+    }catch (IOException e) // Catch the exception
+    {
+      e.printStackTrace();
+    }
+
+    // Parse the gallery image url to uri
+    Uri savedImageURI = Uri.parse(file.getAbsolutePath());
+
+    // Return the saved image Uri
+    return savedImageURI;
   }
 
 }
