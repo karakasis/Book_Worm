@@ -16,6 +16,7 @@ import android.widget.AbsListView;
 import android.widget.GridView;
 import com.example.xrhstos.bookapp.grid.EndlessScrollListener;
 import com.example.xrhstos.bookapp.grid.GridAdapter;
+import com.example.xrhstos.bookapp.grid.WrapContentGridLayoutManager;
 import java.util.ArrayList;
 
 
@@ -28,7 +29,7 @@ public class PreviewController{
     private final MainMenu parent;
     private GridAdapter gridAdapter;
     private RecyclerView recyclerView;
-    private GridLayoutManager glm;
+    private WrapContentGridLayoutManager glm;
     private EndlessScrollListener esl;
 
 
@@ -37,7 +38,7 @@ public class PreviewController{
         this.parent = parent;
         recyclerView = rv;
 
-         glm = new GridLayoutManager(
+         glm = new WrapContentGridLayoutManager(
             parent,
             calculateNoOfColumns(parent)
         );
@@ -94,5 +95,20 @@ public class PreviewController{
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
         int noOfColumns = (int) (dpWidth / 120);
         return noOfColumns;
+    }
+
+    public int getFirstVisibleItem(){
+        return glm.findFirstVisibleItemPosition();
+    }
+
+    public void scrollToVisibleItem(int firstVisible){
+
+        gridAdapter.notifyItemRangeChanged(0,0);
+        gridAdapter.notifyItemRangeChanged(0,gridAdapter.getItemCount());
+        glm.scrollToPosition(firstVisible);
+    }
+
+    public WrapContentGridLayoutManager getLayoutManager(){
+        return glm;
     }
 }

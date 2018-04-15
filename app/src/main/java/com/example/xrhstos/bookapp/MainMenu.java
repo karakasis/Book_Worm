@@ -2,6 +2,7 @@ package com.example.xrhstos.bookapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -11,10 +12,8 @@ import android.util.TimingLogger;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import java.util.ArrayList;
@@ -25,7 +24,13 @@ import java.util.ArrayList;
 
 public class MainMenu extends AppCompatActivity{
 
-  public static Bookshelf bs;
+  private static final String BOOKSHELF_KEY = "BOOKSHELF";
+  private static final String SEARCH_ONLINE_QUERY_KEY = "QUERY_ONLINE";
+  private static final String SEARCH_ONLINE_PAGE_KEY = "PAGE_ONLINE";
+  private static final String FIRST_VISIBLE_KEY = "LAST_VISIBLE";
+  private static final String GLM_KEY = "GLM";
+
+  public static Bookshelf bookshelf;
 
   public static boolean loadingData = false;
   public static String query;
@@ -35,34 +40,76 @@ public class MainMenu extends AppCompatActivity{
 
   private View footer;
 
-  private static PreviewController previewController;
+  private PreviewController previewController;
+  private int firstVisibleItem;
+  private Parcelable glmState;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main_menu);
 
+
+    footer = (View) findViewById(R.id.logo_container);
+
     Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
     setSupportActionBar(myToolbar);
 
     notifier = (TextView) findViewById(R.id.resultNotify);
 
-    if(MainMenu.previewController == null){
-      MainMenu.previewController = new PreviewController(
+    if(previewController == null){
+      previewController = new PreviewController(
           (RecyclerView) findViewById(R.id.grid_view),this);
     }
-    if(bs==null){
-      bs = new Bookshelf(this);
+
+    if (savedInstanceState != null) {
+      query = savedInstanceState.getString(SEARCH_ONLINE_QUERY_KEY);
+      currentPage = savedInstanceState.getInt(SEARCH_ONLINE_PAGE_KEY);
+      //bookshelf = (Bookshelf) savedInstanceState.getSerializable(BOOKSHELF_KEY);
+      firstVisibleItem = savedInstanceState.getInt(FIRST_VISIBLE_KEY);
     }else{
+      bookshelf = new Bookshelf();
+
+    }
+
+  }
+
+  @Override
+  protected void onSaveInstanceState(Bundle bundle) {
+    super.onSaveInstanceState(bundle);
+    //bundle.putSerializable(BOOKSHELF_KEY, bookshelf);
+    bundle.putString(SEARCH_ONLINE_QUERY_KEY,query);
+    bundle.putInt(SEARCH_ONLINE_PAGE_KEY,currentPage);
+    firstVisibleItem = previewController.getFirstVisibleItem();
+    bundle.putInt(FIRST_VISIBLE_KEY, firstVisibleItem);
+
+    // Save list state
+    glmState = previewController.getLayoutManager().onSaveInstanceState();
+    bundle.putParcelable(GLM_KEY, glmState);
+  }
+
+  @Override
+  protected void onRestoreInstanceState(Bundle bundle) {
+    super.onRestoreInstanceState(bundle);
+
+    // Retrieve list state and list/item positions
+    if(bundle != null)
+      glmState = bundle.getParcelable(GLM_KEY);
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+
+    if (glmState != null) {
       rotateUpdate();
+      previewController.getLayoutManager().onRestoreInstanceState(glmState);
     }
   }
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     getMenuInflater().inflate(R.menu.menu, menu);
-
-    footer =(View) findViewById(R.id.logo_container);
 
     final MenuItem searchMenuItem = menu.findItem(R.id.action_search);
 
@@ -100,7 +147,7 @@ public class MainMenu extends AppCompatActivity{
   }
 
   public void searchBooks(final String query) {
-    MainMenu.query = query;
+    this.query = query;
     System.out.println("Current page: " + getPage());
     footer.setVisibility(View.VISIBLE);
     requestGoodReads(query);
@@ -137,26 +184,29 @@ public class MainMenu extends AppCompatActivity{
 
     // Parceable implementation
     Intent intent = new Intent(this, BookInfoActivity.class);
-    intent.putExtra("bookObject", bs.getSingleBook(position));
+    intent.putExtra("bookObject", bookshelf.getSingleBook(position));
     startActivity(intent);
 
   }
 
   public void update(ArrayList<String[]> bookData){
-    bs.addBooks(bookData);
+    bookshelf.addBooks(bookData,this);
 
     if(MainMenu.loadingData){
-      informAdapter(bs.getNewBooksFetchedAmount());
+      informAdapter(bookshelf.getNewBooksFetchedAmount());
     }
     else{
-      updateAdapter(bs.getBooks());
+      updateAdapter(bookshelf.getBooks());
     }
     if(tLogger!=null)
     tLogger.addSplit("printing images");
   }
 
   private void rotateUpdate(){
-    MainMenu.previewController.setData(bs.getBooks());
+    previewController = new PreviewController(
+        (RecyclerView) findViewById(R.id.grid_view),this);
+    previewController.setData(bookshelf.getBooks());
+    previewController.scrollToVisibleItem(firstVisibleItem);
   }
 
   public void requestMoreResults(){
@@ -165,17 +215,19 @@ public class MainMenu extends AppCompatActivity{
   }
 
   public void updateAdapter(ArrayList<Book> data){
-    MainMenu.previewController.setData(data);
+    previewController.setData(data);
   }
 
   public void informAdapter(int value){
-    MainMenu.previewController.acceptResponseFromMainThread(value);
+    previewController.acceptResponseFromMainThread(value);
   }
 
   public static int getPage(){
     return currentPage;
   }
 
-
+  public static String getQuery(){
+    return MainMenu.query;
+  }
 }
 

@@ -1,5 +1,6 @@
 package com.example.xrhstos.bookapp;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -15,13 +16,11 @@ public class Bookshelf {
     private ArrayList<Book> books;
     private String currentQuery ;
     private int newBooksFetchedAmount;
-    private MainMenu context;
 
 
-    public Bookshelf(MainMenu context){
+    public Bookshelf(){
         books = new ArrayList<>();
         currentQuery = "";
-        this.context = context;
     }
 
     //Creates the array of Book objetcs.
@@ -38,7 +37,7 @@ public class Bookshelf {
         }
     }
 */
-    public void addBooks(ArrayList<String[]> stringBooks){
+    public void addBooks(ArrayList<String[]> stringBooks, MainMenu context){
         this.stringBooks = new ArrayList<>(stringBooks);
         if(!currentQuery.equals(MainMenu.query)){
             currentQuery = MainMenu.query;
