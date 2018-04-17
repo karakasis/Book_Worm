@@ -4,6 +4,7 @@ package com.example.xrhstos.bookapp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +18,7 @@ import android.widget.GridView;
 import com.example.xrhstos.bookapp.grid.EndlessScrollListener;
 import com.example.xrhstos.bookapp.grid.GridAdapter;
 import com.example.xrhstos.bookapp.grid.WrapContentGridLayoutManager;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 
@@ -27,7 +29,7 @@ import java.util.ArrayList;
 public class PreviewController{
 
     private final MainMenu parent;
-    private GridAdapter gridAdapter;
+    private static GridAdapter gridAdapter;
     private RecyclerView recyclerView;
     private WrapContentGridLayoutManager glm;
     private EndlessScrollListener esl;
@@ -61,12 +63,23 @@ public class PreviewController{
         if(gridAdapter!=null){
             final int oldSize = gridAdapter.getDataSet().size();
             gridAdapter.getDataSet().clear();
-            gridAdapter.notifyItemRangeChanged(oldSize,0);
+            gridAdapter.notifyItemRangeChanged(oldSize-1,0);
+            //gridAdapter.notifyDataSetChanged();
             esl.resetState();
+            recyclerView.scrollToPosition(0);
+
+            gridAdapter.getDataSet().addAll(books);
+            gridAdapter.notifyItemRangeChanged(0,books.size()-1);
+            //gridAdapter.notifyDataSetChanged();
+            recyclerView.setAdapter(gridAdapter);
+
+
+            recyclerView.scrollToPosition(0);
         }else{
-            gridAdapter = new GridAdapter(this,parent,books);
+            PreviewController.gridAdapter = new GridAdapter(this,parent,books);
             recyclerView.setAdapter(gridAdapter);
         }
+
 
     }
 
@@ -75,8 +88,9 @@ public class PreviewController{
         parent.requestMoreResults();
     }
 
-    public void acceptResponseFromMainThread(int newDataSize){
-        final int curSize = gridAdapter.getItemCount() - newDataSize;
+    public void acceptResponseFromMainThread(int newDataSize , ArrayList<Book> newData){
+        final int curSize = gridAdapter.getItemCount();
+        gridAdapter.getDataSet().addAll(newData);
         final int finSize = gridAdapter.getItemCount();
 
         recyclerView.post(new Runnable() {

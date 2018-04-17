@@ -58,7 +58,7 @@ public class Bookshelf {
         for(int i=books.size()-stringBooks.size(); i<books.size();i++){
             booksExtra.add(books.get(i));
         }
-        return booksExtra;
+        return new ArrayList<>(booksExtra);
     }
 
     public int getNewBooksFetchedAmount(){
@@ -67,7 +67,7 @@ public class Bookshelf {
 
     //returns the list of the book objects
     public ArrayList<Book> getBooks(){
-        return books;
+        return new ArrayList<>(books);
     }
 
     //returns the book in the asked position

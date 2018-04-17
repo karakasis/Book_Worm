@@ -206,7 +206,7 @@ public class MainMenu extends AppCompatActivity{
     bookshelf.addBooks(bookData,this);
 
     if(MainMenu.loadingData){
-      informAdapter(bookshelf.getNewBooksFetchedAmount());
+      informAdapter(bookshelf.getNewBooksFetchedAmount(),bookshelf.fetchExtraBooksOnly());
     }
     else{
       updateAdapter(bookshelf.getBooks());
@@ -216,9 +216,10 @@ public class MainMenu extends AppCompatActivity{
   }
 
   private void rotateUpdate(){
-    previewController = new PreviewController(
-        (RecyclerView) findViewById(R.id.grid_view),this);
-    previewController.setData(bookshelf.getBooks());
+    //previewController = new PreviewController(
+        //(RecyclerView) findViewById(R.id.grid_view),this);
+    updateAdapter(bookshelf.getBooks());
+    //previewController.setData(bookshelf.getBooks());
     previewController.scrollToVisibleItem(firstVisibleItem);
   }
 
@@ -228,11 +229,13 @@ public class MainMenu extends AppCompatActivity{
   }
 
   public void updateAdapter(ArrayList<Book> data){
+    previewController = new PreviewController(
+        (RecyclerView) findViewById(R.id.grid_view),this);
     previewController.setData(data);
   }
 
-  public void informAdapter(int value){
-    previewController.acceptResponseFromMainThread(value);
+  public void informAdapter(int value, ArrayList<Book> newData){
+    previewController.acceptResponseFromMainThread(value,newData);
   }
 
   public static int getPage(){
