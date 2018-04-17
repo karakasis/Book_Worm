@@ -17,6 +17,8 @@ import android.widget.TextView;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Xrhstos on 4/11/2018.
@@ -34,6 +36,7 @@ public class MainMenu extends AppCompatActivity{
 
   public static boolean loadingData = false;
   public static String query;
+  public static String langQuery;
   private static int currentPage = 1;
   public TextView notifier;
   public TimingLogger tLogger;
@@ -114,13 +117,14 @@ public class MainMenu extends AppCompatActivity{
     final MenuItem searchMenuItem = menu.findItem(R.id.action_search);
 
     final SearchView searchView = (SearchView) searchMenuItem.getActionView();
+    searchView.setQueryHint("Dan Brown :el");
     searchView.setOnQueryTextListener(new OnQueryTextListener() {
 
       @Override
       public boolean onQueryTextSubmit(String query) {
 
         currentPage = 1;
-
+        langQuery = "";
         tLogger = new TimingLogger("ExecutionTime","Search books clicked");
         if(query.equals("")){
           footer.setVisibility(View.GONE);
@@ -146,20 +150,21 @@ public class MainMenu extends AppCompatActivity{
     return super.onCreateOptionsMenu(menu);
   }
 
-  public void searchBooks(final String query) {
+  public void searchBooks(String query) {
     this.query = query;
+
     System.out.println("Current page: " + getPage());
     footer.setVisibility(View.VISIBLE);
-    requestGoodReads(query);
-    //requestGoogle(query);
+    //requestGoodReads();
+    requestGoogle();
   }
 
-  private void requestGoodReads(final String queryString){
+  private void requestGoodReads(){
 
     StringRequest stringRequest;
-    stringRequest = VolleyNetworking.getInstance(this).goodReadsRequest(queryString);
+    stringRequest = VolleyNetworking.getInstance(this).goodReadsRequest(query);
     if(stringRequest==null){
-      requestGoogle(queryString);
+      requestGoogle();
     }else{
       VolleyNetworking.getInstance(this).addToRequestQueue(stringRequest);
       ImageView logo = (ImageView) findViewById(R.id.logo);
@@ -167,11 +172,19 @@ public class MainMenu extends AppCompatActivity{
     }
   }
 
-  private void requestGoogle(final String queryString){
+  private void requestGoogle(){
 
+    Pattern pattern = Pattern.compile(":\\w(\\D*)$");
+    Matcher matcher = pattern.matcher(query);
+    if (matcher.find())
+    {
+      System.out.println(matcher.group(0));
+      langQuery = matcher.group(0).replace(":","");
+      query = query.replace(matcher.group(0),"");
+    }
 
     JsonObjectRequest jsonObjectRequest;
-    jsonObjectRequest = VolleyNetworking.getInstance(this).googleRequest(queryString);
+    jsonObjectRequest = VolleyNetworking.getInstance(this).googleRequest(query);
     VolleyNetworking.getInstance(this).addToRequestQueue(jsonObjectRequest);
 
 

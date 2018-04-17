@@ -134,14 +134,29 @@ public class VolleyNetworking {
     final String MAX_RESULTS = "maxResults"; // Parameter that limits search results.
     final String PRINT_TYPE = "printType"; // Parameter to filter by print type.
     final String INDEX = "startIndex";
+    final String LANG = "langRestrict";
 
     // Build up your query URI, limiting results to 10 items and printed books.
-    Uri builtURI = Uri.parse(BOOK_BASE_URL).buildUpon()
-        .appendQueryParameter(QUERY_PARAM, queryString)
-        .appendQueryParameter(MAX_RESULTS, "40")
-        .appendQueryParameter(INDEX,String.valueOf(40*MainMenu.getPage()))
-        .appendQueryParameter(PRINT_TYPE, "books")
-        .build();
+    Uri builtURI;
+    if(MainMenu.langQuery.isEmpty()){
+       builtURI = Uri.parse(BOOK_BASE_URL).buildUpon()
+          .appendQueryParameter(QUERY_PARAM, queryString)
+          .appendQueryParameter(MAX_RESULTS, "40")
+          .appendQueryParameter(INDEX,String.valueOf(40*(MainMenu.getPage()-1)))
+          .appendQueryParameter(PRINT_TYPE, "books")
+          .appendQueryParameter("orderBy","relevance")
+          .build();
+    }else{
+       builtURI = Uri.parse(BOOK_BASE_URL).buildUpon()
+          .appendQueryParameter(QUERY_PARAM, queryString)
+          .appendQueryParameter(MAX_RESULTS, "40")
+          .appendQueryParameter(INDEX,String.valueOf(40*(MainMenu.getPage()-1)))
+          .appendQueryParameter(LANG,MainMenu.langQuery)
+          .appendQueryParameter(PRINT_TYPE, "books")
+          .appendQueryParameter("orderBy","relevance")
+          .build();
+    }
+
 
     String requestURL = builtURI.toString();
 

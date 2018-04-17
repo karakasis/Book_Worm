@@ -54,10 +54,26 @@ public class JsonParser {
         // Try to get the author and title from the current item,
         // catch if either field is empty and move on.
         try {
-          title = volumeInfo.getString("title");
-          authors = volumeInfo.getString("authors");
-          url = volumeInfo.getJSONObject("imageLinks").getString("thumbnail");
-          collection.add(new String[]{String.valueOf(i), title, authors, url});
+          if(!MainMenu.langQuery.isEmpty() && volumeInfo.getString("language").equals(MainMenu.langQuery)){
+            System.out.println(collection.size());
+            title = volumeInfo.getString("title");
+            System.out.println(title);
+            authors = volumeInfo.getString("authors");
+            System.out.println(authors);
+            url = volumeInfo.getJSONObject("imageLinks").getString("thumbnail");
+            System.out.println(url);
+            collection.add(new String[]{String.valueOf(i), title, authors, url});
+          }
+          if(MainMenu.langQuery.isEmpty()){
+            System.out.println(collection.size());
+            title = volumeInfo.getString("title");
+            System.out.println(title);
+            authors = volumeInfo.getString("authors");
+            System.out.println(authors);
+            url = volumeInfo.getJSONObject("imageLinks").getString("thumbnail");
+            System.out.println(url);
+            collection.add(new String[]{String.valueOf(i), title, authors, url});
+          }
         } catch (Exception e) {
           e.printStackTrace();
         }

@@ -59,13 +59,15 @@ public class PreviewController{
     public void setData(ArrayList<Book> books){
 
         if(gridAdapter!=null){
+            final int oldSize = gridAdapter.getDataSet().size();
             gridAdapter.getDataSet().clear();
-            gridAdapter.notifyDataSetChanged();
+            gridAdapter.notifyItemRangeChanged(oldSize,0);
             esl.resetState();
+        }else{
+            gridAdapter = new GridAdapter(this,parent,books);
+            recyclerView.setAdapter(gridAdapter);
         }
-        gridAdapter = new GridAdapter(this,parent,books);
 
-        recyclerView.setAdapter(gridAdapter);
     }
 
     private void loadNextDataFromApi(int page) {
