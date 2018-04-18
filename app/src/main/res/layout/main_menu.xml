@@ -42,7 +42,7 @@
 
       <include
         android:id="@+id/previewGrid"
-        layout="@layout/preview_layout"/>
+        layout="@layout/recycler_view"/>
 
     </FrameLayout>
 

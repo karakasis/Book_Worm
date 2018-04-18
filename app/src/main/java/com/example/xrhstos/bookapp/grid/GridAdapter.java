@@ -1,8 +1,6 @@
 package com.example.xrhstos.bookapp.grid;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,9 +11,6 @@ import android.widget.TextView;
 import com.example.xrhstos.bookapp.Book;
 import com.example.xrhstos.bookapp.PreviewController;
 import com.example.xrhstos.bookapp.R;
-import com.example.xrhstos.bookapp.transformation.RoundCorners;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 import java.util.ArrayList;
 
 /**
@@ -45,7 +40,7 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
     LayoutInflater inflater = LayoutInflater.from(context);
 
     // Inflate the custom layout
-    View gridInflater = inflater.inflate(R.layout.grid_inflater, parent, false);
+    View gridInflater = inflater.inflate(R.layout.grid_item_inflater, parent, false);
 
     // Return a new holder instance
     ViewHolder viewHolder = new ViewHolder(gridInflater);

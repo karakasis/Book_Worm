@@ -15,7 +15,6 @@
  */
 package com.example.xrhstos.bookapp.parsers;
 
-import android.util.JsonWriter;
 import com.example.xrhstos.bookapp.MainMenu;
 import java.util.ArrayList;
 import org.json.JSONArray;
@@ -25,11 +24,10 @@ import org.json.JSONObject;
  * AsyncTask implementation that opens a network connection and
  * query's the Book Service API.
  */
-public class JsonParser {
+public class JsonIDParser {
 
   private static ArrayList<String[]> collection;
   public static JSONObject jsonObject;
-  private MainMenu parent;
 
   public static ArrayList<String[]> parse(String[] tags) {
     collection = new ArrayList<>();
@@ -40,19 +38,17 @@ public class JsonParser {
 
       // Initialize iterator and results fields.
       int i = 0;
-      String title = "";
-      String authors = "";
-      String url = "";
+      String title = null;
+      String authors = null;
+      String url = null;
       String googleID = "";
 
       // Look for results in the items array, exiting when both the title and author
       // are found or when all items have been checked.
-      while (i < itemsArray.length()) {
+      while (i < itemsArray.length() || (authors == null && title == null)) {
         // Get the current item information.
         JSONObject book = itemsArray.getJSONObject(i);
         JSONObject volumeInfo = book.getJSONObject("volumeInfo");
-
-
 
         // Try to get the author and title from the current item,
         // catch if either field is empty and move on.
@@ -78,10 +74,7 @@ public class JsonParser {
             System.out.println(authors);
             url = volumeInfo.getJSONObject("imageLinks").getString("thumbnail");
             System.out.println(url);
-            googleID = book.getString("id");
-            System.out.println(googleID);
             //collection.add(new String[]{String.valueOf(i), title, authors, url});
-            collection.add(new String[]{googleID, title, authors, url});
           }
         } catch (Exception e) {
           e.printStackTrace();

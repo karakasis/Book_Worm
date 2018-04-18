@@ -47,7 +47,7 @@ public class VolleyNetworking {
   }
 
   public static synchronized VolleyNetworking getInstance(Context context) {
-    if (mInstance == null) {
+    if (mInstance == null || !mCtx.getClass().equals( context.getClass())) {
       mInstance = new VolleyNetworking(context);
     }
     return mInstance;
@@ -135,6 +135,8 @@ public class VolleyNetworking {
     final String PRINT_TYPE = "printType"; // Parameter to filter by print type.
     final String INDEX = "startIndex";
     final String LANG = "langRestrict";
+    final String ORDER = "orderBy";
+    final String PROJECTION = "projection";
 
     // Build up your query URI, limiting results to 10 items and printed books.
     Uri builtURI;
@@ -144,7 +146,8 @@ public class VolleyNetworking {
           .appendQueryParameter(MAX_RESULTS, "40")
           .appendQueryParameter(INDEX,String.valueOf(40*(MainMenu.getPage()-1)))
           .appendQueryParameter(PRINT_TYPE, "books")
-          .appendQueryParameter("orderBy","relevance")
+          .appendQueryParameter(ORDER,"relevance")
+           .appendQueryParameter(PROJECTION,"full")
           .build();
     }else{
        builtURI = Uri.parse(BOOK_BASE_URL).buildUpon()
@@ -170,7 +173,7 @@ public class VolleyNetworking {
             MainMenu mm = (MainMenu) mCtx;
             mm.tLogger.addSplit("Response volley");
             JsonParser.jsonObject = response;
-            JsonParser.parse(null,mm);
+            mm.update(JsonParser.parse(null));
             mm.tLogger.addSplit("JSON Parse");
             mm.tLogger.dumpToLog();
 
@@ -198,6 +201,47 @@ public class VolleyNetworking {
             mm.notifier.setText(message);
           }
         });
+
+
+  }
+
+  public JsonObjectRequest googleRequestByID(final String queryIDString){
+
+    String requestURL =  "https://www.googleapis.com/books/v1/volumes/" + queryIDString;
+
+    return new JsonObjectRequest(Request.Method.GET, requestURL,
+        null
+        , new Response.Listener<JSONObject>() {
+
+      @Override
+      public void onResponse(JSONObject response) {
+
+        BookInfoActivity bia = (BookInfoActivity) mCtx;
+        JsonParser.jsonObject = response;
+        bia.update(JsonParser.parse(null));
+
+        System.out.println("Source : GoogleID");
+      }
+    }, new Response.ErrorListener() {
+
+      @Override
+      public void onErrorResponse(VolleyError volleyError) {
+        String message = "";
+        if (volleyError instanceof NetworkError) {
+          message = "Cannot connect to Internet...Please check your connection!";
+        } else if (volleyError instanceof ServerError) {
+          message = "The server could not be found. Please try again after some time!!";
+        } else if (volleyError instanceof AuthFailureError) {
+          message = "Cannot connect to Internet...Please check your connection!";
+        } else if (volleyError instanceof ParseError) {
+          message = "Parsing error! Please try again after some time!!";
+        } else if (volleyError instanceof NoConnectionError) {
+          message = "Cannot connect to Internet...Please check your connection!";
+        } else if (volleyError instanceof TimeoutError) {
+          message = "Connection TimeOut! Please check your internet connection.";
+        }
+      }
+    });
 
 
   }

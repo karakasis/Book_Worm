@@ -5,10 +5,13 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.ViewOutlineProvider;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+import java.util.ArrayList;
 
 /**
  * Created by Xrhstos on 4/10/2018.
@@ -27,7 +30,7 @@ public class BookInfoActivity extends AppCompatActivity {
     //Book extras = (Book)intent.getSerializableExtra("bookObject");
     String title = extras.getBookTitle();
     String author = extras.getAuthor();
-
+    String googleID = extras.getGoogleID();
 
     ImageView iv = (ImageView) findViewById(R.id.bookImage);
     iv.setImageBitmap(extras.getBookCover());
@@ -37,6 +40,13 @@ public class BookInfoActivity extends AppCompatActivity {
     tv.setText(title);
     TextView tv2 = (TextView) findViewById(R.id.bookPublisher);
     tv2.setText(author);
+
+    JsonObjectRequest jor = VolleyNetworking.getInstance(this).googleRequestByID(googleID);
+    VolleyNetworking.getInstance(this).addToRequestQueue(jor);
+
+  }
+
+  public void update(ArrayList<String[]> data){
 
   }
 

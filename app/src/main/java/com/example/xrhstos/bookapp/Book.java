@@ -18,12 +18,25 @@ import java.io.Serializable;
 public class Book implements Parcelable {
 
   private int id;
+  private String googleID;
+  private int ISBN;
+
 
   private String bookTitle;
   private String author;
   private String bookCoverURL;
   private String description;
   private int personalRating;
+
+  //extra google stuff -start
+  private String callbackURL;
+  private String previewURL;
+  private String buyURL;
+
+  private String[] categories;
+  private int pageCount;
+  private int publishedDate; //might need string for date
+  //extra google stuff -end
 
   private boolean isBookInCollection;
   private boolean isBookRead;
@@ -37,6 +50,85 @@ public class Book implements Parcelable {
     this.author = author;
     bookCoverURL = url;
     description = desc;
+  }
+
+
+  @Override
+  public int describeContents() {
+    return 0;
+  }
+
+  @Override
+  public void writeToParcel(Parcel dest, int flags) {
+
+    dest.writeString(bookTitle);
+    dest.writeString(author);
+    dest.writeString(bookCoverURL);
+    dest.writeString(description);
+
+
+    //extra google stuff-start
+    dest.writeString(googleID);
+    dest.writeString(callbackURL);
+    dest.writeString(previewURL);
+    dest.writeString(buyURL);
+
+    dest.writeStringArray(categories);
+    dest.writeInt(pageCount);
+    dest.writeInt(publishedDate);
+    //extra google stuff-end
+
+
+    dest.writeInt(id);
+    dest.writeInt(personalRating);
+
+    dest.writeByte((byte) (isBookInCollection ? 1 : 0));
+    dest.writeByte((byte) (isBookRead ? 1 : 0));
+    dest.writeByte((byte) (isBookInWishlist ? 1 : 0));
+
+    dest.writeParcelable(bookCover,flags);
+
+  }
+
+  public static final Parcelable.Creator<Book> CREATOR
+      = new Parcelable.Creator<Book>() {
+    public Book createFromParcel(Parcel in) {
+      return new Book(in);
+    }
+
+    public Book[] newArray(int size) {
+      return new Book[size];
+    }
+  };
+
+  public Book(Parcel in) {
+    bookTitle = in.readString();
+    author = in.readString();
+    bookCoverURL = in.readString();
+    description = in.readString();
+
+
+    //extra google stuff-start
+    googleID = in.readString();
+    callbackURL = in.readString();
+    previewURL = in.readString();
+    buyURL = in.readString();
+
+    categories = in.createStringArray();
+    pageCount = in.readInt();
+    publishedDate = in.readInt();
+    //extra google stuff-end
+
+
+    id = in.readInt();
+    personalRating = in.readInt();
+
+    isBookInCollection = in.readByte() != 0;
+    isBookRead = in.readByte() != 0;
+    isBookInWishlist = in.readByte() != 0;
+
+
+    bookCover = (Bitmap)in.readParcelable(getClass().getClassLoader());
   }
 
   public void requestBookCover(MainMenu context){
@@ -147,55 +239,59 @@ public class Book implements Parcelable {
     this.id = id;
   }
 
-  @Override
-  public int describeContents() {
-    return 0;
+  public int getISBN() {
+    return ISBN;
   }
 
-  @Override
-  public void writeToParcel(Parcel dest, int flags) {
-
-    dest.writeString(bookTitle);
-    dest.writeString(author);
-    dest.writeString(bookCoverURL);
-    dest.writeString(description);
-
-    dest.writeInt(id);
-    dest.writeInt(personalRating);
-
-    dest.writeByte((byte) (isBookInCollection ? 1 : 0));
-    dest.writeByte((byte) (isBookRead ? 1 : 0));
-    dest.writeByte((byte) (isBookInWishlist ? 1 : 0));
-
-    dest.writeParcelable(bookCover,flags);
-
+  public void setISBN(int ISBN) {
+    this.ISBN = ISBN;
   }
 
-  public static final Parcelable.Creator<Book> CREATOR
-      = new Parcelable.Creator<Book>() {
-    public Book createFromParcel(Parcel in) {
-      return new Book(in);
-    }
+  public String getCallbackURL() {
+    return callbackURL;
+  }
 
-    public Book[] newArray(int size) {
-      return new Book[size];
-    }
-  };
+  public void setCallbackURL(String callbackURL) {
+    this.callbackURL = callbackURL;
+  }
 
-  public Book(Parcel in) {
-    bookTitle = in.readString();
-    author = in.readString();
-    bookCoverURL = in.readString();
-    description = in.readString();
+  public String getPreviewURL() {
+    return previewURL;
+  }
 
-    id = in.readInt();
-    personalRating = in.readInt();
+  public void setPreviewURL(String previewURL) {
+    this.previewURL = previewURL;
+  }
 
-    isBookInCollection = in.readByte() != 0;
-    isBookRead = in.readByte() != 0;
-    isBookInWishlist = in.readByte() != 0;
+  public String getBuyURL() {
+    return buyURL;
+  }
 
+  public void setBuyURL(String buyURL) {
+    this.buyURL = buyURL;
+  }
 
-    bookCover = (Bitmap)in.readParcelable(getClass().getClassLoader());
+  public int getPageCount() {
+    return pageCount;
+  }
+
+  public void setPageCount(int pageCount) {
+    this.pageCount = pageCount;
+  }
+
+  public int getPublishedDate() {
+    return publishedDate;
+  }
+
+  public void setPublishedDate(int publishedDate) {
+    this.publishedDate = publishedDate;
+  }
+
+  public String[] getCategories() {
+    return categories;
+  }
+
+  public void setCategories(String[] categories) {
+    this.categories = categories;
   }
 }
