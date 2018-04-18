@@ -247,6 +247,14 @@ public class Book implements Parcelable {
     this.ISBN = ISBN;
   }
 
+  public String getGoogleID() {
+    return googleID;
+  }
+
+  public void setGoogleID(String googleID) {
+    this.googleID = googleID;
+  }
+
   public String getCallbackURL() {
     return callbackURL;
   }
