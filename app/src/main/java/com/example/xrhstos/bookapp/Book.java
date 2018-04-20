@@ -52,6 +52,13 @@ public class Book implements Parcelable {
     description = desc;
   }
 
+  public String getKey(){
+    if(googleID == null){
+      return String.valueOf(id);
+    }else{
+      return googleID;
+    }
+  }
 
   @Override
   public int describeContents() {

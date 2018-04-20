@@ -10,4 +10,6 @@
 
   <color name="primaryTextColor">#eeeeee</color>
   <color name="secondaryTextColor">#616161</color>
+
+  <color name="buttonShadow">#01579b</color>
 </resources>

@@ -1,10 +1,14 @@
 package com.example.xrhstos.bookapp.grid;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
+import com.example.xrhstos.bookapp.MainMenu;
+import com.example.xrhstos.bookapp.MyApp;
 
 /**
  * Created by Xrhstos on 4/16/2018.
@@ -34,6 +38,8 @@ public class WrapContentGridLayoutManager extends GridLayoutManager {
       super.onLayoutChildren(recycler, state);
     } catch (IndexOutOfBoundsException e) {
       Log.e("probe", "meet a IOOBE in RecyclerView");
+      //MainMenu mainActivity = MyApp.getInstance().mainMenu;
+
     }
   }
 }

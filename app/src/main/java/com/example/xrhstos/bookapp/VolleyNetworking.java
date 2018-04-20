@@ -91,14 +91,10 @@ public class VolleyNetworking {
           public void onResponse(String response) {
 
             MainMenu mm = (MainMenu) mCtx;
-            mm.tLogger.addSplit("Response volley");
             XmlParser.stringToList(response);
 
-            mm.tLogger.addSplit("xml To list");
             mm.update(XmlParser.parse(new String[]{"id type","title","name","image_url"}, "work"));
 
-            mm.tLogger.addSplit("xml parsing");
-            mm.tLogger.dumpToLog();
 
             System.out.println("Source : Goodreads");
           }
@@ -171,11 +167,8 @@ public class VolleyNetworking {
           public void onResponse(JSONObject response) {
 
             MainMenu mm = (MainMenu) mCtx;
-            mm.tLogger.addSplit("Response volley");
             JsonParser.jsonObject = response;
             mm.update(JsonParser.parse(null));
-            mm.tLogger.addSplit("JSON Parse");
-            mm.tLogger.dumpToLog();
 
             System.out.println("Source : Google");
           }

@@ -74,7 +74,8 @@ public class Bookshelf {
 
     //returns the book in the asked position
     public Book getSingleBook(int position){
-        return books.get(position);
+        Book b = books.get(position);
+        return b;
     }
 
     public ArrayList<String[]> getStringBooks(){

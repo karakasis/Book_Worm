@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.SearchView.OnQueryTextListener;
 import android.support.v7.widget.Toolbar;
-import android.util.TimingLogger;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,17 +28,22 @@ public class MainMenu extends AppCompatActivity{
   private static final String BOOKSHELF_KEY = "BOOKSHELF";
   private static final String SEARCH_ONLINE_QUERY_KEY = "QUERY_ONLINE";
   private static final String SEARCH_ONLINE_PAGE_KEY = "PAGE_ONLINE";
+  private static final String SEARCH_ONLINE_LANG_QUERY_KEY = "LANG_QUERY_ONLINE";
   private static final String FIRST_VISIBLE_KEY = "LAST_VISIBLE";
+  private static final String LOADING_KEY = "LOADING";
   private static final String GLM_KEY = "GLM";
+  private static final String GOOGLE_ON_KEY = "GOOGLE";
+  private static final String GOODREADS_ON_KEY = "GOODREADS";
 
   public static Bookshelf bookshelf;
 
-  public static boolean loadingData = false;
+  private boolean googleON;
+  private boolean goodreadsON;
+  public static boolean loadingData;
   public static String query;
   public static String langQuery;
-  private static int currentPage = 1;
+  private static int currentPage;
   public TextView notifier;
-  public TimingLogger tLogger;
 
   private View footer;
 
@@ -52,6 +56,8 @@ public class MainMenu extends AppCompatActivity{
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main_menu);
 
+    MyApp app = (MyApp) getApplication();
+    app.mainMenu = this;
 
     footer = (View) findViewById(R.id.logo_container);
 
@@ -67,12 +73,27 @@ public class MainMenu extends AppCompatActivity{
 
     if (savedInstanceState != null) {
       query = savedInstanceState.getString(SEARCH_ONLINE_QUERY_KEY);
+      langQuery = savedInstanceState.getString(SEARCH_ONLINE_LANG_QUERY_KEY);
       currentPage = savedInstanceState.getInt(SEARCH_ONLINE_PAGE_KEY);
       //bookshelf = (Bookshelf) savedInstanceState.getSerializable(BOOKSHELF_KEY);
       firstVisibleItem = savedInstanceState.getInt(FIRST_VISIBLE_KEY);
+      googleON = savedInstanceState.getBoolean(GOOGLE_ON_KEY);
+      goodreadsON = savedInstanceState.getBoolean(GOODREADS_ON_KEY);
+      loadingData = savedInstanceState.getBoolean(LOADING_KEY);
+      if(googleON){
+        ImageView logo = (ImageView) findViewById(R.id.logo);
+        logo.setImageResource(R.drawable.google_logo);
+      }else if(goodreadsON){
+        ImageView logo = (ImageView) findViewById(R.id.logo);
+        logo.setImageResource(R.drawable.goodreads_logo);
+      }
     }else{
       bookshelf = new Bookshelf();
-
+      currentPage = 1;
+      loadingData = false;
+      googleON = false;
+      query = "";
+      langQuery = "";
     }
 
   }
@@ -82,9 +103,14 @@ public class MainMenu extends AppCompatActivity{
     super.onSaveInstanceState(bundle);
     //bundle.putSerializable(BOOKSHELF_KEY, bookshelf);
     bundle.putString(SEARCH_ONLINE_QUERY_KEY,query);
+    bundle.putString(SEARCH_ONLINE_LANG_QUERY_KEY,langQuery);
     bundle.putInt(SEARCH_ONLINE_PAGE_KEY,currentPage);
     firstVisibleItem = previewController.getFirstVisibleItem();
     bundle.putInt(FIRST_VISIBLE_KEY, firstVisibleItem);
+
+    bundle.putBoolean(LOADING_KEY,loadingData);
+    bundle.putBoolean(GOODREADS_ON_KEY,goodreadsON);
+    bundle.putBoolean(GOOGLE_ON_KEY,googleON);
 
     // Save list state
     glmState = previewController.getLayoutManager().onSaveInstanceState();
@@ -125,7 +151,6 @@ public class MainMenu extends AppCompatActivity{
 
         currentPage = 1;
         langQuery = "";
-        tLogger = new TimingLogger("ExecutionTime","Search books clicked");
         if(query.equals("")){
           footer.setVisibility(View.GONE);
         }
@@ -151,12 +176,26 @@ public class MainMenu extends AppCompatActivity{
   }
 
   public void searchBooks(String query) {
-    this.query = query;
+    MainMenu.query = query;
+
+    Pattern pattern = Pattern.compile(":\\w(\\D*)$");
+    Matcher matcher = pattern.matcher(query);
+    if (matcher.find())
+    {
+      System.out.println(matcher.group(0));
+      langQuery = matcher.group(0).replace(":","");
+      MainMenu.query = query.replace(matcher.group(0),"");
+    }
+
 
     System.out.println("Current page: " + getPage());
     footer.setVisibility(View.VISIBLE);
-    //requestGoodReads();
-    requestGoogle();
+    if(langQuery.isEmpty() || langQuery.equals("en")){
+      requestGoodReads();
+    }else{
+      requestGoogle();
+    }
+
   }
 
   private void requestGoodReads(){
@@ -169,19 +208,12 @@ public class MainMenu extends AppCompatActivity{
       VolleyNetworking.getInstance(this).addToRequestQueue(stringRequest);
       ImageView logo = (ImageView) findViewById(R.id.logo);
       logo.setImageResource(R.drawable.goodreads_logo);
+      goodreadsON = true;
+      googleON = false;
     }
   }
 
   private void requestGoogle(){
-
-    Pattern pattern = Pattern.compile(":\\w(\\D*)$");
-    Matcher matcher = pattern.matcher(query);
-    if (matcher.find())
-    {
-      System.out.println(matcher.group(0));
-      langQuery = matcher.group(0).replace(":","");
-      query = query.replace(matcher.group(0),"");
-    }
 
     JsonObjectRequest jsonObjectRequest;
     jsonObjectRequest = VolleyNetworking.getInstance(this).googleRequest(query);
@@ -190,6 +222,8 @@ public class MainMenu extends AppCompatActivity{
 
     ImageView logo = (ImageView) findViewById(R.id.logo);
     logo.setImageResource(R.drawable.google_logo);
+    goodreadsON = false;
+    googleON = true;
 
   }
 
@@ -197,6 +231,8 @@ public class MainMenu extends AppCompatActivity{
 
     // Parceable implementation
     Intent intent = new Intent(this, BookInfoActivity.class);
+    //this will pass the book object itself so any changes will be made to the Book
+    //class as well
     intent.putExtra("bookObject", bookshelf.getSingleBook(position));
     startActivity(intent);
 
@@ -211,8 +247,6 @@ public class MainMenu extends AppCompatActivity{
     else{
       updateAdapter(bookshelf.getBooks());
     }
-    if(tLogger!=null)
-    tLogger.addSplit("printing images");
   }
 
   private void rotateUpdate(){
