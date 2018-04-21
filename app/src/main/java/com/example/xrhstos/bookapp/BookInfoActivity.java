@@ -48,7 +48,7 @@ public class BookInfoActivity extends AppCompatActivity {
     TextView tv = (TextView) findViewById(R.id.bookTitle);
     tv.setText(title);
     TextView tv2 = (TextView) findViewById(R.id.bookPublisher);
-    tv2.setText(author);
+    tv2.setText(author[0]);
 
     createButtons();
     JsonObjectRequest jor = VolleyNetworking.getInstance(this).googleRequestByID(googleID,currentBook);

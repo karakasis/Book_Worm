@@ -1,5 +1,6 @@
 package com.example.xrhstos.bookapp.parsers;
 
+import com.example.xrhstos.bookapp.Book;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -11,13 +12,17 @@ public class XmlParser {
 
   public static ArrayList<String> xmlToListOfStrings;
 
-  public static ArrayList<String[]> parse(String[] tags, String parent){
+  public static ArrayList<Book> parse(String[] tags, String parent){
 
     int tagAmount = tags.length;
 
     int counterLock = 0;
     int[] tagSkipper = new int[tagAmount];
-    ArrayList<String[]> collection = new ArrayList<>();
+    ArrayList<Book> collection = new ArrayList<>();
+    String title = "";
+    String[] authors = new String[1];
+    String url = "";
+    String id = "";
 
     boolean lookForParent = false;
 
@@ -28,7 +33,7 @@ public class XmlParser {
       str = str.trim();
       if(!inBookData && str.startsWith("<" + parent + ">")){
         inBookData = true;
-        collection.add(new String[tags.length]);
+        //collection.add(new Book);
         continue;
       }else if(!inBookData){
         continue;
@@ -38,6 +43,11 @@ public class XmlParser {
          lookForParent = true;
          counterLock = 0;
          tagSkipper = new int[tagAmount];
+        collection.add(new Book(id,title,authors,url));
+         title = "";
+        authors = new String[1];
+        url = "";
+        id = "";
       }
       if(lookForParent){
           if(str.startsWith("</" + parent + ">")){
@@ -59,7 +69,16 @@ public class XmlParser {
           if(str.startsWith("<" + tags[i])){
             tagSkipper[i] = 1;
             str = XmlParser.removeTags(str,tags[i]);
-            collection.get(collection.size()-1)[i] = str;
+            if(tags[i].equals("id type")){
+              id = str;
+            }else if(tags[i].equals("name")){
+              authors[0] = str;
+            }else if(tags[i].equals("title")){
+              title = str;
+            }else if(tags[i].equals("image_url")){
+              url = str;
+            }
+            //collection.get(collection.size()-1)[i] = str;
             System.out.println(str);
             counterLock++;
 

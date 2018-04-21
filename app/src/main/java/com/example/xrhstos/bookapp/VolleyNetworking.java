@@ -245,7 +245,11 @@ public class VolleyNetworking {
           @Override
           public void onResponse(Bitmap response) {
             // Do something with response
+            /*
             book.responseBookCover(response);
+            MainMenu mm = (MainMenu) mCtx;
+            mm.startUI();
+            */
 
             // Save this downloaded bitmap to internal storage
             //Uri uri = saveImageToInternalStorage(response);

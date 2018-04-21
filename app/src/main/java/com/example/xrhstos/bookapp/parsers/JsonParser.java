@@ -31,13 +31,11 @@ public class JsonParser {
 
   public static ArrayList<Book> parse(JSONObject jsonObject) {
     ArrayList<Book> collection = new ArrayList<>();
-      // Get the JSONArray of book items.
-    JSONArray itemsArray = null;
     try {
-      itemsArray = jsonObject.getJSONArray("items");
-    } catch (JSONException e) {
-      e.printStackTrace();
-    }
+
+      // Get the JSONArray of book items.
+      JSONArray itemsArray = jsonObject.getJSONArray("items");
+
 
     // Initialize iterator and results fields.
       int i = 0;
@@ -93,7 +91,10 @@ public class JsonParser {
         i++;
       }
 
-
+    } catch (JSONException e) {
+      e.printStackTrace();
+    }
     return collection;
+
   }
 }

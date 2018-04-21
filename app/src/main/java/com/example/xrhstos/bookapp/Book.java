@@ -158,6 +158,7 @@ public class Book implements Parcelable {
     bookCover = (Bitmap)in.readParcelable(getClass().getClassLoader());
   }
 
+  /*
   public void requestBookCover(MainMenu context){
     ImageRequest ir = VolleyNetworking.getInstance(context).bitmapRequest(bookCoverURL,this);
     VolleyNetworking.getInstance(context).addToRequestQueue(ir);
@@ -165,31 +166,15 @@ public class Book implements Parcelable {
 
   public void responseBookCover(Bitmap response){
     bookCover = response;
-  }
 
-  /* Picasso request
-  public void setBookCover(MainMenu context){
-    Picasso.with(context)
-        .setLoggingEnabled(true)
-        .load(bookCoverURL)
-        .transform(new RoundCorners(5,5))
-        .into(new Target() {
-          @Override
-          public void onBitmapLoaded (final Bitmap bitmap, Picasso.LoadedFrom from) {
-            bookCover = bitmap;
-          }
-
-          @Override
-          public void onPrepareLoad(Drawable placeHolderDrawable) {}
-
-          @Override
-          public void onBitmapFailed(Drawable errorDrawable) {
-
-            System.out.println("Failed loading " + id);
-          }
-        });
+    MyApp.getInstance().mainMenu.bitmapRequestCount++;
   }
 */
+
+  public void setBookCover(Bitmap response){
+    bookCover = response;
+  }
+
   public Bitmap getBookCover(){
     return bookCover;
   }

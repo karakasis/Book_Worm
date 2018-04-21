@@ -1,6 +1,8 @@
 package com.example.xrhstos.bookapp.grid;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,8 +13,13 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.xrhstos.bookapp.Book;
+import com.example.xrhstos.bookapp.MyApp;
 import com.example.xrhstos.bookapp.PreviewController;
 import com.example.xrhstos.bookapp.R;
+import com.example.xrhstos.bookapp.VolleyNetworking;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Picasso.LoadedFrom;
+import com.squareup.picasso.Target;
 import java.util.ArrayList;
 
 /**
@@ -55,7 +62,9 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
     // Get the data model based on position
     final int pos = holder.getAdapterPosition();
     Book book = data.get(pos);
-      holder.bookView.setImageBitmap(book.getBookCover());
+
+      setImage(holder.bookView, book.getBookCoverURL(),position,book);
+      //holder.bookView.setImageBitmap(book.getBookCover());
       holder.bookView.setOnClickListener(new View.OnClickListener() {
 
         @Override
@@ -64,9 +73,9 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
         }
 
       });
-      //setImage(holder.bookView, book.getBookCoverURL(),position);
+      //
       holder.titleView.setText(book.getBookTitle());
-      holder.authorView.setText(book.getAuthor());
+      holder.authorView.setText(book.getAuthor()[0]);
     //holder.titleView.setText(position+"");
     //holder.authorView.setText(position+"");
     //holder.bookView.setClipToOutline(true);
@@ -136,36 +145,35 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
   }
 
 
-  private void setImage(final ImageView container, final String url,final int position){
-    /*
-    Picasso.with(mContext)
-        .load(String.valueOf(url))
-        .transform(new RoundCorners(5,5))
-        .into(new Target() {
-          @Override
-          public void onBitmapLoaded (final Bitmap bitmap, Picasso.LoadedFrom from) {
+  private void setImage(final ImageView container, final String url,final int position,final Book book){
+    if(book.getBookCover()!=null){
+      container.setImageBitmap(book.getBookCover());
+    }else{
+      Picasso.with(mContext)
+          .load(url)
+          //.transform(new RoundCorners(5,5))
+          .into(new Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, LoadedFrom from) {
+              //Set it in the ImageView
+                container.setImageBitmap(bitmap);
+                book.setBookCover(bitmap);
 
-            //Set it in the ImageView
-            if(url.equals("https://s.gr-assets.com/assets/nophoto/book/111x148-bcc042a9c91a29c1d680899eff700a03.png")){
-              container.setImageResource(R.drawable.placeholder);
-              //container.setBackgroundResource(R.drawable.placeholder_book);
-              //container.setImageBitmap(null);
-              //container.setImageResource(R.drawable.book_shape);
-            }else{
-              container.setImageBitmap(bitmap);
             }
-          }
 
-          @Override
-          public void onPrepareLoad(Drawable placeHolderDrawable) {}
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
 
-          @Override
-          public void onBitmapFailed(Drawable errorDrawable) {
+              System.out.println("Failed loading " + url);
+            }
 
-            System.out.println("Failed loading " + url);
-          }
-        });
-        */
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {}
+
+          });
+
+    }
+
   }
 
   public ArrayList<Book> getDataSet(){

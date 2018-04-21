@@ -55,6 +55,7 @@ public class MainMenu extends AppCompatActivity{
   private int firstVisibleItem;
   private Parcelable glmState;
   public int bitmapRequestCount;
+  public int bitmapMaxCount;
 
   private DatabaseHelper myDb;
 
@@ -250,32 +251,25 @@ public class MainMenu extends AppCompatActivity{
   public void update(ArrayList<Book> bookData){
     bookshelf.addBooks(bookData,this);
 
-    final CountDownLatch countDownLatch = new CountDownLatch(bitmapRequestCount);
-    final Handler mainThreadHandler = new Handler(Looper.getMainLooper());
-    new Thread(new Runnable() {
+    if(MainMenu.loadingData){
+      informAdapter(bookshelf.getNewBooksFetchedAmount(),bookshelf.fetchExtraBooksOnly());
+    }
+    else{
+      updateAdapter(bookshelf.getBooks());
+    }
 
-      @Override
-      public void run() {
-        try {
-          countDownLatch.await();
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
-        mainThreadHandler.post(new Runnable() {
-          @Override
-          public void run() {
-            if(MainMenu.loadingData){
-              informAdapter(bookshelf.getNewBooksFetchedAmount(),bookshelf.fetchExtraBooksOnly());
-            }
-            else{
-              updateAdapter(bookshelf.getBooks());
-            }
-          }
-        });
+  }
+
+  public void startUI(){
+    System.out.println(bitmapRequestCount);
+    if(!(bitmapRequestCount<bitmapMaxCount)){
+      if(MainMenu.loadingData){
+        informAdapter(bookshelf.getNewBooksFetchedAmount(),bookshelf.fetchExtraBooksOnly());
       }
-    }).start();
-
-
+      else{
+        updateAdapter(bookshelf.getBooks());
+      }
+    }
   }
 
   private void rotateUpdate(){

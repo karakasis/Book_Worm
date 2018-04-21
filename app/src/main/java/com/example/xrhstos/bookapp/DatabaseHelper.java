@@ -98,7 +98,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         //BOOK TABLE VALUES   \\\\------///
         booksTableValues.put(BOOK_TITLE,book.getBookTitle());
-        booksTableValues.put(PUBLISHER,book.getAuthor());
+        //booksTableValues.put(PUBLISHER,book.getAuthor());
         booksTableValues.put(BOOK_RATING,book.getPersonalRating());
         booksTableValues.put(BOOK_ID,book.getId());
         booksTableValues.put(GOOGLE_ID,book.getGoogleID());
@@ -216,7 +216,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues booksTableValues = new ContentValues();
         //BOOK TABLE VALUES   \\\\------///
         booksTableValues.put(BOOK_TITLE,book.getBookTitle());
-        booksTableValues.put(PUBLISHER,book.getAuthor());
+        //booksTableValues.put(PUBLISHER,book.getAuthor());
         booksTableValues.put(BOOK_RATING,book.getPersonalRating());
         booksTableValues.put(BOOK_ID,book.getId());
         booksTableValues.put(GOOGLE_ID,book.getGoogleID());
