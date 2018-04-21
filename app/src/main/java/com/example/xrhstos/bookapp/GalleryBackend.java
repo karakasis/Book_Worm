@@ -5,10 +5,13 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import java.util.ArrayList;
+
 public class GalleryBackend extends AppCompatActivity {
     private RecyclerView galleryRecycler;
     private RecyclerView.Adapter gAdapter;
     private RecyclerView.LayoutManager gLayoutManager;
+    private ArrayList<Book> myDataset;
 
 
     @Override
@@ -21,7 +24,7 @@ public class GalleryBackend extends AppCompatActivity {
         galleryRecycler.setLayoutManager(gLayoutManager);
 
         gAdapter = new GalleryAdapter(myDataset);
-        galleryRecycler.setAdapter(mAdapter);
+        galleryRecycler.setAdapter(gAdapter);
 
 
 

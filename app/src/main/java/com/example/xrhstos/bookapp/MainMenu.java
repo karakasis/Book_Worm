@@ -147,8 +147,24 @@ public class MainMenu extends AppCompatActivity{
       }
     });
 
+    MenuItem collectionMenuItem = menu.findItem(R.id.collectionButton);
+    collectionMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+
+      @Override
+      public boolean onMenuItemClick(MenuItem item) {
+        Intent intent = new Intent(this, GalleryBackend.class);
+
+
+        return false;
+      }
+    });
+
+
+
     return super.onCreateOptionsMenu(menu);
   }
+
+
 
   public void searchBooks(String query) {
     this.query = query;
@@ -245,5 +261,7 @@ public class MainMenu extends AppCompatActivity{
   public static String getQuery(){
     return MainMenu.query;
   }
+
+
 }
 

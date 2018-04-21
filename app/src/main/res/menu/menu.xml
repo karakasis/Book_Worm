@@ -12,6 +12,7 @@
       android:id="@+id/collectionButton"
       android:title="gallery"
       android:icon="@drawable/ic_local_library_indigo_a200_24dp"
+        android:onClick="toGallery"
       app:showAsAction="ifRoom|collapseActionView"/>
 
 </menu>

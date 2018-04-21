@@ -37,7 +37,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                                                    int viewType) {
         // create a new view
         ImageView v = (ImageView) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout., parent, false);
+                .inflate(R.layout.book_image, parent, false);
         //...
         ViewHolder vh = new ViewHolder(v);
         return vh;
@@ -48,7 +48,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.bookView.setImageDrawable(myBooks[position]);
+        holder.bookView.setImageBitmap(myBooks[position].getBookCover());
 
     }
 
