@@ -73,5 +73,10 @@ public class Collection {
     return books.get(position);
   }
 
+  public void fetchBooksFromDB(ArrayList<Book> fetched){
+    for(Book b : fetched){
+      bookMap.put(b.getKey(),b);
+    }
+  }
 
 }
