@@ -22,6 +22,7 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.xrhstos.bookapp.parsers.JsonIDParser;
 import com.example.xrhstos.bookapp.parsers.JsonParser;
 import com.example.xrhstos.bookapp.parsers.XmlParser;
 import java.io.File;
@@ -167,8 +168,7 @@ public class VolleyNetworking {
           public void onResponse(JSONObject response) {
 
             MainMenu mm = (MainMenu) mCtx;
-            JsonParser.jsonObject = response;
-            mm.update(JsonParser.parse(null));
+            mm.update(JsonParser.parse(response));
 
             System.out.println("Source : Google");
           }
@@ -198,7 +198,7 @@ public class VolleyNetworking {
 
   }
 
-  public JsonObjectRequest googleRequestByID(final String queryIDString){
+  public JsonObjectRequest googleRequestByID(final String queryIDString, final Book book){
 
     String requestURL =  "https://www.googleapis.com/books/v1/volumes/" + queryIDString;
 
@@ -210,8 +210,7 @@ public class VolleyNetworking {
       public void onResponse(JSONObject response) {
 
         BookInfoActivity bia = (BookInfoActivity) mCtx;
-        JsonParser.jsonObject = response;
-        bia.update(JsonParser.parse(null));
+        bia.update(JsonIDParser.parse(response,book));
 
         System.out.println("Source : GoogleID");
       }
@@ -311,10 +310,8 @@ public class VolleyNetworking {
     }
 
     // Parse the gallery image url to uri
-    Uri savedImageURI = Uri.parse(file.getAbsolutePath());
-
     // Return the saved image Uri
-    return savedImageURI;
+    return Uri.parse(file.getAbsolutePath());
   }
 
 }

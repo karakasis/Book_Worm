@@ -6,6 +6,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import com.android.volley.toolbox.JsonObjectRequest;
 import info.hoang8f.widget.FButton;
 import java.util.ArrayList;
 
@@ -28,7 +29,7 @@ public class BookInfoActivity extends AppCompatActivity {
     currentBook = (Book) data.getParcelable("bookObject");
     //Book extras = (Book)intent.getSerializableExtra("bookObject");
     String title = currentBook.getBookTitle();
-    String author = currentBook.getAuthor();
+    String[] author = currentBook.getAuthor();
     String googleID = currentBook.getGoogleID();
 
     Book matchedBook= Collection.getInstance().matchBook(currentBook.getKey());
@@ -50,8 +51,8 @@ public class BookInfoActivity extends AppCompatActivity {
     tv2.setText(author);
 
     createButtons();
-    //JsonObjectRequest jor = VolleyNetworking.getInstance(this).googleRequestByID(googleID);
-    //VolleyNetworking.getInstance(this).addToRequestQueue(jor);
+    JsonObjectRequest jor = VolleyNetworking.getInstance(this).googleRequestByID(googleID,currentBook);
+    VolleyNetworking.getInstance(this).addToRequestQueue(jor);
 
   }
 
@@ -112,8 +113,8 @@ public class BookInfoActivity extends AppCompatActivity {
     buttonsController.swapToWish(currentBook.isBookInWishlist(),currentBook.isBookRead());
   }
 
-  public void update(ArrayList<String[]> data){
-
+  public void update(Book data){
+    currentBook = data;
   }
 
 }

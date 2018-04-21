@@ -23,36 +23,36 @@ public class Bookshelf {
         currentQuery = "";
     }
 
-    //Creates the array of Book objetcs.
-/*
-    public void addBooks(ArrayList<String[]> stringBooks){
-        this.stringBooks = new ArrayList<>(stringBooks);
-        if(!currentQuery.equals(MainMenu.query)){
-            currentQuery = MainMenu.query;
-            books = new ArrayList<>();
-        }
-        newBooksFetchedAmount = stringBooks.size();
-        for (int i=0;i<stringBooks.size();i++){
-            books.add(new Book(Integer.parseInt(stringBooks.get(i)[0]),stringBooks.get(i)[1],stringBooks.get(i)[2],stringBooks.get(i)[3],""));
-        }
-    }
-*/
-    public void addBooks(ArrayList<String[]> stringBooks, MainMenu context){
-        this.stringBooks = new ArrayList<>(stringBooks);
-        if(!currentQuery.equals(MainMenu.query)){
-            currentQuery = MainMenu.query;
-            books = new ArrayList<>();
-        }
-        newBooksFetchedAmount = 0;
-        for (int i=0;i<stringBooks.size();i++){
-            if(!stringBooks.get(i)[3].equals("https://s.gr-assets.com/assets/nophoto/book/111x148-bcc042a9c91a29c1d680899eff700a03.png")){
-                //books.add(new Book(Integer.parseInt(stringBooks.get(i)[0]),stringBooks.get(i)[1],stringBooks.get(i)[2],stringBooks.get(i)[3],""));
-                books.add(new Book(i,stringBooks.get(i)[1],stringBooks.get(i)[2],stringBooks.get(i)[3],""));
-                books.get(books.size()-1).setGoogleID(stringBooks.get(i)[0]);
+    public void addBooks(ArrayList<Book> data, MainMenu context){
+        if(context.getAPI().equals("Google")){
+            if(!currentQuery.equals(MainMenu.query)){
+                currentQuery = MainMenu.query;
+                books = new ArrayList<>(data);
+            }
+            newBooksFetchedAmount = 0;
+            MyApp.getInstance().mainMenu.bitmapRequestCount = 0;
+            for (int i=0;i<data.size();i++){
                 books.get(books.size()-1).requestBookCover(context);
+                MyApp.getInstance().mainMenu.bitmapRequestCount++;
                 newBooksFetchedAmount++;
             }
-          }
+        }else{
+            if(!currentQuery.equals(MainMenu.query)){
+                currentQuery = MainMenu.query;
+                books = new ArrayList<>();
+            }
+            newBooksFetchedAmount = 0;
+            MyApp.getInstance().mainMenu.bitmapRequestCount = 0;
+            for (int i=0;i<data.size();i++){
+                if(!data.get(i).getBookCoverURL().equals("https://s.gr-assets.com/assets/nophoto/book/111x148-bcc042a9c91a29c1d680899eff700a03.png")){
+                    books.add(data.get(i));
+                    books.get(books.size()-1).requestBookCover(context);
+                    MyApp.getInstance().mainMenu.bitmapRequestCount++;
+                    newBooksFetchedAmount++;
+                }
+            }
+        }
+
     }
 
     public ArrayList<Book> fetchExtraBooksOnly(){
@@ -78,7 +78,4 @@ public class Bookshelf {
         return b;
     }
 
-    public ArrayList<String[]> getStringBooks(){
-        return stringBooks;
-    }
 }

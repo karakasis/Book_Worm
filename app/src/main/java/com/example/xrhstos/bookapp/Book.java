@@ -19,13 +19,13 @@ import java.io.Serializable;
 
 public class Book implements Parcelable {
 
-  private int id;
+  private String id;
   private String googleID;
   private int ISBN;
 
 
   private String bookTitle;
-  private String author;
+  private String[] authors;
   private String bookCoverURL;
   private String description;
   private int personalRating;
@@ -37,7 +37,7 @@ public class Book implements Parcelable {
 
   private String[] categories;
   private int pageCount;
-  private int publishedDate; //might need string for date
+  private String publishedDate; //might need string for date
   //extra google stuff -end
 
   private boolean isBookInCollection;
@@ -65,12 +65,11 @@ public class Book implements Parcelable {
 
   public byte[] getByteArray(){ return byteArray; }
 
-  public Book(int id, String title, String author, String url , String desc){
+  public Book(String id, String title, String[] authors, String url){
     this.id = id;
     bookTitle = title;
-    this.author = author;
+    this.authors = authors;
     bookCoverURL = url;
-    description = desc;
   }
 
   public String getKey(){
@@ -90,7 +89,7 @@ public class Book implements Parcelable {
   public void writeToParcel(Parcel dest, int flags) {
 
     dest.writeString(bookTitle);
-    dest.writeString(author);
+    dest.writeStringArray(authors);
     dest.writeString(bookCoverURL);
     dest.writeString(description);
 
@@ -103,11 +102,11 @@ public class Book implements Parcelable {
 
     dest.writeStringArray(categories);
     dest.writeInt(pageCount);
-    dest.writeInt(publishedDate);
+    dest.writeString(publishedDate);
     //extra google stuff-end
 
 
-    dest.writeInt(id);
+    dest.writeString(id);
     dest.writeInt(personalRating);
 
     dest.writeByte((byte) (isBookInCollection ? 1 : 0));
@@ -131,7 +130,7 @@ public class Book implements Parcelable {
 
   public Book(Parcel in) {
     bookTitle = in.readString();
-    author = in.readString();
+    authors = in.createStringArray();
     bookCoverURL = in.readString();
     description = in.readString();
 
@@ -144,11 +143,11 @@ public class Book implements Parcelable {
 
     categories = in.createStringArray();
     pageCount = in.readInt();
-    publishedDate = in.readInt();
+    publishedDate = in.readString();
     //extra google stuff-end
 
 
-    id = in.readInt();
+    id = in.readString();
     personalRating = in.readInt();
 
     isBookInCollection = in.readByte() != 0;
@@ -227,12 +226,12 @@ public class Book implements Parcelable {
     this.bookTitle = bookTitle;
   }
 
-  public String getAuthor() {
-    return author;
+  public String[] getAuthor() {
+    return authors;
   }
 
-  public void setAuthor(String author) {
-    this.author = author;
+  public void setAuthor(String[] authors) {
+    this.authors = authors;
   }
 
   public boolean isBookInCollection() {
@@ -259,11 +258,11 @@ public class Book implements Parcelable {
     isBookInWishlist = bookInWishlist;
   }
 
-  public int getId() {
+  public String getId() {
     return id;
   }
 
-  public void setId(int id) {
+  public void setId(String id) {
     this.id = id;
   }
 
@@ -315,11 +314,11 @@ public class Book implements Parcelable {
     this.pageCount = pageCount;
   }
 
-  public int getPublishedDate() {
+  public String getPublishedDate() {
     return publishedDate;
   }
 
-  public void setPublishedDate(int publishedDate) {
+  public void setPublishedDate(String publishedDate) {
     this.publishedDate = publishedDate;
   }
 

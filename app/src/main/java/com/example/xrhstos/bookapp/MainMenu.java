@@ -2,6 +2,8 @@ package com.example.xrhstos.bookapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +19,7 @@ import android.widget.TextView;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -51,6 +54,7 @@ public class MainMenu extends AppCompatActivity{
   private PreviewController previewController;
   private int firstVisibleItem;
   private Parcelable glmState;
+  public int bitmapRequestCount;
 
   private DatabaseHelper myDb;
 
@@ -243,15 +247,35 @@ public class MainMenu extends AppCompatActivity{
 
   }
 
-  public void update(ArrayList<String[]> bookData){
+  public void update(ArrayList<Book> bookData){
     bookshelf.addBooks(bookData,this);
 
-    if(MainMenu.loadingData){
-      informAdapter(bookshelf.getNewBooksFetchedAmount(),bookshelf.fetchExtraBooksOnly());
-    }
-    else{
-      updateAdapter(bookshelf.getBooks());
-    }
+    final CountDownLatch countDownLatch = new CountDownLatch(bitmapRequestCount);
+    final Handler mainThreadHandler = new Handler(Looper.getMainLooper());
+    new Thread(new Runnable() {
+
+      @Override
+      public void run() {
+        try {
+          countDownLatch.await();
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+        mainThreadHandler.post(new Runnable() {
+          @Override
+          public void run() {
+            if(MainMenu.loadingData){
+              informAdapter(bookshelf.getNewBooksFetchedAmount(),bookshelf.fetchExtraBooksOnly());
+            }
+            else{
+              updateAdapter(bookshelf.getBooks());
+            }
+          }
+        });
+      }
+    }).start();
+
+
   }
 
   private void rotateUpdate(){
@@ -283,6 +307,16 @@ public class MainMenu extends AppCompatActivity{
 
   public static String getQuery(){
     return MainMenu.query;
+  }
+
+  public String getAPI(){
+    if(googleON){
+      return "Google";
+    }else if(goodreadsON){
+      return "Goodreads";
+    }else{
+      return "no_api";
+    }
   }
 }
 

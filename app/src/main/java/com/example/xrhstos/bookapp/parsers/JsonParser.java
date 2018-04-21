@@ -16,9 +16,11 @@
 package com.example.xrhstos.bookapp.parsers;
 
 import android.util.JsonWriter;
+import com.example.xrhstos.bookapp.Book;
 import com.example.xrhstos.bookapp.MainMenu;
 import java.util.ArrayList;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -27,21 +29,20 @@ import org.json.JSONObject;
  */
 public class JsonParser {
 
-  private static ArrayList<String[]> collection;
-  public static JSONObject jsonObject;
-  private MainMenu parent;
-
-  public static ArrayList<String[]> parse(String[] tags) {
-    collection = new ArrayList<>();
-    try {
-
+  public static ArrayList<Book> parse(JSONObject jsonObject) {
+    ArrayList<Book> collection = new ArrayList<>();
       // Get the JSONArray of book items.
-      JSONArray itemsArray = jsonObject.getJSONArray("items");
+    JSONArray itemsArray = null;
+    try {
+      itemsArray = jsonObject.getJSONArray("items");
+    } catch (JSONException e) {
+      e.printStackTrace();
+    }
 
-      // Initialize iterator and results fields.
+    // Initialize iterator and results fields.
       int i = 0;
       String title = "";
-      String authors = "";
+      String[] authors;
       String url = "";
       String googleID = "";
 
@@ -49,10 +50,18 @@ public class JsonParser {
       // are found or when all items have been checked.
       while (i < itemsArray.length()) {
         // Get the current item information.
-        JSONObject book = itemsArray.getJSONObject(i);
-        JSONObject volumeInfo = book.getJSONObject("volumeInfo");
-
-
+        JSONObject book = null;
+        try {
+          book = itemsArray.getJSONObject(i);
+        } catch (JSONException e) {
+          e.printStackTrace();
+        }
+        JSONObject volumeInfo = null;
+        try {
+          volumeInfo = book.getJSONObject("volumeInfo");
+        } catch (JSONException e) {
+          e.printStackTrace();
+        }
 
         // Try to get the author and title from the current item,
         // catch if either field is empty and move on.
@@ -61,29 +70,22 @@ public class JsonParser {
             System.out.println(collection.size());
             title = volumeInfo.getString("title");
             System.out.println(title);
-            authors = volumeInfo.getString("authors");
-            System.out.println(authors);
+
+            JSONArray aut = volumeInfo.getJSONArray("authors");
+            authors = new String[aut.length()];
+            for(int j=0; j<aut.length(); j++){
+              authors[j] = aut.getString(j);
+              System.out.println(authors[j]);
+            }
+
             url = volumeInfo.getJSONObject("imageLinks").getString("thumbnail");
             System.out.println(url);
             googleID = book.getString("id");
             System.out.println(googleID);
-            //collection.add(new String[]{String.valueOf(i), title, authors, url});
-            collection.add(new String[]{googleID, title, authors, url});
+
+            collection.add(new Book(googleID,title,authors,url));
           }
-          if(MainMenu.langQuery.isEmpty()){
-            System.out.println(collection.size());
-            title = volumeInfo.getString("title");
-            System.out.println(title);
-            authors = volumeInfo.getString("authors");
-            System.out.println(authors);
-            url = volumeInfo.getJSONObject("imageLinks").getString("thumbnail");
-            System.out.println(url);
-            googleID = book.getString("id");
-            System.out.println(googleID);
-            //collection.add(new String[]{String.valueOf(i), title, authors, url});
-            collection.add(new String[]{googleID, title, authors, url});
-          }
-        } catch (Exception e) {
+        } catch (JSONException e) {
           e.printStackTrace();
         }
 
@@ -91,10 +93,6 @@ public class JsonParser {
         i++;
       }
 
-    } catch (Exception e) {
-
-      e.printStackTrace();
-    }
 
     return collection;
   }
