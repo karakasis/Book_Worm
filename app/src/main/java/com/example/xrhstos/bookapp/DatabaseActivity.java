@@ -45,11 +45,7 @@ public class DatabaseActivity extends AppCompatActivity {
         myDb = new DatabaseHelper(this);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu){
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
-    }
+
 
     /**
      *  This method adds a row to the database

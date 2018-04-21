@@ -147,6 +147,7 @@ public class MainMenu extends AppCompatActivity{
       }
     });
 
+    /*
     MenuItem collectionMenuItem = menu.findItem(R.id.collectionButton);
     collectionMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
 
@@ -157,7 +158,9 @@ public class MainMenu extends AppCompatActivity{
 
         return false;
       }
+
     });
+    */
 
 
 
@@ -261,6 +264,13 @@ public class MainMenu extends AppCompatActivity{
   public static String getQuery(){
     return MainMenu.query;
   }
+
+  public void toGallery(Menu item){
+    Intent intent = new Intent(this, GalleryBackend.class);
+    
+
+  }
+
 
 
 }
