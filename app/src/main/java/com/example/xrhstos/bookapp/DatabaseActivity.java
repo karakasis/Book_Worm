@@ -66,16 +66,16 @@ public class DatabaseActivity extends AppCompatActivity {
         String title = bookTitle.getText().toString();
         String bookPublisher = publisher.getText().toString();
         //ratingBar.getNumStars();
-        boolean success = myDb.addRecord(title, bookPublisher, ratingValue);
+        //boolean success = myDb.addRecord(book);
 
-        if(success){
+       /* if(success){
             Toast.makeText(this, "ADDED", Toast.LENGTH_SHORT).show();
         }else{
             Toast.makeText(this, "ALREADY INSERTED", Toast.LENGTH_SHORT).show();
         }
         bookTitle.setText("");
         publisher.setText("");
-        //ratingBar.setRating(0);
+        //ratingBar.setRating(0);*/
 
     }
 
@@ -93,16 +93,16 @@ public class DatabaseActivity extends AppCompatActivity {
         myDb = new DatabaseHelper(this);
         String title = bookTitle.getText().toString();
         String bookPublisher = publisher.getText().toString();
-        boolean result = myDb.deleteRecord(title,bookPublisher);
+        //boolean result = myDb.deleteRecord(title,bookPublisher);
 
-        if(result){//If record deleted
+        /*if(result){//If record deleted
             bookTitle.setText("");
             publisher.setText("");
             Toast.makeText(this, "Book Deleted", Toast.LENGTH_SHORT).show();
         }
         else{
             Toast.makeText(this, "No match found", Toast.LENGTH_SHORT).show();
-        }
+        }*/
 
 
     }
@@ -115,7 +115,7 @@ public class DatabaseActivity extends AppCompatActivity {
         String bookPublisher = publisher.getText().toString();
 
         Cursor cursor;
-        cursor = myDb.findRecord(title,bookPublisher);
+        /*cursor = myDb.findRecord(title,bookPublisher);
 
         if(cursor.moveToFirst()){
             cursor.moveToFirst();
@@ -128,7 +128,7 @@ public class DatabaseActivity extends AppCompatActivity {
         else{
             Toast.makeText(this, "No match found", Toast.LENGTH_SHORT).show();
         }
-        cursor.close();
+        cursor.close();*/
     }
 
     public void updateEntry(View v){
@@ -138,7 +138,7 @@ public class DatabaseActivity extends AppCompatActivity {
         String title = bookTitle.getText().toString();
         String bookPublisher = publisher.getText().toString();
 
-        myDb.updateRecord(title, bookPublisher, ratingValue);
+        //myDb.updateRecord(title, bookPublisher, ratingValue);
     }
 
 

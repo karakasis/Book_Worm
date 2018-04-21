@@ -1,6 +1,7 @@
 package com.example.xrhstos.bookapp;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.Parcel;
@@ -9,6 +10,7 @@ import com.android.volley.toolbox.ImageRequest;
 import com.example.xrhstos.bookapp.transformation.RoundCorners;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 
 /**
@@ -43,6 +45,25 @@ public class Book implements Parcelable {
   private boolean isBookInWishlist;
 
   private Bitmap bookCover;
+  private byte[] byteArray;
+
+
+  public class DbBitmapUtility {
+
+    // convert from bitmap to byte array
+    public byte[] getBytes(Bitmap bitmap) {
+      ByteArrayOutputStream stream = new ByteArrayOutputStream();
+      bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
+      return stream.toByteArray();
+    }
+
+    // convert from byte array to bitmap
+    public Bitmap getImage(byte[] image) {
+      return BitmapFactory.decodeByteArray(image, 0, image.length);
+    }
+  }
+
+  public byte[] getByteArray(){ return byteArray; }
 
   public Book(int id, String title, String author, String url , String desc){
     this.id = id;

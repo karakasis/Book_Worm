@@ -10,6 +10,7 @@ import android.support.v7.widget.SearchView.OnQueryTextListener;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -51,10 +52,14 @@ public class MainMenu extends AppCompatActivity{
   private int firstVisibleItem;
   private Parcelable glmState;
 
+  private DatabaseHelper myDb;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main_menu);
+
+    myDb = new DatabaseHelper(this);
 
     MyApp app = (MyApp) getApplication();
     app.mainMenu = this;
