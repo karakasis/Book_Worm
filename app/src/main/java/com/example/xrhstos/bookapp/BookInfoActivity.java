@@ -4,18 +4,15 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import info.hoang8f.widget.FButton;
-import java.util.ArrayList;
 
 /**
  * Created by Xrhstos on 4/10/2018.
@@ -154,7 +151,7 @@ public class BookInfoActivity extends AppCompatActivity {
     tvDesc.setText(currentBook.getDescription());
 
     LinearLayout info = findViewById(R.id.moreInfo);
-    if(!currentBook.getPublishedDate().isEmpty()){
+    if(currentBook.getPublishedDate()!=null){
       TextView tvPublishedDate = new TextView(this);
       tvPublishedDate.setText("Published: "+currentBook.getPublishedDate());
       info.addView(tvPublishedDate);
@@ -175,10 +172,15 @@ public class BookInfoActivity extends AppCompatActivity {
         }
       }
     }
-    if(currentBook.getISBN()!=-1){
-      TextView tvISBN = new TextView(this);
-      tvISBN.setText("ISBN: "+String.valueOf(currentBook.getISBN()));
-      info.addView(tvISBN);
+    if(currentBook.getISBN13()!= null){
+      TextView tvISBN13 = new TextView(this);
+      tvISBN13.setText("ISBN_13: "+currentBook.getISBN13());
+      info.addView(tvISBN13);
+    }
+    if(currentBook.getISBN10()!= null){
+      TextView tvISBN10 = new TextView(this);
+      tvISBN10.setText("ISBN_10: "+currentBook.getISBN10());
+      info.addView(tvISBN10);
     }
     if(currentBook.getPageCount()!=-1){
       TextView tvPagecount = new TextView(this);
@@ -192,8 +194,13 @@ public class BookInfoActivity extends AppCompatActivity {
 
   public void buyBook(View view){
     try {
-      startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://"+currentBook.getMarketURI())));
-    } catch (android.content.ActivityNotFoundException anfe) {
+      if(currentBook.getMarketURI() == null){
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(currentBook.getBuyURL())));
+      }else{
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://"+currentBook.getMarketURI())));
+
+      }
+     } catch (android.content.ActivityNotFoundException anfe) {
       startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(currentBook.getBuyURL())));
     }
   }

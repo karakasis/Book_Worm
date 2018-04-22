@@ -137,7 +137,7 @@ public class VolleyNetworking {
             BookInfoActivity bia = (BookInfoActivity) mCtx;
             XmlParserID.stringToList(response);
 
-            bia.update(XmlParserID.parse(new String[]{"isbn","publication_year","publication_month"
+            bia.update(XmlParserID.parse(new String[]{"isbn13","isbn","publication_year","publication_month"
                 ,"publication_day","description","average_rating","num_pages","url"}, "book", book));
 
 

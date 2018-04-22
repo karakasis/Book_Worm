@@ -149,6 +149,8 @@ public class Buttons {
         layoutTop.removeAllViews();
         layoutTop.addView(removeStr);
         layoutTop.addView(remove);
+
+        parent.addBook();
       }
     });
     addStr.setLayoutParams(params);
@@ -167,6 +169,7 @@ public class Buttons {
         layoutTop.addView(addStr);
         layoutTop.addView(add);
 
+        parent.removeBook();
       }
     });
     removeStr.setLayoutParams(params);

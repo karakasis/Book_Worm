@@ -13,6 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import java.util.ArrayList;
@@ -237,7 +239,12 @@ public class MainMenu extends AppCompatActivity{
   }
 
   public void bookClick(int position){
-
+    VolleyNetworking.getInstance(this).getRequestQueue().cancelAll(new RequestQueue.RequestFilter() {
+      @Override
+      public boolean apply(Request<?> request) {
+        return true;
+      }
+    });
     // Parceable implementation
     Intent intent = new Intent(this, BookInfoActivity.class);
     //this will pass the book object itself so any changes will be made to the Book

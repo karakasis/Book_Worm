@@ -16,8 +16,6 @@
 package com.example.xrhstos.bookapp.parsers;
 
 import com.example.xrhstos.bookapp.Book;
-import com.example.xrhstos.bookapp.MainMenu;
-import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,7 +28,8 @@ public class JsonIDParser {
 
   public static Book parse(JSONObject jsonObject, Book fetchedBook) {
 
-      int ISBN = -1;
+      String ISBN10 = "";
+      String ISBN13 = "";
       String description;
       String callbackURL;
       String previewURL;
@@ -58,12 +57,16 @@ public class JsonIDParser {
     try {
             JSONArray isbn = volumeInfo.getJSONArray("industryIdentifiers");
             for(int j=0; j<isbn.length(); j++){
-              if(isbn.getJSONObject(j).getString("type").equals("ISBN_10")){
-                ISBN = isbn.getJSONObject(j).getInt("identifier");
+              if(isbn.getJSONObject(j).getString("type").equals("ISBN_13")){
+                ISBN13 = isbn.getJSONObject(j).getString("identifier");
+                fetchedBook.setISBN13(ISBN13);
+              }else if(isbn.getJSONObject(j).getString("type").equals("ISBN_10")){
+                ISBN10 = isbn.getJSONObject(j).getString("identifier");
+                fetchedBook.setISBN13(ISBN10);
               }
             }
-            fetchedBook.setISBN(ISBN);
-            System.out.println(ISBN);
+          System.out.println(ISBN13);
+          System.out.println(ISBN10);
         } catch (JSONException e) {
           e.printStackTrace();
         }

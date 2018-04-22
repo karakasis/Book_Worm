@@ -102,7 +102,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         booksTableValues.put(BOOK_RATING,book.getPersonalRating());
         booksTableValues.put(BOOK_ID,book.getId());
         booksTableValues.put(GOOGLE_ID,book.getGoogleID());
-        booksTableValues.put(ISBN,book.getISBN());
+        booksTableValues.put(ISBN,book.getISBN13());
         booksTableValues.put(BOOK_COVER_URL,book.getBookCoverURL());
         booksTableValues.put(DESCRIPTION,book.getDescription());
         booksTableValues.put(CALLBACK_URL,book.getCallbackURL());
@@ -220,7 +220,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         booksTableValues.put(BOOK_RATING,book.getPersonalRating());
         booksTableValues.put(BOOK_ID,book.getId());
         booksTableValues.put(GOOGLE_ID,book.getGoogleID());
-        booksTableValues.put(ISBN,book.getISBN());
+        booksTableValues.put(ISBN,book.getISBN13());
         booksTableValues.put(BOOK_COVER_URL,book.getBookCoverURL());
         booksTableValues.put(DESCRIPTION,book.getDescription());
         booksTableValues.put(CALLBACK_URL,book.getCallbackURL());

@@ -2,16 +2,9 @@ package com.example.xrhstos.bookapp;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.Parcel;
 import android.os.Parcelable;
-import com.android.volley.toolbox.ImageRequest;
-import com.example.xrhstos.bookapp.transformation.RoundCorners;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 import java.io.ByteArrayOutputStream;
-import java.io.Serializable;
 
 /**
  * Created by Xrhstos on 4/11/2018.
@@ -21,7 +14,8 @@ public class Book implements Parcelable {
 
   private String id;
   private String googleID;
-  private int ISBN;
+  private String ISBN13;
+  private String ISBN10;
 
 
   private String bookTitle;
@@ -56,6 +50,14 @@ public class Book implements Parcelable {
     this.averageRating = averageRating;
   }
 
+  public String getISBN10() {
+    return ISBN10;
+  }
+
+  public void setISBN10(String ISBN10) {
+    this.ISBN10 = ISBN10;
+  }
+
 
   public class DbBitmapUtility {
 
@@ -79,7 +81,6 @@ public class Book implements Parcelable {
     bookTitle = title;
     this.authors = authors;
     bookCoverURL = url;
-    ISBN = -1;
     pageCount = -1;
   }
 
@@ -103,6 +104,8 @@ public class Book implements Parcelable {
     dest.writeStringArray(authors);
     dest.writeString(bookCoverURL);
     dest.writeString(description);
+    dest.writeString(ISBN10);
+    dest.writeString(ISBN13);
 
 
     //extra google stuff-start
@@ -145,7 +148,8 @@ public class Book implements Parcelable {
     authors = in.createStringArray();
     bookCoverURL = in.readString();
     description = in.readString();
-
+    ISBN10 = in.readString();
+    ISBN13 = in.readString();
 
     //extra google stuff-start
     googleID = in.readString();
@@ -264,12 +268,12 @@ public class Book implements Parcelable {
     this.id = id;
   }
 
-  public int getISBN() {
-    return ISBN;
+  public String getISBN13() {
+    return ISBN13;
   }
 
-  public void setISBN(int ISBN) {
-    this.ISBN = ISBN;
+  public void setISBN13(String ISBN13) {
+    this.ISBN13 = ISBN13;
   }
 
   public String getGoogleID() {
@@ -301,9 +305,17 @@ public class Book implements Parcelable {
   }
 
   public String getMarketURI(){
-    String market;
-    market = buyURL.replace("https://play.google.com/store/books/","");
-    return market;
+    if(googleID==null){
+
+      return null;
+    }else if(id==null){
+      String market;
+      market = buyURL.replace("https://play.google.com/store/books/","");
+      return market;
+    }else{
+      return null;
+    }
+
   }
 
   public void setBuyURL(String buyURL) {

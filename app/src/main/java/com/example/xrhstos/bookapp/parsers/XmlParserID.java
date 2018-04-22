@@ -1,6 +1,10 @@
 package com.example.xrhstos.bookapp.parsers;
 
 import com.example.xrhstos.bookapp.Book;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -19,7 +23,8 @@ public class XmlParserID {
             //    ,"publication_day","description","average_rating","num_pages","url"
     int counterLock = 0;
     int[] tagSkipper = new int[tagAmount];
-    String ISBN = "";
+    String ISBN13 = "";
+    String ISBN10 = "";
     String publication_year = "";
     String publication_month = "";
     String publication_day = "";
@@ -47,7 +52,8 @@ public class XmlParserID {
         lookForParent = true;
         counterLock = 0;
         tagSkipper = new int[tagAmount];
-        fetchedBook.setISBN(Integer.valueOf(ISBN));
+        fetchedBook.setISBN13(ISBN13);
+        fetchedBook.setISBN10(ISBN10);
         fetchedBook.setPageCount(Integer.valueOf(num_pages));
         fetchedBook.setPreviewURL(url);
         fetchedBook.setDescription(description);
@@ -75,8 +81,10 @@ public class XmlParserID {
 
             // "isbn","publication_year","publication_month"
             //    ,"publication_day","description","average_rating","num_pages","url"
-            if(tags[i].equals("isbn")) {
-              ISBN = removeCDATA(str);
+            if(tags[i].equals("isbn13")) {
+              ISBN13 = removeCDATA(str);
+            }else if(tags[i].equals("isbn")) {
+              ISBN10 = removeCDATA(str);
             }else if(tags[i].equals("publication_year")){
               publication_year = str;
             }else if(tags[i].equals("publication_month")){
