@@ -16,20 +16,26 @@ import info.hoang8f.widget.FButton;
 public class Buttons {
 
   private Context mCtx;
-  private LinearLayout layout;
+  private LinearLayout layoutTop;
+  private LinearLayout layoutBot;
   private LayoutParams params;
   private BookInfoActivity parent;
 
   private ImageButton add;
+  private FButton addStr;
   private ImageButton remove;
+  private FButton removeStr;
   private ImageButton wishAdd;
+  private FButton wishAddStr;
   private ImageButton wishRemove;
+  private FButton wishRemoveStr;
   private FButton read;
   private FButton notRead;
 
-  public Buttons(Context ctx, LinearLayout layout1){
+  public Buttons(Context ctx, LinearLayout layout1,LinearLayout layout2){
     mCtx = ctx;
-    this.layout = layout1;
+    this.layoutTop = layout1;
+    this.layoutBot = layout2;
     params = new LinearLayout.LayoutParams
         (LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT,1F);
     parent = (BookInfoActivity) ctx;
@@ -40,9 +46,9 @@ public class Buttons {
     add.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        int index = layout.indexOfChild(v);
-        layout.removeView(v);
-        layout.addView(remove,index);
+        layoutTop.removeAllViews();
+        layoutTop.addView(removeStr);
+        layoutTop.addView(remove);
 
         parent.addBook();
       }
@@ -55,9 +61,10 @@ public class Buttons {
     remove.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        int index = layout.indexOfChild(v);
-        layout.removeView(v);
-        layout.addView(add,index);
+        layoutTop.removeAllViews();
+        layoutTop.addView(addStr);
+        layoutTop.addView(add);
+
         parent.removeBook();
       }
     });
@@ -69,9 +76,10 @@ public class Buttons {
     wishAdd.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        int index = layout.indexOfChild(v);
-        layout.removeView(v);
-        layout.addView(wishRemove,index);
+        layoutBot.removeAllViews();
+        layoutBot.addView(wishRemoveStr);
+        layoutBot.addView(wishRemove);
+
         parent.wishlistAddBook();
       }
     });
@@ -83,9 +91,10 @@ public class Buttons {
     wishRemove.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        int index = layout.indexOfChild(v);
-        layout.removeView(v);
-        layout.addView(wishAdd,index);
+        layoutBot.removeAllViews();
+        layoutBot.addView(wishAddStr);
+        layoutBot.addView(wishAdd);
+
         parent.wishlistRemoveBook();
       }
     });
@@ -101,9 +110,9 @@ public class Buttons {
     read.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        int index = layout.indexOfChild(v);
-        layout.removeView(v);
-        layout.addView(notRead,index);
+        layoutBot.removeAllViews();
+        layoutBot.addView(notRead);
+
         parent.addReadBook();
       }
     });
@@ -119,13 +128,86 @@ public class Buttons {
     notRead.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        int index = layout.indexOfChild(v);
-        layout.removeView(v);
-        layout.addView(read,index);
+
+        layoutBot.removeAllViews();
+        layoutBot.addView(read);
         parent.removeReadBook();
       }
     });
     notRead.setLayoutParams(params);
+
+    addStr = new FButton(mCtx);
+    addStr.setText("Add to Collection");
+    addStr.setButtonColor(mCtx.getResources().getColor(R.color.green800));
+    addStr.setShadowColor(mCtx.getResources().getColor(R.color.green900));
+    addStr.setShadowEnabled(true);
+    addStr.setShadowHeight(5);
+    addStr.setCornerRadius(5);
+    addStr.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        layoutTop.removeAllViews();
+        layoutTop.addView(removeStr);
+        layoutTop.addView(remove);
+      }
+    });
+    addStr.setLayoutParams(params);
+
+    removeStr = new FButton(mCtx);
+    removeStr.setText("Remove from Collection");
+    removeStr.setButtonColor(mCtx.getResources().getColor(R.color.red400));
+    removeStr.setShadowColor(mCtx.getResources().getColor(R.color.red600));
+    removeStr.setShadowEnabled(true);
+    removeStr.setShadowHeight(5);
+    removeStr.setCornerRadius(5);
+    removeStr.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        layoutTop.removeAllViews();
+        layoutTop.addView(addStr);
+        layoutTop.addView(add);
+
+      }
+    });
+    removeStr.setLayoutParams(params);
+
+    wishAddStr = new FButton(mCtx);
+    wishAddStr.setText("Add to Wishlist");
+    wishAddStr.setButtonColor(mCtx.getResources().getColor(R.color.red400));
+    wishAddStr.setShadowColor(mCtx.getResources().getColor(R.color.red600));
+    wishAddStr.setShadowEnabled(true);
+    wishAddStr.setShadowHeight(5);
+    wishAddStr.setCornerRadius(5);
+    wishAddStr.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        layoutBot.removeAllViews();
+        layoutBot.addView(wishRemoveStr);
+        layoutBot.addView(wishRemove);
+        parent.removeReadBook();
+      }
+    });
+    wishAddStr.setLayoutParams(params);
+
+    wishRemoveStr = new FButton(mCtx);
+    wishRemoveStr.setText("Remove from Wishlist");
+    wishRemoveStr.setButtonColor(mCtx.getResources().getColor(R.color.red400));
+    wishRemoveStr.setShadowColor(mCtx.getResources().getColor(R.color.red600));
+    wishRemoveStr.setShadowEnabled(true);
+    wishRemoveStr.setShadowHeight(5);
+    wishRemoveStr.setCornerRadius(5);
+    wishRemoveStr.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+
+        layoutBot.removeAllViews();
+        layoutBot.addView(wishAddStr);
+        layoutBot.addView(wishAdd);
+
+        parent.removeReadBook();
+      }
+    });
+    wishRemoveStr.setLayoutParams(params);
 
   }
   /*
@@ -138,77 +220,58 @@ public class Buttons {
    */
 
   public ImageButton add(){
-    layout.addView(add);
+    layoutTop.addView(addStr);
+    layoutTop.addView(add);
     return add;
   }
 
   public ImageButton remove(){
-    layout.addView(remove);
+    layoutTop.addView(removeStr);
+    layoutTop.addView(remove);
     return remove;
   }
 
   public ImageButton wishAdd(){
-    layout.addView(wishAdd);
+    layoutBot.addView(wishAddStr);
+    layoutBot.addView(wishAdd);
     return wishAdd;
   }
 
   public ImageButton wishRemove(){
-    layout.addView(wishRemove);
+    layoutBot.addView(wishRemoveStr);
+    layoutBot.addView(wishRemove);
     return wishRemove;
   }
 
-  /*
-  <info.hoang8f.widget.FButton
-    android:id="@+id/read_no"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Mark as read"
-    fbutton:buttonColor="@color/fbutton_color_belize_hole"
-    fbutton:shadowColor="#01579b"
-    fbutton:shadowEnabled="true"
-    fbutton:shadowHeight="5dp"
-    fbutton:cornerRadius="5dp"
-    />
-   */
   public FButton markRead(){
-    layout.addView(read);
+    layoutBot.addView(read);
     return read;
   }
 
   public FButton markNotRead(){
-    layout.addView(notRead);
+    layoutBot.addView(notRead);
     return notRead;
   }
 
-  public void swapToWish(boolean isInWishlist,boolean isRead){
-    int index;
-    if(isRead){
-      index = layout.indexOfChild(notRead);
-    }else{
-      index = layout.indexOfChild(read);
-    }
+  public void swapToWish(boolean isInWishlist){
     if(isInWishlist){
-      layout.removeViewAt(index);
-      layout.addView(wishRemove,index);
+      layoutBot.removeAllViews();
+      layoutBot.addView(wishRemoveStr);
+      layoutBot.addView(wishRemove);
     }else{
-      layout.removeViewAt(index);
-      layout.addView(wishAdd,index);
+      layoutBot.removeAllViews();
+      layoutBot.addView(wishAddStr);
+      layoutBot.addView(wishAdd);
     }
   }
 
-  public void swapToRead(boolean isRead,boolean isInWishlist){
-    int index;
-    if(isInWishlist){
-      index = layout.indexOfChild(wishRemove);
-    }else{
-      index = layout.indexOfChild(wishAdd);
-    }
+  public void swapToRead(boolean isRead){
     if(isRead){
-      layout.removeViewAt(index);
-      layout.addView(notRead,index);
-    }else{
-      layout.removeViewAt(index);
-      layout.addView(read,index);
+      layoutBot.removeAllViews();
+      layoutBot.addView(notRead);
+    }else {
+      layoutBot.removeAllViews();
+      layoutBot.addView(read);
     }
   }
 

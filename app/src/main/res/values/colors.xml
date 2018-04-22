@@ -12,4 +12,10 @@
   <color name="secondaryTextColor">#616161</color>
 
   <color name="buttonShadow">#01579b</color>
+  <color name="green800">#2E7D32</color>
+  <color name="green900">#1B5E20</color>
+  <color name="red400">#EF5350</color>
+  <color name="red600">#E53935</color>
+  <color name="orange300">#FFB74D</color>
+
 </resources>

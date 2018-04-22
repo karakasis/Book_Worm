@@ -28,7 +28,8 @@ public class Book implements Parcelable {
   private String[] authors;
   private String bookCoverURL;
   private String description;
-  private int personalRating;
+  private float personalRating;
+  private float averageRating;
 
   //extra google stuff -start
   private String callbackURL;
@@ -46,6 +47,14 @@ public class Book implements Parcelable {
 
   private Bitmap bookCover;
   private byte[] byteArray;
+
+  public float getAverageRating() {
+    return averageRating;
+  }
+
+  public void setAverageRating(float averageRating) {
+    this.averageRating = averageRating;
+  }
 
 
   public class DbBitmapUtility {
@@ -70,6 +79,8 @@ public class Book implements Parcelable {
     bookTitle = title;
     this.authors = authors;
     bookCoverURL = url;
+    ISBN = -1;
+    pageCount = -1;
   }
 
   public String getKey(){
@@ -107,7 +118,8 @@ public class Book implements Parcelable {
 
 
     dest.writeString(id);
-    dest.writeInt(personalRating);
+    dest.writeFloat(personalRating);
+    dest.writeFloat(averageRating);
 
     dest.writeByte((byte) (isBookInCollection ? 1 : 0));
     dest.writeByte((byte) (isBookRead ? 1 : 0));
@@ -148,7 +160,8 @@ public class Book implements Parcelable {
 
 
     id = in.readString();
-    personalRating = in.readInt();
+    personalRating = in.readFloat();
+    averageRating = in.readFloat();
 
     isBookInCollection = in.readByte() != 0;
     isBookRead = in.readByte() != 0;
@@ -195,7 +208,7 @@ public class Book implements Parcelable {
     this.description = description;
   }
 
-  public int getPersonalRating() {
+  public float getPersonalRating() {
     return personalRating;
   }
 
@@ -285,6 +298,12 @@ public class Book implements Parcelable {
 
   public String getBuyURL() {
     return buyURL;
+  }
+
+  public String getMarketURI(){
+    String market;
+    market = buyURL.replace("https://play.google.com/store/books/","");
+    return market;
   }
 
   public void setBuyURL(String buyURL) {

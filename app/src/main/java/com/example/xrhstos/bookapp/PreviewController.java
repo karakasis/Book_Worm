@@ -4,6 +4,7 @@ package com.example.xrhstos.bookapp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -71,13 +72,24 @@ public class PreviewController{
             gridAdapter.getDataSet().addAll(books);
             gridAdapter.notifyItemRangeChanged(0,books.size()-1);
             //gridAdapter.notifyDataSetChanged();
-            recyclerView.setAdapter(gridAdapter);
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    recyclerView.setAdapter(gridAdapter);
+                }
+            }, 1500);
 
 
             recyclerView.scrollToPosition(0);
         }else{
             PreviewController.gridAdapter = new GridAdapter(this,parent,books);
-            recyclerView.setAdapter(gridAdapter);
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    recyclerView.setAdapter(gridAdapter);
+                }
+            }, 1500);
+
         }
 
 

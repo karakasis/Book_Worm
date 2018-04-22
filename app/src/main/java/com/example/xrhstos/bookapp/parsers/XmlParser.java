@@ -29,9 +29,9 @@ public class XmlParser {
     boolean inBookData = false;
 
     for(String str : xmlToListOfStrings){
-
+      //System.out.println(str);
       str = str.trim();
-      if(!inBookData && str.startsWith("<" + parent + ">")){
+      if(!inBookData && str.startsWith("<" + parent)){
         inBookData = true;
         //collection.add(new Book);
         continue;
@@ -44,6 +44,7 @@ public class XmlParser {
          counterLock = 0;
          tagSkipper = new int[tagAmount];
         collection.add(new Book(id,title,authors,url));
+        collection.get(collection.size()-1).setGoogleID(null);
          title = "";
         authors = new String[1];
         url = "";
@@ -56,20 +57,16 @@ public class XmlParser {
           }
       }else{
         for(int i=0; i<tagAmount; i++){
-          /*
-          for(int tagger = 0; tagger<tagAmount; tagger++){
-            if(tagSkipper[tagger] == i + 1){
-              break tagBreaker;
-            }
-          }
-          */
+
           if(tagSkipper[i] !=0){
             continue;
           }
+
           if(str.startsWith("<" + tags[i])){
+
             tagSkipper[i] = 1;
             str = XmlParser.removeTags(str,tags[i]);
-            if(tags[i].equals("id type")){
+            if(tags[i].equals("id")) {
               id = str;
             }else if(tags[i].equals("name")){
               authors[0] = str;
@@ -78,7 +75,7 @@ public class XmlParser {
             }else if(tags[i].equals("image_url")){
               url = str;
             }
-            //collection.get(collection.size()-1)[i] = str;
+
             System.out.println(str);
             counterLock++;
 
@@ -91,95 +88,6 @@ public class XmlParser {
     }
 
     return collection;
-
-
-
-
-
-
-/*
-
-    char[] ca = source.toCharArray();
-    String title = "";
-    String author = "";
-    String bookCoverURL = "";
-   // ArrayList<String[]> collection = new ArrayList<>();
-
-
-    for(int i=0; i<ca.length; i++){
-
-      if(ca[i] == '<'){
-        if(ca[i+1] == 't'){
-          if(ca[i+2] == 'i'){
-            if(ca[i+3] == 't'){
-
-              int counter = i+7;
-              counterLock++;
-
-              do{
-                title += ca[counter];
-                counter++;
-
-              }while(ca[counter] != '<');
-
-              System.out.println(title);
-
-
-            }
-          }
-        }
-      }
-
-      if(ca[i] == '<'){
-        if(ca[i+1] == 'n'){
-          if(ca[i+2] == 'a'){
-
-            int counter = i+6;
-            counterLock++;
-
-            do{
-              author += ca[counter];
-              counter++;
-
-            }while(ca[counter] != '<');
-
-
-            System.out.println(author);
-          }
-        }
-      }
-
-      if(ca[i] == '<'){
-        if(ca[i+1] == 'i'){
-          if(ca[i+2] == 'm'){
-
-            int counter = i+11;
-            counterLock++;
-
-            do{
-              bookCoverURL += ca[counter];
-              counter++;
-
-            }while(ca[counter] != '<');
-
-
-            System.out.println(bookCoverURL);
-          }
-        }
-      }
-
-      if(counterLock == 3 ){
-        collection.add(new String[]{new String(title),new String(author), new String(bookCoverURL)});
-        title = "";
-        author = "";
-        bookCoverURL = "";
-        counterLock = 0;
-      }
-
-
-    }
-    return  collection;
-    */
   }
 
   private static String removeTags(String actualString, String tag){

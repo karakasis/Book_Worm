@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
@@ -25,6 +24,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.xrhstos.bookapp.parsers.JsonIDParser;
 import com.example.xrhstos.bookapp.parsers.JsonParser;
 import com.example.xrhstos.bookapp.parsers.XmlParser;
+import com.example.xrhstos.bookapp.parsers.XmlParserID;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -40,6 +40,8 @@ public class VolleyNetworking {
   private static VolleyNetworking mInstance;
   private RequestQueue mRequestQueue;
   private static Context mCtx;
+
+  private String goodreadskey = "Y2yc0wb3LDtDVSGwlCSJDg";
 
   private VolleyNetworking(Context context) {
     mCtx = context;
@@ -81,7 +83,7 @@ public class VolleyNetworking {
     Uri builtURI = Uri.parse(BOOK_BASE_URL).buildUpon()
         .appendQueryParameter(QUERY_PARAM, queryString)
         .appendQueryParameter(QUERY_PAGE, String.valueOf(MainMenu.getPage()))
-        .appendQueryParameter(DEVELOPER_KEY, "Y2yc0wb3LDtDVSGwlCSJDg")
+        .appendQueryParameter(DEVELOPER_KEY, goodreadskey)
         .appendQueryParameter(SEARCH_FIELD, "all")
         .build();
     String requestURL = builtURI.toString();
@@ -94,7 +96,7 @@ public class VolleyNetworking {
             MainMenu mm = (MainMenu) mCtx;
             XmlParser.stringToList(response);
 
-            mm.update(XmlParser.parse(new String[]{"id type","title","name","image_url"}, "work"));
+            mm.update(XmlParser.parse(new String[]{"id","title","name","image_url"}, "best_book"));
 
 
             System.out.println("Source : Goodreads");
@@ -121,6 +123,50 @@ public class VolleyNetworking {
         mm.notifier.setText(message);
       }
     });
+  }
+
+  public StringRequest goodReadsRequestByID(final String queryIDString, final Book book){
+
+    //String requestURL = "https://www.goodreads.com/book/show?format=json&key="+goodreadskey+"&id="+queryIDString;
+    String requestURL = "https://www.goodreads.com/book/show/"+queryIDString+".xml?key="+goodreadskey;
+    return new StringRequest(Request.Method.GET, requestURL,
+        new Response.Listener<String>() {
+          @Override
+          public void onResponse(String response) {
+
+            BookInfoActivity bia = (BookInfoActivity) mCtx;
+            XmlParserID.stringToList(response);
+
+            bia.update(XmlParserID.parse(new String[]{"isbn","publication_year","publication_month"
+                ,"publication_day","description","average_rating","num_pages","url"}, "book", book));
+
+
+            System.out.println("Source : Goodreads");
+          }
+        }
+        , new Response.ErrorListener() {
+      @Override
+      public void onErrorResponse(VolleyError volleyError) {
+        String message = "";
+        if (volleyError instanceof NetworkError) {
+          message = "Cannot connect to Internet...Please check your connection!";
+        } else if (volleyError instanceof ServerError) {
+          message = "The server could not be found. Please try again after some time!!";
+        } else if (volleyError instanceof AuthFailureError) {
+          message = "Cannot connect to Internet...Please check your connection!";
+        } else if (volleyError instanceof ParseError) {
+          message = "Parsing error! Please try again after some time!!";
+        } else if (volleyError instanceof NoConnectionError) {
+          message = "Cannot connect to Internet...Please check your connection!";
+        } else if (volleyError instanceof TimeoutError) {
+          message = "Connection TimeOut! Please check your internet connection.";
+        }
+        MainMenu mm = (MainMenu) mCtx;
+        mm.notifier.setText(message);
+      }
+    });
+
+
   }
 
   public JsonObjectRequest googleRequest(final String queryString){

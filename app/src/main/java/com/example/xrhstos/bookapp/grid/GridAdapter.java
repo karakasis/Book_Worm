@@ -13,12 +13,11 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.xrhstos.bookapp.Book;
-import com.example.xrhstos.bookapp.MyApp;
 import com.example.xrhstos.bookapp.PreviewController;
 import com.example.xrhstos.bookapp.R;
-import com.example.xrhstos.bookapp.VolleyNetworking;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Picasso.LoadedFrom;
+import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Target;
 import java.util.ArrayList;
 
@@ -34,12 +33,14 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
   private final PreviewController parentController;
   private ArrayList<Book> data;
   private int lastPosition = -1;
+  private Picasso instance;
 
   // Pass in the contact array into the constructor
   public GridAdapter(PreviewController par, Context c, ArrayList<Book> data){
     parentController = par;
     mContext = c;
     this.data = data;
+    instance = Picasso.with(mContext);
     //setHasStableIds(true);
   }
 
@@ -146,33 +147,29 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
 
 
   private void setImage(final ImageView container, final String url,final int position,final Book book){
-    if(book.getBookCover()!=null){
-      container.setImageBitmap(book.getBookCover());
-    }else{
-      Picasso.with(mContext)
-          .load(url)
-          //.transform(new RoundCorners(5,5))
-          .into(new Target() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, LoadedFrom from) {
-              //Set it in the ImageView
-                container.setImageBitmap(bitmap);
-                book.setBookCover(bitmap);
 
-            }
+      RequestCreator loader = instance.load(url);
+      //loader.into((AppCompatImageView) container);
+      loader.into(new Target() {
+        @Override
+        public void onBitmapLoaded(Bitmap bitmap, LoadedFrom from) {
+          container.setImageBitmap(bitmap);
+          if(book.getBookCover() == null){
+            book.setBookCover(bitmap);
+          }
+          container.invalidate();
+        }
 
-            @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable) {
 
-              System.out.println("Failed loading " + url);
-            }
+        }
 
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {}
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
 
-          });
-
-    }
+        }
+      });
 
   }
 

@@ -81,7 +81,8 @@ public class JsonParser {
             googleID = book.getString("id");
             System.out.println(googleID);
 
-            collection.add(new Book(googleID,title,authors,url));
+            collection.add(new Book(null,title,authors,url));
+            collection.get(collection.size()-1).setGoogleID(googleID);
           }
         } catch (JSONException e) {
           e.printStackTrace();

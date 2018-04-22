@@ -36,6 +36,8 @@ public class JsonIDParser {
       String previewURL;
       String buyURL;
 
+      double averageRating;
+
       String[] categories;
       int pageCount;
       String publishedDate; //might need string for date
@@ -54,7 +56,7 @@ public class JsonIDParser {
     }
 
     try {
-            JSONArray isbn = jsonObject.getJSONArray("industryIdentifiers");
+            JSONArray isbn = volumeInfo.getJSONArray("industryIdentifiers");
             for(int j=0; j<isbn.length(); j++){
               if(isbn.getJSONObject(j).getString("type").equals("ISBN_10")){
                 ISBN = isbn.getJSONObject(j).getInt("identifier");
@@ -73,7 +75,14 @@ public class JsonIDParser {
           e.printStackTrace();
         }
         try{
-          callbackURL = volumeInfo.getString("selfLink");
+          averageRating = volumeInfo.getDouble("averageRating");
+          fetchedBook.setAverageRating((float) averageRating);
+          System.out.println(averageRating);
+        } catch (JSONException e) {
+          e.printStackTrace();
+        }
+        try{
+          callbackURL = jsonObject.getString("selfLink");
           fetchedBook.setCallbackURL(callbackURL);
           System.out.println(callbackURL);
         } catch (JSONException e) {
