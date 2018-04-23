@@ -71,87 +71,8 @@ public class VolleyNetworkingBookInfo {
     getRequestQueue().add(req);
   }
 
-  public StringRequest goodReadsRequestByID(final String queryIDString, final Book book){
-
-    //String requestURL = "https://www.goodreads.com/book/show?format=json&key="+goodreadskey+"&id="+queryIDString;
-    String requestURL = "https://www.goodreads.com/book/show/"+queryIDString+".xml?key="+goodreadskey;
-    return new StringRequest(Request.Method.GET, requestURL,
-        new Response.Listener<String>() {
-          @Override
-          public void onResponse(String response) {
-
-            BookInfoActivity bia = mCtx;
-            XmlParserID.stringToList(response);
-
-            bia.update(XmlParserID.parse(new String[]{"isbn13","isbn","publication_year","publication_month"
-                ,"publication_day","description","average_rating","num_pages","url"}, "book", book));
-
-
-            System.out.println("Source : Goodreads");
-          }
-        }
-        , new Response.ErrorListener() {
-      @Override
-      public void onErrorResponse(VolleyError volleyError) {
-        String message = "";
-        if (volleyError instanceof NetworkError) {
-          message = "Cannot connect to Internet...Please check your connection!";
-        } else if (volleyError instanceof ServerError) {
-          message = "The server could not be found. Please try again after some time!!";
-        } else if (volleyError instanceof AuthFailureError) {
-          message = "Cannot connect to Internet...Please check your connection!";
-        } else if (volleyError instanceof ParseError) {
-          message = "Parsing error! Please try again after some time!!";
-        } else if (volleyError instanceof NoConnectionError) {
-          message = "Cannot connect to Internet...Please check your connection!";
-        } else if (volleyError instanceof TimeoutError) {
-          message = "Connection TimeOut! Please check your internet connection.";
-        }
-      }
-    });
-
-
-  }
-
-  public JsonObjectRequest googleRequestByID(final String queryIDString, final Book book){
-
-    String requestURL =  "https://www.googleapis.com/books/v1/volumes/" + queryIDString;
-
-    return new JsonObjectRequest(Request.Method.GET, requestURL,
-        null
-        , new Response.Listener<JSONObject>() {
-
-      @Override
-      public void onResponse(JSONObject response) {
-
-        BookInfoActivity bia = mCtx;
-        bia.update(JsonIDParser.parse(response,book));
-
-        System.out.println("Source : GoogleID");
-      }
-    }, new Response.ErrorListener() {
-
-      @Override
-      public void onErrorResponse(VolleyError volleyError) {
-        String message = "";
-        if (volleyError instanceof NetworkError) {
-          message = "Cannot connect to Internet...Please check your connection!";
-        } else if (volleyError instanceof ServerError) {
-          message = "The server could not be found. Please try again after some time!!";
-        } else if (volleyError instanceof AuthFailureError) {
-          message = "Cannot connect to Internet...Please check your connection!";
-        } else if (volleyError instanceof ParseError) {
-          message = "Parsing error! Please try again after some time!!";
-        } else if (volleyError instanceof NoConnectionError) {
-          message = "Cannot connect to Internet...Please check your connection!";
-        } else if (volleyError instanceof TimeoutError) {
-          message = "Connection TimeOut! Please check your internet connection.";
-        }
-      }
-    });
 
 
   }
 
 
-}

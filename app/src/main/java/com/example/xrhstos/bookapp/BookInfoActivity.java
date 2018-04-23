@@ -31,10 +31,10 @@ public class BookInfoActivity extends AppCompatActivity {
   private View info;
 
   private boolean isLoading;
-  /*
+
   @Override
   public void onBackPressed(){
-    VolleyNetworkingBookInfo.getInstance(this).getRequestQueue().cancelAll(new RequestQueue.RequestFilter() {
+    VolleyNetworking.getInstance(this).getRequestQueue().cancelAll(new RequestQueue.RequestFilter() {
       @Override
       public boolean apply(Request<?> request) {
         return true;
@@ -42,13 +42,13 @@ public class BookInfoActivity extends AppCompatActivity {
     });
     super.onBackPressed();
   }
-*/
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.loading);
+    setContentView(R.layout.info_menu);
 
-    /*
+
     ViewStub stub = (ViewStub) findViewById(R.id.layout_stub_load);
     stub.setLayoutResource(R.layout.loading);
     loading = stub.inflate();
@@ -63,15 +63,15 @@ public class BookInfoActivity extends AppCompatActivity {
     if(savedInstanceState!=null){
       isLoading = savedInstanceState.getBoolean("IS_LOADING");
       if(isLoading){
-        setContentView(R.layout.loading);
+        showLoading();
       }else{
-        setContentView(R.layout.book_info);
+        showInfo();
       }
     }else{
       isLoading = true;
     }
 
- */
+
 
     //Intent intent = getIntent();
     Bundle data = getIntent().getExtras();
@@ -88,13 +88,13 @@ public class BookInfoActivity extends AppCompatActivity {
     }
 
     if(currentBook.getDescription() == null){//hot fix not to ask for api if api is already inputted
-      //showLoading();
+      showLoading();
       if(googleID != null){
-        JsonObjectRequest jor = VolleyNetworkingBookInfo.getInstance(this).googleRequestByID(googleID,currentBook);
-        VolleyNetworkingBookInfo.getInstance(this).addToRequestQueue(jor);
+        JsonObjectRequest jor = VolleyNetworking.getInstance(this).googleRequestByID(googleID,currentBook);
+        VolleyNetworking.getInstance(this).addToRequestQueue(jor);
       }else if(id != null){
-        StringRequest stringRequest = VolleyNetworkingBookInfo.getInstance(this).goodReadsRequestByID(id,currentBook);
-        VolleyNetworkingBookInfo.getInstance(this).addToRequestQueue(stringRequest);
+        StringRequest stringRequest = VolleyNetworking.getInstance(this).goodReadsRequestByID(id,currentBook);
+        VolleyNetworking.getInstance(this).addToRequestQueue(stringRequest);
       }
     }else{ //go to update anyways
       update(currentBook);
@@ -169,20 +169,20 @@ public class BookInfoActivity extends AppCompatActivity {
 
   public void update(Book data){
     currentBook = data;
-    //showInfo();
-    setContentView(R.layout.book_info);
+    showInfo();
+    //setContentView(R.layout.book_info);
 
     String title = currentBook.getBookTitle();
     String[] author = currentBook.getAuthor();
 
     //start ui elements
-    ImageButton iv = (ImageButton) findViewById(R.id.bookImage);
+    ImageButton iv = (ImageButton) info.findViewById(R.id.bookImage);
     iv.setImageBitmap(currentBook.getBookCover());
 
-    AppCompatTextView tv = (AppCompatTextView) findViewById(R.id.bookTitle);
+    AppCompatTextView tv = (AppCompatTextView) info.findViewById(R.id.bookTitle);
     tv.setText(title);
 
-    AppCompatTextView tv2 = (AppCompatTextView) findViewById(R.id.bookPublisher);
+    AppCompatTextView tv2 = (AppCompatTextView) info.findViewById(R.id.bookPublisher);
     tv2.setText("by ");
     for(int i=0; i<currentBook.getAuthor().length; i++){
       tv2.setText(tv2.getText()+currentBook.getAuthor()[i]+", ");
@@ -190,9 +190,9 @@ public class BookInfoActivity extends AppCompatActivity {
     int l = tv2.getText().length();
     tv2.setText(tv2.getText().toString().substring(0,l-2));
 
-    RatingBar rb2 = findViewById(R.id.ratingBar2);
+    RatingBar rb2 = info.findViewById(R.id.ratingBar2);
     rb2.setRating(currentBook.getAverageRating());
-    RatingBar rb1 = findViewById(R.id.ratingBar1);
+    RatingBar rb1 = info.findViewById(R.id.ratingBar1);
     rb1.setRating(currentBook.getPersonalRating());
     rb1.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener(){
       @Override
@@ -202,10 +202,10 @@ public class BookInfoActivity extends AppCompatActivity {
       }
     });
 
-    TextView tvDesc = findViewById(R.id.description);
+    TextView tvDesc = info.findViewById(R.id.description);
     tvDesc.setText(Html.fromHtml(currentBook.getDescription()));
 
-    LinearLayout infoLL = findViewById(R.id.moreInfo);
+    LinearLayout infoLL = info.findViewById(R.id.moreInfo);
     if(currentBook.getPublishedDate()!=null){
       TextView tvPublishedDate = new TextView(this);
       tvPublishedDate.setText("Published: "+currentBook.getPublishedDate());
