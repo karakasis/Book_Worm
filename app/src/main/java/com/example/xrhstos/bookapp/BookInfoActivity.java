@@ -41,7 +41,8 @@ public class BookInfoActivity extends AppCompatActivity {
       }
     });
     //for now hot fix to prevent sql lag?
-    Database.getInstance(MyApp.getContext()).updateRecord(currentBook);
+    if(Database.getInstance(MyApp.getContext()).isBookSaved(currentBook))
+      Database.getInstance(MyApp.getContext()).updateRecord(currentBook);
     super.onBackPressed();
   }
 
