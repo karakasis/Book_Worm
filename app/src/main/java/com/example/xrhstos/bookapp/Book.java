@@ -90,7 +90,7 @@ public class Book implements Parcelable {
 
   public String getKey(){
     if(googleID == null){
-      return String.valueOf(id);
+      return id;
     }else{
       return googleID;
     }
