@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.example.xrhstos.bookapp.Book;
 import com.example.xrhstos.bookapp.BookInfoActivity;
 import com.example.xrhstos.bookapp.Collection;
-import com.example.xrhstos.bookapp.DatabaseHelper;
+import com.example.xrhstos.bookapp.Database;
 import com.example.xrhstos.bookapp.MyApp;
 import com.example.xrhstos.bookapp.R;
 import java.util.ArrayList;
@@ -41,7 +41,6 @@ public class GalleryBackend extends AppCompatActivity {
   private int firstVisibleItem;
   private Parcelable glmState;
 
-  private DatabaseHelper myDb;
 
   private RecyclerView galleryRecycler;
   private RecyclerView.Adapter gAdapter;
@@ -54,8 +53,6 @@ public class GalleryBackend extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_gallery);
-
-    // myDb = new DatabaseHelper(this);
 
     MyApp app = (MyApp) getApplication();
     app.galleryBackend = this;

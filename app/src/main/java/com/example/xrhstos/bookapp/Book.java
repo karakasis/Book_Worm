@@ -59,22 +59,26 @@ public class Book implements Parcelable {
   }
 
 
-  public class DbBitmapUtility {
-
-    // convert from bitmap to byte array
-    public byte[] getBytes(Bitmap bitmap) {
-      ByteArrayOutputStream stream = new ByteArrayOutputStream();
-      bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
-      return stream.toByteArray();
-    }
-
-    // convert from byte array to bitmap
-    public Bitmap getImage(byte[] image) {
-      return BitmapFactory.decodeByteArray(image, 0, image.length);
-    }
+  // convert from bitmap to byte array
+  public byte[] getBytes(Bitmap bitmap) {
+    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+    bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
+    return stream.toByteArray();
   }
 
+  // convert from byte array to bitmap
+  public Bitmap getImage(byte[] image) {
+    return BitmapFactory.decodeByteArray(image, 0, image.length);
+  }
+
+  public void setBitmapFromByteArray(byte[] byteArray){
+    this.bookCover = getImage(byteArray);
+  }
   public byte[] getByteArray(){ return byteArray; }
+
+  public Book(){ // for sql
+    pageCount = -1;
+  }
 
   public Book(String id, String title, String[] authors, String url){
     this.id = id;

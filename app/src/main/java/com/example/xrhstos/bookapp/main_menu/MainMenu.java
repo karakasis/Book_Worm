@@ -21,7 +21,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.example.xrhstos.bookapp.Book;
 import com.example.xrhstos.bookapp.BookInfoActivity;
 import com.example.xrhstos.bookapp.Bookshelf;
-import com.example.xrhstos.bookapp.DatabaseHelper;
+import com.example.xrhstos.bookapp.Collection;
+import com.example.xrhstos.bookapp.Database;
 import com.example.xrhstos.bookapp.MyApp;
 import com.example.xrhstos.bookapp.Ping;
 import com.example.xrhstos.bookapp.R;
@@ -69,7 +70,7 @@ public class MainMenu extends AppCompatActivity{
   public int bitmapRequestCount;
   public int bitmapMaxCount;
 
-  private DatabaseHelper myDb;
+  private Database myDb;
   private Ping ping;
 
   private int scannerCounter = 0;
@@ -81,7 +82,10 @@ public class MainMenu extends AppCompatActivity{
     setContentView(R.layout.main_menu);
 
     ping = new Ping();
-    myDb = new DatabaseHelper(this);
+
+    if(Collection.getInstance().isEmpty()){
+      Collection.getInstance().fetchBooksFromDB(Database.getInstance(this).getSavedBooksList());
+    }
 
     MyApp app = (MyApp) getApplication();
     app.mainMenu = this;

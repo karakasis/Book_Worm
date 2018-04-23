@@ -17,6 +17,7 @@ public class Collection {
   private boolean isBookLoaded;
   private String currentQuery ;
   private static Collection mInstance;
+  private boolean sqlFetched;
 
   private Collection() {
 
@@ -24,6 +25,7 @@ public class Collection {
     bookMap = new HashMap<>();
     currentQuery = "";
     isBookLoaded = false;
+    sqlFetched = false;
   }
 
   public static synchronized Collection getInstance() {
@@ -78,6 +80,12 @@ public class Collection {
     for(Book b : fetched){
       bookMap.put(b.getKey(),b);
     }
+  }
+
+  public boolean isEmpty(){
+    boolean reply = bookMap.isEmpty() && !sqlFetched;
+    sqlFetched = true;
+    return reply;
   }
 
 }
