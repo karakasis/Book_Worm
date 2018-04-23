@@ -15,9 +15,8 @@
  */
 package com.example.xrhstos.bookapp.parsers;
 
-import android.util.JsonWriter;
 import com.example.xrhstos.bookapp.Book;
-import com.example.xrhstos.bookapp.MainMenu;
+import com.example.xrhstos.bookapp.main_menu.MainMenu;
 import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;

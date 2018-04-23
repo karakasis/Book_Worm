@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
         <activity
-          android:name=".MainMenu">
+          android:name=".main_menu.MainMenu">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,6 +28,7 @@
       tools:replace="screenOrientation" />
 
     <activity android:name=".BookInfoActivity"/>
+    <activity android:name=".gallery.GalleryBackend"/>
 
     </application>
 

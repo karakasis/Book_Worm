@@ -63,9 +63,10 @@ public class Collection {
 
   //returns the list of the book objects
   public ArrayList<Book> getBooks(){
-    ArrayList<Book> retur = new ArrayList<>();
-    retur.addAll(bookMap.values());
-    return new ArrayList<>(retur);
+    books = new ArrayList<>();
+    books.addAll(bookMap.values());
+    return new ArrayList<>(books);//mporei na exei error itan i retur
+
   }
 
   //returns the book in the asked position -- not working probably

@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.view.MenuItem;
 import android.widget.ImageView.ScaleType;
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
@@ -22,6 +21,7 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.xrhstos.bookapp.main_menu.MainMenu;
 import com.example.xrhstos.bookapp.parsers.JsonIDParser;
 import com.example.xrhstos.bookapp.parsers.JsonParser;
 import com.example.xrhstos.bookapp.parsers.XmlParser;
@@ -128,7 +128,6 @@ public class VolleyNetworking {
     });
   }
 
-  //good reads request by id in VolleyNetworkingBookInfo class
 
   public StringRequest goodReadsRequestByISBN(final String queryISBNString) {
 
@@ -258,7 +257,6 @@ public class VolleyNetworking {
 
   }
 
-  //google request by id in VolleyNetworkingBookInfo class
 
   public JsonObjectRequest googleRequestByISBN(final String queryISBNString) {
 

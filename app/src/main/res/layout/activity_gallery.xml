@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  tools:context="com.example.xrhstos.bookapp.gallery.GalleryBackend">
+
+  <FrameLayout
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_below="@id/my_toolbar"
+    android:layout_above="@id/logo_container">
+
+    <include
+      android:id="@+id/previewGrid"
+      layout="@layout/recycler_view"/>
+
+  </FrameLayout>
+
+</android.support.constraint.ConstraintLayout>

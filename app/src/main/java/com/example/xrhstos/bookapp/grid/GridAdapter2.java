@@ -13,8 +13,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.xrhstos.bookapp.Book;
-import com.example.xrhstos.bookapp.main_menu.PreviewController;
 import com.example.xrhstos.bookapp.R;
+import com.example.xrhstos.bookapp.gallery.PreviewController2;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Picasso.LoadedFrom;
 import com.squareup.picasso.RequestCreator;
@@ -27,16 +27,16 @@ import java.util.ArrayList;
 
 // Create the basic adapter extending from RecyclerView.Adapter
 // Note that we specify the custom ViewHolder which gives us access to our views
-public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
+public class GridAdapter2 extends RecyclerView.Adapter<GridAdapter2.ViewHolder> {
 
   private Context mContext;
-  private final PreviewController parentController;
+  private final PreviewController2 parentController;
   private ArrayList<Book> data;
   private int lastPosition = -1;
   private Picasso instance;
 
   // Pass in the contact array into the constructor
-  public GridAdapter(PreviewController par, Context c, ArrayList<Book> data){
+  public GridAdapter2(PreviewController2 par, Context c, ArrayList<Book> data){
     parentController = par;
     mContext = c;
     this.data = data;
@@ -59,24 +59,24 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
   }
 
   @Override
-  public void onBindViewHolder(@NonNull GridAdapter.ViewHolder holder, int position) {
+  public void onBindViewHolder(@NonNull GridAdapter2.ViewHolder holder, int position) {
     // Get the data model based on position
     final int pos = holder.getAdapterPosition();
     Book book = data.get(pos);
 
-      setImage(holder.bookView, book.getBookCoverURL(),position,book);
-      //holder.bookView.setImageBitmap(book.getBookCover());
-      holder.bookView.setOnClickListener(new View.OnClickListener() {
+    setImage(holder.bookView, book.getBookCoverURL(),position,book);
+    //holder.bookView.setImageBitmap(book.getBookCover());
+    holder.bookView.setOnClickListener(new View.OnClickListener() {
 
-        @Override
-        public void onClick(View view) {
-          parentController.getParent().bookClick(pos);
-        }
+      @Override
+      public void onClick(View view) {
+        parentController.getParent().bookClick(pos);
+      }
 
-      });
-      //
-      holder.titleView.setText(book.getBookTitle());
-      holder.authorView.setText(book.getAuthor()[0]);
+    });
+    //
+    holder.titleView.setText(book.getBookTitle());
+    holder.authorView.setText(book.getAuthor()[0]);
     //holder.titleView.setText(position+"");
     //holder.authorView.setText(position+"");
     //holder.bookView.setClipToOutline(true);
@@ -140,7 +140,7 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
   }
 
   @Override
-  public void onViewDetachedFromWindow(final GridAdapter.ViewHolder holder)
+  public void onViewDetachedFromWindow(final GridAdapter2.ViewHolder holder)
   {
     ((ViewHolder)holder).itemView.clearAnimation();
   }
@@ -148,28 +148,28 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
 
   private void setImage(final ImageView container, final String url,final int position,final Book book){
 
-      RequestCreator loader = instance.load(url);
-      //loader.into((AppCompatImageView) container);
-      loader.into(new Target() {
-        @Override
-        public void onBitmapLoaded(Bitmap bitmap, LoadedFrom from) {
-          container.setImageBitmap(bitmap);
-          if(book.getBookCover() == null){
-            book.setBookCover(bitmap);
-          }
-          container.invalidate();
+    RequestCreator loader = instance.load(url);
+    //loader.into((AppCompatImageView) container);
+    loader.into(new Target() {
+      @Override
+      public void onBitmapLoaded(Bitmap bitmap, LoadedFrom from) {
+        container.setImageBitmap(bitmap);
+        if(book.getBookCover() == null){
+          book.setBookCover(bitmap);
         }
+        container.invalidate();
+      }
 
-        @Override
-        public void onBitmapFailed(Drawable errorDrawable) {
+      @Override
+      public void onBitmapFailed(Drawable errorDrawable) {
 
-        }
+      }
 
-        @Override
-        public void onPrepareLoad(Drawable placeHolderDrawable) {
+      @Override
+      public void onPrepareLoad(Drawable placeHolderDrawable) {
 
-        }
-      });
+      }
+    });
 
   }
 

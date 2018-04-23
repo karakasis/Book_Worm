@@ -1,7 +1,6 @@
-package com.example.xrhstos.bookapp;
+package com.example.xrhstos.bookapp.main_menu;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +18,15 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.example.xrhstos.bookapp.Book;
+import com.example.xrhstos.bookapp.BookInfoActivity;
+import com.example.xrhstos.bookapp.Bookshelf;
+import com.example.xrhstos.bookapp.DatabaseHelper;
+import com.example.xrhstos.bookapp.MyApp;
+import com.example.xrhstos.bookapp.Ping;
+import com.example.xrhstos.bookapp.R;
+import com.example.xrhstos.bookapp.VolleyNetworking;
+import com.example.xrhstos.bookapp.gallery.GalleryBackend;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import java.util.ArrayList;
@@ -41,8 +49,6 @@ public class MainMenu extends AppCompatActivity{
   private static final String GOOGLE_ON_KEY = "GOOGLE";
   private static final String GOODREADS_ON_KEY = "GOODREADS";
   private static final String IS_API_LOADING_KEY = "IS_API_LOADING";
-
-  public static Bookshelf bookshelf;
 
   private boolean googleON;
   private boolean goodreadsON;
@@ -267,6 +273,11 @@ public class MainMenu extends AppCompatActivity{
 
   }
 
+  public void toGallery(MenuItem item){
+    Intent intent = new Intent(this,GalleryBackend.class);
+    startActivity(intent);
+  }
+
   public void bookClick(int position){
     VolleyNetworking.getInstance(this).getRequestQueue().cancelAll(new RequestQueue.RequestFilter() {
       @Override
@@ -315,6 +326,7 @@ public class MainMenu extends AppCompatActivity{
   }
 
   public void updateByISBN(ArrayList<Book> bookData){
+    currentPage = 1; // ? maybe yes maybe not
     if(scannerCounter == 0){
       booksFromScanner = new ArrayList<>();
     }

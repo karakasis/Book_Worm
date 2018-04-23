@@ -75,8 +75,13 @@ public class BookInfoActivity extends AppCompatActivity {
 
     //Intent intent = getIntent();
     Bundle data = getIntent().getExtras();
-    int position = data.getInt("bookObjectPos");
-    currentBook = Bookshelf.getInstance().getSingleBook(position);
+    if(data.containsKey("gallery")){
+      currentBook = (Book) data.getParcelable("gallery");
+    }else{
+      int position = data.getInt("bookObjectPos");
+      currentBook = Bookshelf.getInstance().getSingleBook(position);
+    }
+
 
     String googleID = currentBook.getGoogleID();
     String id = currentBook.getId();

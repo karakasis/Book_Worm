@@ -1,25 +1,14 @@
-package com.example.xrhstos.bookapp;
+package com.example.xrhstos.bookapp.main_menu;
 
 //import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcelable;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
-import android.view.LayoutInflater;
-import android.support.v4.app.Fragment;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.GridView;
+import com.example.xrhstos.bookapp.Book;
 import com.example.xrhstos.bookapp.grid.EndlessScrollListener;
 import com.example.xrhstos.bookapp.grid.GridAdapter;
 import com.example.xrhstos.bookapp.grid.WrapContentGridLayoutManager;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 
@@ -87,8 +76,9 @@ public class PreviewController{
             recyclerView.scrollToPosition(0);
         }else{
             PreviewController.gridAdapter = new GridAdapter(this,parent,books);
-            Handler handler = new Handler();
             /*
+            Handler handler = new Handler();
+
             handler.postDelayed(new Runnable() {
                 public void run() {
                     recyclerView.setAdapter(gridAdapter);
