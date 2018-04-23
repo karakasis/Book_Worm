@@ -72,23 +72,33 @@ public class PreviewController{
             gridAdapter.getDataSet().addAll(books);
             gridAdapter.notifyItemRangeChanged(0,books.size()-1);
             //gridAdapter.notifyDataSetChanged();
+            /*
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 public void run() {
                     recyclerView.setAdapter(gridAdapter);
+                    parent.showGrid();
                 }
             }, 1500);
-
+            */
+            parent.showGrid();
+            recyclerView.setAdapter(gridAdapter);
 
             recyclerView.scrollToPosition(0);
         }else{
             PreviewController.gridAdapter = new GridAdapter(this,parent,books);
             Handler handler = new Handler();
+            /*
             handler.postDelayed(new Runnable() {
                 public void run() {
                     recyclerView.setAdapter(gridAdapter);
+                    parent.showGrid();
                 }
             }, 1500);
+            */
+            parent.showGrid();
+            recyclerView.setAdapter(gridAdapter);
+
 
         }
 

@@ -15,17 +15,34 @@
       android:layout_width="wrap_content"
       android:layout_height="match_parent"
       android:orientation="vertical">
-      <ImageButton
-        android:id="@+id/bookImage"
-        android:layout_width="180dp"
-        android:layout_height="240dp"
-        android:src="@drawable/da_vinci_code"
-        android:scaleType="fitCenter"
-        android:padding="4dp"
-        android:background="@color/fbutton_color_transparent"
-        android:onClick="previewCallback"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"/>
+      <android.support.v7.widget.CardView
+        android:id="@+id/cardTag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="false"
+        app:cardCornerRadius="8dp"
+
+        android:layout_marginBottom="-8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:background="@android:color/transparent"
+        app:cardElevation="8dp"
+        app:contentPadding="0dp"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true">
+
+        <ImageButton
+          android:id="@+id/bookImage"
+          android:layout_width="160dp"
+          android:layout_height="220dp"
+          android:src="@drawable/da_vinci_code"
+          android:scaleType="fitXY"
+          android:background="@color/fbutton_color_transparent"
+          android:onClick="previewCallback"/>
+
+      </android.support.v7.widget.CardView>
+
 
       <LinearLayout
         android:id="@+id/addCollection"
@@ -75,44 +92,37 @@
 
       <android.support.v7.widget.AppCompatTextView
         android:id = "@+id/bookTitle"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:padding="16dp"
-        android:textAlignment="center"
+        android:layout_width="120dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="12dp"
+        android:textAlignment="textStart"
+        android:gravity="start"
 
-        android:ellipsize="none"
-        android:text="Da Vinci Code Da Vinci Code Da Vinci Code Da Vinci Code Da Vinci Code"
-        android:textSize="32sp"
-        app:autoSizeMaxTextSize="40sp"
-        app:autoSizeMinTextSize="4sp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textSize="16sp"
+        android:textColor="@color/primaryTextColor"
+        app:autoSizeMaxTextSize="16sp"
+        app:autoSizeMinTextSize="12sp"
         app:autoSizeStepGranularity="0.5sp"
         app:autoSizeTextType="uniform"
-
-        android:layout_toEndOf="@id/bookImage"
-        android:layout_toRightOf="@id/bookImage"
-        android:layout_centerHorizontal="true"
         />
-
       <android.support.v7.widget.AppCompatTextView
         android:id = "@+id/bookPublisher"
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:padding="16dp"
-        android:textAlignment="textEnd"
-        android:gravity="end"
+        android:layout_width="120dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="12dp"
+        android:textAlignment="textStart"
+        android:gravity="start"
 
-        android:ellipsize="none"
-        android:text="Dan Brown JK Rowling"
-        android:textSize="24sp"
-        app:autoSizeMaxTextSize="32sp"
-        app:autoSizeMinTextSize="4sp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textSize="12sp"
+        android:textColor="@color/secondaryTextColor"
+        app:autoSizeMaxTextSize="12sp"
+        app:autoSizeMinTextSize="8sp"
         app:autoSizeStepGranularity="0.5sp"
         app:autoSizeTextType="uniform"
-
-        android:layout_alignParentBottom="true"
-        android:layout_toEndOf="@id/bookImage"
-        android:layout_toRightOf="@id/bookImage"
-        android:layout_centerHorizontal="true"
         />
 
       <LinearLayout

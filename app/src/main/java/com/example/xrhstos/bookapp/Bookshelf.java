@@ -2,6 +2,7 @@ package com.example.xrhstos.bookapp;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by philip on 12/4/2018.
@@ -16,11 +17,20 @@ public class Bookshelf {
     private ArrayList<Book> books;
     private String currentQuery ;
     private int newBooksFetchedAmount;
+    private static Bookshelf mInstance;
 
 
-    public Bookshelf(){
+    private Bookshelf() {
+
         books = new ArrayList<>();
         currentQuery = "";
+    }
+
+    public static synchronized Bookshelf getInstance() {
+        if (mInstance == null ) {
+            mInstance = new Bookshelf();
+        }
+        return mInstance;
     }
 
     public void addBooks(ArrayList<Book> data, MainMenu context){
@@ -29,6 +39,7 @@ public class Bookshelf {
                 currentQuery = MainMenu.query;
                 books = new ArrayList<>(data);
             }
+            books.addAll(data);
             /*
             newBooksFetchedAmount = 0;
             MyApp.getInstance().mainMenu.bitmapRequestCount = 0;
@@ -58,6 +69,13 @@ public class Bookshelf {
 
     }
 
+    public void addBooksByISBN(ArrayList<Book> data){
+        currentQuery = "";
+        books = new ArrayList<>(data);
+        newBooksFetchedAmount = data.size();
+    }
+
+
     public ArrayList<Book> fetchExtraBooksOnly(){
         ArrayList<Book> booksExtra = new ArrayList<>();
         for(int i=books.size()-newBooksFetchedAmount; i<books.size();i++){
@@ -79,6 +97,17 @@ public class Bookshelf {
     public Book getSingleBook(int position){
         Book b = books.get(position);
         return b;
+    }
+
+    public boolean matchBook(Book book){
+        String bookKey = book.getKey();
+        for(Book b : books){
+            if(b.getKey().equals(bookKey)){
+                b = book;
+                return true;
+            }
+        }
+        return false;
     }
 
 }

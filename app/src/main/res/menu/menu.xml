@@ -10,8 +10,14 @@
 
     <item
       android:id="@+id/collectionButton"
-      android:title="gallery"
+      android:title="Go to Gallery"
       android:icon="@drawable/ic_local_library_indigo_a200_24dp"
       app:showAsAction="ifRoom|collapseActionView"/>
 
+    <item
+      android:id="@+id/addManual"
+      android:title="Add Manually"
+      android:icon="@drawable/ic_add_green_800_24dp"
+      app:showAsAction="ifRoom|collapseActionView"
+      android:onClick="addBookManual"/>
 </menu>

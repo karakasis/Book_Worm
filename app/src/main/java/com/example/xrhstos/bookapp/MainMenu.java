@@ -1,6 +1,7 @@
 package com.example.xrhstos.bookapp;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
@@ -11,12 +12,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewStub;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.example.xrhstos.bookapp.scanner.IntentIntegrator;
+import com.example.xrhstos.bookapp.scanner.IntentResult;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -48,6 +52,8 @@ public class MainMenu extends AppCompatActivity{
   public TextView notifier;
 
   private View footer;
+  private View loading;
+  private View grid;
 
   private PreviewController previewController;
   private int firstVisibleItem;
@@ -57,6 +63,9 @@ public class MainMenu extends AppCompatActivity{
 
   private DatabaseHelper myDb;
   private Ping ping;
+
+  private int scannerCounter = 0;
+  private ArrayList<Book> booksFromScanner;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -75,11 +84,20 @@ public class MainMenu extends AppCompatActivity{
     setSupportActionBar(myToolbar);
 
     notifier = (TextView) findViewById(R.id.resultNotify);
+    ViewStub stub = (ViewStub) findViewById(R.id.layout_stub);
+    stub.setLayoutResource(R.layout.loading);
+    loading = stub.inflate();
+    loading.setVisibility(View.GONE);
 
+    ViewStub stub1 = (ViewStub) findViewById(R.id.layout_stub_grid);
+    grid = stub1.inflate();
+    grid.setVisibility(View.INVISIBLE);
     if(previewController == null){
       previewController = new PreviewController(
-          (RecyclerView) findViewById(R.id.grid_view),this);
+          (RecyclerView) grid.findViewById(R.id.grid_view),this);
     }
+
+
 
     if (savedInstanceState != null) {
       query = savedInstanceState.getString(SEARCH_ONLINE_QUERY_KEY);
@@ -98,7 +116,7 @@ public class MainMenu extends AppCompatActivity{
         logo.setImageResource(R.drawable.goodreads_logo);
       }
     }else{
-      bookshelf = new Bookshelf();
+      //bookshelf = new Bookshelf();
       currentPage = 1;
       loadingData = false;
       googleON = false;
@@ -170,6 +188,8 @@ public class MainMenu extends AppCompatActivity{
         searchView.setIconified(true);
         searchView.clearFocus();
 
+        grid.setVisibility(View.INVISIBLE);
+        loading.setVisibility(View.VISIBLE);
         searchBooks(query);
 
         return false;
@@ -249,19 +269,55 @@ public class MainMenu extends AppCompatActivity{
     Intent intent = new Intent(this, BookInfoActivity.class);
     //this will pass the book object itself so any changes will be made to the Book
     //class as well
-    intent.putExtra("bookObject", bookshelf.getSingleBook(position));
+    intent.putExtra("bookObjectPos", position);
     startActivity(intent);
 
   }
 
+  public void addBookManual(MenuItem item){
+
+    IntentIntegrator integrator = new IntentIntegrator(this);
+    integrator.initiateScan();
+
+  }
+
+  public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+    IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+    if (scanResult != null) {
+      // handle scan result
+      System.out.println(scanResult.toString());
+      StringRequest grISBN = VolleyNetworking.getInstance(this).goodReadsRequestByISBN(scanResult.getContents());
+      VolleyNetworking.getInstance(this).addToRequestQueue(grISBN);
+      JsonObjectRequest gISBN = VolleyNetworking.getInstance(this).googleRequestByISBN(scanResult.getContents());
+      VolleyNetworking.getInstance(this).addToRequestQueue(gISBN);
+    }
+    // else continue with any other code you need in the method
+  }
+
+  public void updateByISBN(ArrayList<Book> bookData){
+    if(scannerCounter == 0){
+      booksFromScanner = new ArrayList<>();
+    }
+    if(bookData!=null){
+      booksFromScanner.addAll(bookData);
+    }
+    scannerCounter++;
+
+    if(scannerCounter==2){
+      scannerCounter = 0;
+      Bookshelf.getInstance().addBooksByISBN(booksFromScanner);
+      updateAdapter(Bookshelf.getInstance().getBooks());
+    }
+  }
+
   public void update(ArrayList<Book> bookData){
-    bookshelf.addBooks(bookData,this);
+    Bookshelf.getInstance().addBooks(bookData,this);
 
     if(MainMenu.loadingData){
-      informAdapter(bookshelf.getNewBooksFetchedAmount(),bookshelf.fetchExtraBooksOnly());
+      informAdapter(Bookshelf.getInstance().getNewBooksFetchedAmount(),Bookshelf.getInstance().fetchExtraBooksOnly());
     }
     else{
-      updateAdapter(bookshelf.getBooks());
+      updateAdapter(Bookshelf.getInstance().getBooks());
     }
 
   }
@@ -270,10 +326,11 @@ public class MainMenu extends AppCompatActivity{
     System.out.println(bitmapRequestCount);
     if(!(bitmapRequestCount<bitmapMaxCount)){
       if(MainMenu.loadingData){
-        informAdapter(bookshelf.getNewBooksFetchedAmount(),bookshelf.fetchExtraBooksOnly());
+        informAdapter(Bookshelf.getInstance().getNewBooksFetchedAmount()
+            ,Bookshelf.getInstance().fetchExtraBooksOnly());
       }
       else{
-        updateAdapter(bookshelf.getBooks());
+        updateAdapter(Bookshelf.getInstance().getBooks());
       }
     }
   }
@@ -281,8 +338,8 @@ public class MainMenu extends AppCompatActivity{
   private void rotateUpdate(){
     //previewController = new PreviewController(
         //(RecyclerView) findViewById(R.id.grid_view),this);
-    updateAdapter(bookshelf.getBooks());
-    //previewController.setData(bookshelf.getBooks());
+    updateAdapter(Bookshelf.getInstance().getBooks());
+    //previewController.setData(Bookshelf.getInstance().getBooks());
     previewController.scrollToVisibleItem(firstVisibleItem);
   }
 
@@ -317,6 +374,11 @@ public class MainMenu extends AppCompatActivity{
     }else{
       return "no_api";
     }
+  }
+
+  public void showGrid(){
+    loading.setVisibility(View.GONE);
+    grid.setVisibility(View.VISIBLE);
   }
 }
 

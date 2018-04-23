@@ -40,9 +40,18 @@
       android:layout_below="@id/my_toolbar"
       android:layout_above="@id/logo_container">
 
-      <include
-        android:id="@+id/previewGrid"
-        layout="@layout/recycler_view"/>
+      <ViewStub
+        android:id="@+id/layout_stub"
+        android:inflatedId="@+id/inflated_gif"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+      <ViewStub
+        android:id="@+id/layout_stub_grid"
+        android:inflatedId="@+id/inflated_grid"
+        android:layout="@layout/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
 
     </FrameLayout>
 

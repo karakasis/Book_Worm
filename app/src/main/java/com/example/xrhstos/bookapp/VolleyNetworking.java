@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.view.MenuItem;
 import android.widget.ImageView.ScaleType;
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
@@ -25,11 +26,13 @@ import com.example.xrhstos.bookapp.parsers.JsonIDParser;
 import com.example.xrhstos.bookapp.parsers.JsonParser;
 import com.example.xrhstos.bookapp.parsers.XmlParser;
 import com.example.xrhstos.bookapp.parsers.XmlParserID;
+import com.example.xrhstos.bookapp.parsers.XmlParserISBN;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import org.json.JSONObject;
 
 /**
@@ -169,6 +172,57 @@ public class VolleyNetworking {
 
   }
 
+  public StringRequest goodReadsRequestByISBN(final String queryISBNString){
+
+    String requestURL = "https://www.goodreads.com/book/isbn/"+queryISBNString+"?key="+goodreadskey;
+    return new StringRequest(Request.Method.GET, requestURL,
+        new Response.Listener<String>() {
+          @Override
+          public void onResponse(String response) {
+
+            MainMenu mm = (MainMenu) mCtx;
+            XmlParserISBN.stringToList(response);
+            Book book = XmlParserISBN.parse(new String[]{"id","title","image_url","name","isbn13","isbn","publication_year","publication_month"
+                ,"publication_day","description","average_rating","num_pages","url"}, "book");
+
+            ArrayList<Book> res = new ArrayList<>();
+            res.add(book);
+            if(book==null){
+              mm.updateByISBN(null);
+            }else{
+              mm.updateByISBN(res);
+            }
+
+
+            System.out.println("Source : Goodreads");
+          }
+        }
+        , new Response.ErrorListener() {
+      @Override
+      public void onErrorResponse(VolleyError volleyError) {
+        String message = "";
+        if (volleyError instanceof NetworkError) {
+          message = "Cannot connect to Internet...Please check your connection!";
+        } else if (volleyError instanceof ServerError) {
+          message = "The server could not be found. Please try again after some time!!";
+        } else if (volleyError instanceof AuthFailureError) {
+          message = "Cannot connect to Internet...Please check your connection!";
+        } else if (volleyError instanceof ParseError) {
+          message = "Parsing error! Please try again after some time!!";
+        } else if (volleyError instanceof NoConnectionError) {
+          message = "Cannot connect to Internet...Please check your connection!";
+        } else if (volleyError instanceof TimeoutError) {
+          message = "Connection TimeOut! Please check your internet connection.";
+        }
+        MainMenu mm = (MainMenu) mCtx;
+        mm.notifier.setText(message);
+        mm.updateByISBN(null);
+      }
+    });
+
+
+  }
+
   public JsonObjectRequest googleRequest(final String queryString){
 
     final String BOOK_BASE_URL =  "https://www.googleapis.com/books/v1/volumes?";
@@ -278,6 +332,49 @@ public class VolleyNetworking {
         } else if (volleyError instanceof TimeoutError) {
           message = "Connection TimeOut! Please check your internet connection.";
         }
+      }
+    });
+
+
+  }
+
+  public JsonObjectRequest googleRequestByISBN(final String queryISBNString){
+
+    String requestURL =  "https://www.googleapis.com/books/v1/volumes?q=isbn:" + queryISBNString;
+
+    return new JsonObjectRequest(Request.Method.GET, requestURL,
+        null
+        , new Response.Listener<JSONObject>() {
+
+      @Override
+      public void onResponse(JSONObject response) {
+
+        MainMenu mm = (MainMenu) mCtx;
+        mm.updateByISBN(JsonParser.parse(response));
+
+        System.out.println("Source : Google");
+      }
+    }, new Response.ErrorListener() {
+
+      @Override
+      public void onErrorResponse(VolleyError volleyError) {
+        String message = "";
+        if (volleyError instanceof NetworkError) {
+          message = "Cannot connect to Internet...Please check your connection!";
+        } else if (volleyError instanceof ServerError) {
+          message = "The server could not be found. Please try again after some time!!";
+        } else if (volleyError instanceof AuthFailureError) {
+          message = "Cannot connect to Internet...Please check your connection!";
+        } else if (volleyError instanceof ParseError) {
+          message = "Parsing error! Please try again after some time!!";
+        } else if (volleyError instanceof NoConnectionError) {
+          message = "Cannot connect to Internet...Please check your connection!";
+        } else if (volleyError instanceof TimeoutError) {
+          message = "Connection TimeOut! Please check your internet connection.";
+        }
+        MainMenu mm = (MainMenu) mCtx;
+        mm.notifier.setText(message);
+        mm.updateByISBN(null);
       }
     });
 

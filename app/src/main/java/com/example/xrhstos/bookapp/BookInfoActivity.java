@@ -5,11 +5,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
+import android.text.Html;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import info.hoang8f.widget.FButton;
@@ -24,18 +27,30 @@ public class BookInfoActivity extends AppCompatActivity {
   private Buttons buttonsController;
 
   @Override
+  public void onBackPressed(){
+    VolleyNetworking.getInstance(this).getRequestQueue().cancelAll(new RequestQueue.RequestFilter() {
+      @Override
+      public boolean apply(Request<?> request) {
+        return true;
+      }
+    });
+    super.onBackPressed();
+  }
+
+  @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
+    setContentView(R.layout.loading);
 
     //Intent intent = getIntent();
     Bundle data = getIntent().getExtras();
-    currentBook = (Book) data.getParcelable("bookObject");
+    int position = data.getInt("bookObjectPos");
+    currentBook = Bookshelf.getInstance().getSingleBook(position);
 
     String googleID = currentBook.getGoogleID();
     String id = currentBook.getId();
 
-    Book matchedBook= Collection.getInstance().matchBook(currentBook.getKey());
+    Book matchedBook = Collection.getInstance().matchBook(currentBook.getKey());
     if(matchedBook != null){
       System.out.println("found ok");
       currentBook = matchedBook;
@@ -148,7 +163,7 @@ public class BookInfoActivity extends AppCompatActivity {
     });
 
     TextView tvDesc = findViewById(R.id.description);
-    tvDesc.setText(currentBook.getDescription());
+    tvDesc.setText(Html.fromHtml(currentBook.getDescription()));
 
     LinearLayout info = findViewById(R.id.moreInfo);
     if(currentBook.getPublishedDate()!=null){
