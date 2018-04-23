@@ -58,10 +58,18 @@ public class XmlParserISBN {
         fetchedBook = new Book(id,title,authors,image_url);
         fetchedBook.setISBN13(ISBN13);
         fetchedBook.setISBN10(ISBN10);
-        fetchedBook.setPageCount(Integer.valueOf(num_pages));
+        try{
+          fetchedBook.setPageCount(Integer.valueOf(num_pages));
+        }catch(NumberFormatException ex){ // handle your exception
+          fetchedBook.setPageCount(-1);
+        }
         fetchedBook.setPreviewURL(url);
         fetchedBook.setDescription(description);
-        fetchedBook.setAverageRating(Float.valueOf(average_rating));
+        try{
+          fetchedBook.setAverageRating(Float.valueOf(average_rating));
+        }catch(NumberFormatException ex){ // handle your exception
+          fetchedBook.setAverageRating(0);
+        }
         fetchedBook.setPublishedDate(publication_day+"/"+publication_month+"/"+publication_year);
         fetchedBook.setBuyURL("https://www.goodreads.com/book_link/follow/8036?book_id="+fetchedBook.getId());
         break;
@@ -82,7 +90,6 @@ public class XmlParserISBN {
 
             tagSkipper[i] = 1;
             str = XmlParserISBN.removeTags(str,tags[i]);
-
             // "isbn","publication_year","publication_month"
             //    ,"publication_day","description","average_rating","num_pages","url"
             if(tags[i].equals("id")) {
@@ -94,9 +101,9 @@ public class XmlParserISBN {
             }else if(tags[i].equals("image_url")){
               image_url = str;
             }else if(tags[i].equals("isbn13")) {
-              ISBN13 = removeCDATA(str);
+              ISBN13 = str;
             }else if(tags[i].equals("isbn")) {
-              ISBN10 = removeCDATA(str);
+              ISBN10 = str;
             }else if(tags[i].equals("publication_year")){
               publication_year = str;
             }else if(tags[i].equals("publication_month")){
@@ -104,13 +111,13 @@ public class XmlParserISBN {
             }else if(tags[i].equals("publication_day")){
               publication_day = str;
             }else if(tags[i].equals("description")){
-              description = removeCDATA(str);
+              description = str;
             }else if(tags[i].equals("average_rating")){
               average_rating = str;
             }else if(tags[i].equals("num_pages")){
-              num_pages = removeCDATA(str);
+              num_pages = str;
             }else if(tags[i].equals("url")){
-              url = removeCDATA(str);
+              url = str;
             }
 
             System.out.println(str);
@@ -160,7 +167,13 @@ public class XmlParserISBN {
 
     }
 
-    return str;
+    String rem;
+    try{
+      rem = removeCDATA(str);
+    }catch (IllegalStateException e){
+      rem = str;
+    }
+    return rem;
   }
 
 //<isbn><![CDATA[0060853980]]></isbn>

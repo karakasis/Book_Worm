@@ -19,8 +19,8 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
-import com.example.xrhstos.bookapp.scanner.IntentIntegrator;
-import com.example.xrhstos.bookapp.scanner.IntentResult;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,6 +40,7 @@ public class MainMenu extends AppCompatActivity{
   private static final String GLM_KEY = "GLM";
   private static final String GOOGLE_ON_KEY = "GOOGLE";
   private static final String GOODREADS_ON_KEY = "GOODREADS";
+  private static final String IS_API_LOADING_KEY = "IS_API_LOADING";
 
   public static Bookshelf bookshelf;
 
@@ -54,6 +55,7 @@ public class MainMenu extends AppCompatActivity{
   private View footer;
   private View loading;
   private View grid;
+  private boolean isLoading;
 
   private PreviewController previewController;
   private int firstVisibleItem;
@@ -87,15 +89,14 @@ public class MainMenu extends AppCompatActivity{
     ViewStub stub = (ViewStub) findViewById(R.id.layout_stub);
     stub.setLayoutResource(R.layout.loading);
     loading = stub.inflate();
-    loading.setVisibility(View.GONE);
 
     ViewStub stub1 = (ViewStub) findViewById(R.id.layout_stub_grid);
     grid = stub1.inflate();
-    grid.setVisibility(View.INVISIBLE);
     if(previewController == null){
       previewController = new PreviewController(
           (RecyclerView) grid.findViewById(R.id.grid_view),this);
     }
+
 
 
 
@@ -108,6 +109,7 @@ public class MainMenu extends AppCompatActivity{
       googleON = savedInstanceState.getBoolean(GOOGLE_ON_KEY);
       goodreadsON = savedInstanceState.getBoolean(GOODREADS_ON_KEY);
       loadingData = savedInstanceState.getBoolean(LOADING_KEY);
+      isLoading = savedInstanceState.getBoolean(IS_API_LOADING_KEY);
       if(googleON){
         ImageView logo = (ImageView) findViewById(R.id.logo);
         logo.setImageResource(R.drawable.google_logo);
@@ -122,6 +124,13 @@ public class MainMenu extends AppCompatActivity{
       googleON = false;
       query = "";
       langQuery = "";
+      isLoading = false;
+    }
+
+    if(isLoading){
+      showLoading();
+    }else{
+      showGrid();
     }
 
   }
@@ -139,6 +148,7 @@ public class MainMenu extends AppCompatActivity{
     bundle.putBoolean(LOADING_KEY,loadingData);
     bundle.putBoolean(GOODREADS_ON_KEY,goodreadsON);
     bundle.putBoolean(GOOGLE_ON_KEY,googleON);
+    bundle.putBoolean(IS_API_LOADING_KEY,isLoading);
 
     // Save list state
     glmState = previewController.getLayoutManager().onSaveInstanceState();
@@ -188,8 +198,7 @@ public class MainMenu extends AppCompatActivity{
         searchView.setIconified(true);
         searchView.clearFocus();
 
-        grid.setVisibility(View.INVISIBLE);
-        loading.setVisibility(View.VISIBLE);
+        showLoading();
         searchBooks(query);
 
         return false;
@@ -277,6 +286,12 @@ public class MainMenu extends AppCompatActivity{
   public void addBookManual(MenuItem item){
 
     IntentIntegrator integrator = new IntentIntegrator(this);
+    integrator.setDesiredBarcodeFormats(IntentIntegrator.ONE_D_CODE_TYPES);
+    integrator.setPrompt("Scan a barcode");
+    integrator.setCameraId(0);  // Use a specific camera of the device
+    integrator.setBeepEnabled(true);
+    integrator.setBarcodeImageEnabled(true);
+    integrator.setOrientationLocked(false);
     integrator.initiateScan();
 
   }
@@ -286,10 +301,15 @@ public class MainMenu extends AppCompatActivity{
     if (scanResult != null) {
       // handle scan result
       System.out.println(scanResult.toString());
+
+      showLoading();
+
       StringRequest grISBN = VolleyNetworking.getInstance(this).goodReadsRequestByISBN(scanResult.getContents());
       VolleyNetworking.getInstance(this).addToRequestQueue(grISBN);
       JsonObjectRequest gISBN = VolleyNetworking.getInstance(this).googleRequestByISBN(scanResult.getContents());
       VolleyNetworking.getInstance(this).addToRequestQueue(gISBN);
+    }else{
+      notifier.setText("Could not find book from QR");
     }
     // else continue with any other code you need in the method
   }
@@ -377,8 +397,15 @@ public class MainMenu extends AppCompatActivity{
   }
 
   public void showGrid(){
+    isLoading = false;
     loading.setVisibility(View.GONE);
     grid.setVisibility(View.VISIBLE);
+  }
+
+  public void showLoading(){
+    isLoading = true;
+    grid.setVisibility(View.INVISIBLE);
+    loading.setVisibility(View.VISIBLE);
   }
 }
 

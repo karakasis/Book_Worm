@@ -31,7 +31,7 @@ dependencies {
     compile 'com.android.volley:volley:1.1.0'
     compile 'info.hoang8f:fbutton:1.0.5'
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.+'
-    compile 'me.dm7.barcodescanner:zxing:1.9'
+    compile 'com.journeyapps:zxing-android-embedded:3.6.0'
 
     compile 'com.android.support:support-v4:27.1.1'
     compile 'com.android.support:appcompat-v7:27.1.1'

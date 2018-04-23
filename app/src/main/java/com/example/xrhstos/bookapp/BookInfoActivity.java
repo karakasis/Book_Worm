@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.Html;
 import android.view.View;
+import android.view.ViewStub;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -26,9 +27,13 @@ public class BookInfoActivity extends AppCompatActivity {
   private Book currentBook;
   private Buttons buttonsController;
 
+  private View loading;
+  private View info;
+
+  private boolean isLoading;
   @Override
   public void onBackPressed(){
-    VolleyNetworking.getInstance(this).getRequestQueue().cancelAll(new RequestQueue.RequestFilter() {
+    VolleyNetworkingBookInfo.getInstance(this).getRequestQueue().cancelAll(new RequestQueue.RequestFilter() {
       @Override
       public boolean apply(Request<?> request) {
         return true;
@@ -40,7 +45,26 @@ public class BookInfoActivity extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.loading);
+    setContentView(R.layout.info_menu);
+
+    ViewStub stub = (ViewStub) findViewById(R.id.layout_stub_load);
+    stub.setLayoutResource(R.layout.loading);
+    loading = stub.inflate();
+
+    ViewStub stub1 = (ViewStub) findViewById(R.id.layout_stub_info);
+    info = stub1.inflate();
+
+    if(savedInstanceState!=null){
+      isLoading = savedInstanceState.getBoolean("IS_LOADING");
+    }else{
+      isLoading = true;
+    }
+
+    if(isLoading){
+      showLoading();
+    }else{
+      showInfo();
+    }
 
     //Intent intent = getIntent();
     Bundle data = getIntent().getExtras();
@@ -58,16 +82,22 @@ public class BookInfoActivity extends AppCompatActivity {
 
     if(currentBook.getDescription() == null){//hot fix not to ask for api if api is already inputted
       if(googleID != null){
-        JsonObjectRequest jor = VolleyNetworking.getInstance(this).googleRequestByID(googleID,currentBook);
-        VolleyNetworking.getInstance(this).addToRequestQueue(jor);
+        JsonObjectRequest jor = VolleyNetworkingBookInfo.getInstance(this).googleRequestByID(googleID,currentBook);
+        VolleyNetworkingBookInfo.getInstance(this).addToRequestQueue(jor);
       }else if(id != null){
-        StringRequest stringRequest = VolleyNetworking.getInstance(this).goodReadsRequestByID(id,currentBook);
-        VolleyNetworking.getInstance(this).addToRequestQueue(stringRequest);
+        StringRequest stringRequest = VolleyNetworkingBookInfo.getInstance(this).goodReadsRequestByID(id,currentBook);
+        VolleyNetworkingBookInfo.getInstance(this).addToRequestQueue(stringRequest);
       }
     }else{ //go to update anyways
       update(currentBook);
     }
 
+  }
+
+  @Override
+  protected void onSaveInstanceState(Bundle bundle) {
+    super.onSaveInstanceState(bundle);
+    bundle.putBoolean("IS_LOADING",isLoading);
   }
 
   private void createButtons(){
@@ -131,7 +161,8 @@ public class BookInfoActivity extends AppCompatActivity {
 
   public void update(Book data){
     currentBook = data;
-    setContentView(R.layout.book_info);
+    showInfo();
+
     String title = currentBook.getBookTitle();
     String[] author = currentBook.getAuthor();
 
@@ -226,6 +257,18 @@ public class BookInfoActivity extends AppCompatActivity {
     } catch (android.content.ActivityNotFoundException anfe) {
       System.out.println("cant open url");
     }
+  }
+
+  public void showInfo(){
+    isLoading = false;
+    loading.setVisibility(View.GONE);
+    info.setVisibility(View.VISIBLE);
+  }
+
+  public void showLoading(){
+    isLoading = true;
+    info.setVisibility(View.INVISIBLE);
+    loading.setVisibility(View.VISIBLE);
   }
 
 }

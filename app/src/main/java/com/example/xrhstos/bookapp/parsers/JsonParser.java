@@ -29,7 +29,7 @@ import org.json.JSONObject;
  */
 public class JsonParser {
 
-  public static ArrayList<Book> parse(JSONObject jsonObject) {
+  public static ArrayList<Book> parse(JSONObject jsonObject,boolean bypass) {
     ArrayList<Book> collection = new ArrayList<>();
     try {
 
@@ -64,7 +64,8 @@ public class JsonParser {
         // Try to get the author and title from the current item,
         // catch if either field is empty and move on.
         try {
-          if(!MainMenu.langQuery.isEmpty() && volumeInfo.getString("language").equals(MainMenu.langQuery)){
+          if(!MainMenu.langQuery.isEmpty() && volumeInfo.getString("language").equals(MainMenu.langQuery)
+              || bypass){
             System.out.println(collection.size());
             title = volumeInfo.getString("title");
             System.out.println(title);

@@ -42,12 +42,12 @@ import org.json.JSONObject;
 public class VolleyNetworking {
   private static VolleyNetworking mInstance;
   private RequestQueue mRequestQueue;
-  private static Context mCtx;
+  private static MainMenu mCtx;
 
   private String goodreadskey = "Y2yc0wb3LDtDVSGwlCSJDg";
 
   private VolleyNetworking(Context context) {
-    mCtx = context;
+    mCtx = (MainMenu) context;
     mRequestQueue = getRequestQueue();
 
   }
@@ -96,7 +96,7 @@ public class VolleyNetworking {
           @Override
           public void onResponse(String response) {
 
-            MainMenu mm = (MainMenu) mCtx;
+            MainMenu mm = mCtx;
             XmlParser.stringToList(response);
 
             mm.update(XmlParser.parse(new String[]{"id","title","name","image_url"}, "best_book"));
@@ -128,49 +128,7 @@ public class VolleyNetworking {
     });
   }
 
-  public StringRequest goodReadsRequestByID(final String queryIDString, final Book book){
-
-    //String requestURL = "https://www.goodreads.com/book/show?format=json&key="+goodreadskey+"&id="+queryIDString;
-    String requestURL = "https://www.goodreads.com/book/show/"+queryIDString+".xml?key="+goodreadskey;
-    return new StringRequest(Request.Method.GET, requestURL,
-        new Response.Listener<String>() {
-          @Override
-          public void onResponse(String response) {
-
-            BookInfoActivity bia = (BookInfoActivity) mCtx;
-            XmlParserID.stringToList(response);
-
-            bia.update(XmlParserID.parse(new String[]{"isbn13","isbn","publication_year","publication_month"
-                ,"publication_day","description","average_rating","num_pages","url"}, "book", book));
-
-
-            System.out.println("Source : Goodreads");
-          }
-        }
-        , new Response.ErrorListener() {
-      @Override
-      public void onErrorResponse(VolleyError volleyError) {
-        String message = "";
-        if (volleyError instanceof NetworkError) {
-          message = "Cannot connect to Internet...Please check your connection!";
-        } else if (volleyError instanceof ServerError) {
-          message = "The server could not be found. Please try again after some time!!";
-        } else if (volleyError instanceof AuthFailureError) {
-          message = "Cannot connect to Internet...Please check your connection!";
-        } else if (volleyError instanceof ParseError) {
-          message = "Parsing error! Please try again after some time!!";
-        } else if (volleyError instanceof NoConnectionError) {
-          message = "Cannot connect to Internet...Please check your connection!";
-        } else if (volleyError instanceof TimeoutError) {
-          message = "Connection TimeOut! Please check your internet connection.";
-        }
-        MainMenu mm = (MainMenu) mCtx;
-        mm.notifier.setText(message);
-      }
-    });
-
-
-  }
+  //good reads request by id in VolleyNetworkingBookInfo class
 
   public StringRequest goodReadsRequestByISBN(final String queryISBNString){
 
@@ -180,7 +138,7 @@ public class VolleyNetworking {
           @Override
           public void onResponse(String response) {
 
-            MainMenu mm = (MainMenu) mCtx;
+            MainMenu mm = mCtx;
             XmlParserISBN.stringToList(response);
             Book book = XmlParserISBN.parse(new String[]{"id","title","image_url","name","isbn13","isbn","publication_year","publication_month"
                 ,"publication_day","description","average_rating","num_pages","url"}, "book");
@@ -268,7 +226,7 @@ public class VolleyNetworking {
           public void onResponse(JSONObject response) {
 
             MainMenu mm = (MainMenu) mCtx;
-            mm.update(JsonParser.parse(response));
+            mm.update(JsonParser.parse(response,false));
 
             System.out.println("Source : Google");
           }
@@ -298,45 +256,7 @@ public class VolleyNetworking {
 
   }
 
-  public JsonObjectRequest googleRequestByID(final String queryIDString, final Book book){
-
-    String requestURL =  "https://www.googleapis.com/books/v1/volumes/" + queryIDString;
-
-    return new JsonObjectRequest(Request.Method.GET, requestURL,
-        null
-        , new Response.Listener<JSONObject>() {
-
-      @Override
-      public void onResponse(JSONObject response) {
-
-        BookInfoActivity bia = (BookInfoActivity) mCtx;
-        bia.update(JsonIDParser.parse(response,book));
-
-        System.out.println("Source : GoogleID");
-      }
-    }, new Response.ErrorListener() {
-
-      @Override
-      public void onErrorResponse(VolleyError volleyError) {
-        String message = "";
-        if (volleyError instanceof NetworkError) {
-          message = "Cannot connect to Internet...Please check your connection!";
-        } else if (volleyError instanceof ServerError) {
-          message = "The server could not be found. Please try again after some time!!";
-        } else if (volleyError instanceof AuthFailureError) {
-          message = "Cannot connect to Internet...Please check your connection!";
-        } else if (volleyError instanceof ParseError) {
-          message = "Parsing error! Please try again after some time!!";
-        } else if (volleyError instanceof NoConnectionError) {
-          message = "Cannot connect to Internet...Please check your connection!";
-        } else if (volleyError instanceof TimeoutError) {
-          message = "Connection TimeOut! Please check your internet connection.";
-        }
-      }
-    });
-
-
-  }
+  //google request by id in VolleyNetworkingBookInfo class
 
   public JsonObjectRequest googleRequestByISBN(final String queryISBNString){
 
@@ -350,7 +270,7 @@ public class VolleyNetworking {
       public void onResponse(JSONObject response) {
 
         MainMenu mm = (MainMenu) mCtx;
-        mm.updateByISBN(JsonParser.parse(response));
+        mm.updateByISBN(JsonParser.parse(response, true));
 
         System.out.println("Source : Google");
       }
