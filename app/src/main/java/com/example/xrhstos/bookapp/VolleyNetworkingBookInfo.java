@@ -52,7 +52,7 @@ public class VolleyNetworkingBookInfo {
   }
 
   public static synchronized VolleyNetworkingBookInfo getInstance(Context context) {
-    if (mInstance == null || !mCtx.getClass().equals( context.getClass())) {
+    if (mInstance == null) {
       mInstance = new VolleyNetworkingBookInfo(context);
     }
     return mInstance;

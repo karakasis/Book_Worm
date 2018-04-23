@@ -31,6 +31,7 @@ public class BookInfoActivity extends AppCompatActivity {
   private View info;
 
   private boolean isLoading;
+  /*
   @Override
   public void onBackPressed(){
     VolleyNetworkingBookInfo.getInstance(this).getRequestQueue().cancelAll(new RequestQueue.RequestFilter() {
@@ -41,30 +42,36 @@ public class BookInfoActivity extends AppCompatActivity {
     });
     super.onBackPressed();
   }
-
+*/
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.info_menu);
+    setContentView(R.layout.loading);
 
+    /*
     ViewStub stub = (ViewStub) findViewById(R.id.layout_stub_load);
     stub.setLayoutResource(R.layout.loading);
     loading = stub.inflate();
+    loading.setVisibility(View.VISIBLE);
 
     ViewStub stub1 = (ViewStub) findViewById(R.id.layout_stub_info);
     info = stub1.inflate();
+    info.setVisibility(View.GONE);
+
+
 
     if(savedInstanceState!=null){
       isLoading = savedInstanceState.getBoolean("IS_LOADING");
+      if(isLoading){
+        setContentView(R.layout.loading);
+      }else{
+        setContentView(R.layout.book_info);
+      }
     }else{
       isLoading = true;
     }
 
-    if(isLoading){
-      showLoading();
-    }else{
-      showInfo();
-    }
+ */
 
     //Intent intent = getIntent();
     Bundle data = getIntent().getExtras();
@@ -81,6 +88,7 @@ public class BookInfoActivity extends AppCompatActivity {
     }
 
     if(currentBook.getDescription() == null){//hot fix not to ask for api if api is already inputted
+      //showLoading();
       if(googleID != null){
         JsonObjectRequest jor = VolleyNetworkingBookInfo.getInstance(this).googleRequestByID(googleID,currentBook);
         VolleyNetworkingBookInfo.getInstance(this).addToRequestQueue(jor);
@@ -161,7 +169,8 @@ public class BookInfoActivity extends AppCompatActivity {
 
   public void update(Book data){
     currentBook = data;
-    showInfo();
+    //showInfo();
+    setContentView(R.layout.book_info);
 
     String title = currentBook.getBookTitle();
     String[] author = currentBook.getAuthor();
@@ -196,23 +205,23 @@ public class BookInfoActivity extends AppCompatActivity {
     TextView tvDesc = findViewById(R.id.description);
     tvDesc.setText(Html.fromHtml(currentBook.getDescription()));
 
-    LinearLayout info = findViewById(R.id.moreInfo);
+    LinearLayout infoLL = findViewById(R.id.moreInfo);
     if(currentBook.getPublishedDate()!=null){
       TextView tvPublishedDate = new TextView(this);
       tvPublishedDate.setText("Published: "+currentBook.getPublishedDate());
-      info.addView(tvPublishedDate);
+      infoLL.addView(tvPublishedDate);
     }
     if(currentBook.getCategories()!=null){
       String[] catStr = currentBook.getCategories();
       int cat = catStr.length;
       TextView tvCatTitle = new TextView(this);
       tvCatTitle.setText("Genres: ");
-      info.addView(tvCatTitle);
+      infoLL.addView(tvCatTitle);
       TextView[] tvcats = new TextView[cat];
       for(int i=0; i<cat; i++){
         tvcats[i] = new TextView(this);
         tvcats[i].setText(catStr[i]);
-        info.addView(tvcats[i]);
+        infoLL.addView(tvcats[i]);
         if(i==3){
           break;
         }
@@ -221,17 +230,17 @@ public class BookInfoActivity extends AppCompatActivity {
     if(currentBook.getISBN13()!= null){
       TextView tvISBN13 = new TextView(this);
       tvISBN13.setText("ISBN_13: "+currentBook.getISBN13());
-      info.addView(tvISBN13);
+      infoLL.addView(tvISBN13);
     }
     if(currentBook.getISBN10()!= null){
       TextView tvISBN10 = new TextView(this);
       tvISBN10.setText("ISBN_10: "+currentBook.getISBN10());
-      info.addView(tvISBN10);
+      infoLL.addView(tvISBN10);
     }
     if(currentBook.getPageCount()!=-1){
       TextView tvPagecount = new TextView(this);
       tvPagecount.setText("Pages: "+String.valueOf(currentBook.getPageCount()));
-      info.addView(tvPagecount);
+      infoLL.addView(tvPagecount);
     }
 
 
@@ -261,8 +270,8 @@ public class BookInfoActivity extends AppCompatActivity {
 
   public void showInfo(){
     isLoading = false;
-    loading.setVisibility(View.GONE);
     info.setVisibility(View.VISIBLE);
+    loading.setVisibility(View.GONE);
   }
 
   public void showLoading(){
