@@ -154,7 +154,7 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
       loader.into(new Target() {
         @Override
         public void onBitmapLoaded(Bitmap bitmap, LoadedFrom from) {
-          container.invalidate();
+          //container.invalidate();
           container.setImageBitmap(bitmap);
           container.invalidate();
           System.out.println("Picasso called : bitmap Loaded for " +book.getBookTitle());

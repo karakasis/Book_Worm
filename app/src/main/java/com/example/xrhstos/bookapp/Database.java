@@ -212,40 +212,37 @@ public class Database extends SQLiteOpenHelper {
         String q = "SELECT * FROM " + BOOKS_TABLE;//The entire table
         Cursor cursor = sqLiteDatabase.rawQuery(q,null);
 
-        /////->One iteration for each book
-
-        try{ //< karakasis edit auta ta try catch einai kakogramena spane tin while(line:243) sto 1o error pou tha broun
-            // an exei error se otidipote den kaleite savedBooksList.add(book);
-            //Index of each collumn
-            int bookKeyIndex = cursor.getColumnIndex(BOOK_KEY);
-            int titleIndex = cursor.getColumnIndex(BOOK_TITLE);
-            int averageRatingIndex = cursor.getColumnIndex(AVERAGE_RATING);
-            int personalRatingIndex = cursor.getColumnIndex(PERSONAL_RATING);
-            int IdIndex = cursor.getColumnIndex(BOOK_ID);
-            int googleIdIndex = cursor.getColumnIndex(GOOGLE_ID);
-            int isbn13Index = cursor.getColumnIndex(ISBN_13);
-            int isbn10Index = cursor.getColumnIndex(ISBN_10);
-            int urlIndex = cursor.getColumnIndex(BOOK_COVER_URL);
-            int descriptionIndex = cursor.getColumnIndex(DESCRIPTION);
-            int callbackUrlIndex = cursor.getColumnIndex(CALLBACK_URL);
-            int previewUrlIndex = cursor.getColumnIndex(PREVIEW_URL);
-            int buyUrlIndex = cursor.getColumnIndex(BUY_URL);
-            int pageCountIndex = cursor.getColumnIndex(PAGE_COUNT);
-            int dateIndex = cursor.getColumnIndex(PUBLISHED_DATE);
-            int isBookCollectionIndex = cursor.getColumnIndex(IS_BOOK_COLLECTION);
-            int isBookReadIndex = cursor.getColumnIndex(IS_BOOK_READ);
-            int isBookInWishlistIndex = cursor.getColumnIndex(IS_BOOK_IN_WHISHLIST);
-            int bookCoverIndex = cursor.getColumnIndex(IMAGE_DATA);
+        //Index of each collumn BOOKS_TABLE
+        //int bookKeyIndex = cursor.getColumnIndex(BOOK_KEY);
+        int titleIndex = cursor.getColumnIndex(BOOK_TITLE);
+        int averageRatingIndex = cursor.getColumnIndex(AVERAGE_RATING);
+        int personalRatingIndex = cursor.getColumnIndex(PERSONAL_RATING);
+        int IdIndex = cursor.getColumnIndex(BOOK_ID);
+        int googleIdIndex = cursor.getColumnIndex(GOOGLE_ID);
+        int isbn13Index = cursor.getColumnIndex(ISBN_13);
+        int isbn10Index = cursor.getColumnIndex(ISBN_10);
+        int urlIndex = cursor.getColumnIndex(BOOK_COVER_URL);
+        int descriptionIndex = cursor.getColumnIndex(DESCRIPTION);
+        int callbackUrlIndex = cursor.getColumnIndex(CALLBACK_URL);
+        int previewUrlIndex = cursor.getColumnIndex(PREVIEW_URL);
+        int buyUrlIndex = cursor.getColumnIndex(BUY_URL);
+        int pageCountIndex = cursor.getColumnIndex(PAGE_COUNT);
+        int dateIndex = cursor.getColumnIndex(PUBLISHED_DATE);
+        int isBookCollectionIndex = cursor.getColumnIndex(IS_BOOK_COLLECTION);
+        int isBookReadIndex = cursor.getColumnIndex(IS_BOOK_READ);
+        int isBookInWishlistIndex = cursor.getColumnIndex(IS_BOOK_IN_WHISHLIST);
+        int bookCoverIndex = cursor.getColumnIndex(IMAGE_DATA);
 
 
 
-            cursor.moveToPosition(-1);
+        cursor.moveToPosition(-1);
+        while(cursor.moveToNext()) {
 
-            while(cursor.moveToNext()){
-
+            try {  //Try to fill the book from the database.
 
                 book = new Book();
 
+                //Set every book field according to each database column.
                 book.setId(cursor.getString(IdIndex));
                 book.setAverageRating(averageRatingIndex);
                 book.setPersonalRating(personalRatingIndex);
@@ -263,62 +260,79 @@ public class Database extends SQLiteOpenHelper {
                 book.setBookInCollection(1 == cursor.getInt(isBookCollectionIndex));//1==int var (converts int to boolean)
                 book.setBookRead(1 == cursor.getInt(isBookReadIndex));//SQLite doesn't support boolean.
                 book.setBookInWishlist(1 == cursor.getInt(isBookInWishlistIndex));
-                try{ //< karakasis edit
+
+                try { //< karakasis edit
                     book.setBitmapFromByteArray(cursor.getBlob(bookCoverIndex));
-                }catch (Exception outOfBounds){
+                } catch (Exception outOfBounds) {
                     System.out.println("cursor null here");
                 }
 
-                //Query of categories of the current book
-                String q1 = null;
+            }catch (Exception outOfBounds) {
 
-                q1 = "SELECT * FROM " + BOOK_CATEGORIES_TABLE
+            }
+
+            try {  //Try to fill the book with categories and authors.
+
+                //Query of categories of the current book
+                String q1 = "SELECT * FROM " + BOOK_CATEGORIES_TABLE
                     + " WHERE " + BOOK_CATEGORIES_TABLE + "." + BOOK_KEY + "='" + book.getKey() + "'";
 
 
-                Cursor cursorCategories = sqLiteDatabase.rawQuery(q1,null);
+                try {
+                    Cursor cursorCategories = sqLiteDatabase.rawQuery(q1, null);
+                    int categoryIndex = cursorCategories.getColumnIndex(CATEGORY);
+                    String[] categories = new String[cursorCategories.getCount()];
+
+                    cursorCategories.moveToPosition(-1);
+
+                    //Create String[] of categories
+                    while (cursorCategories.moveToNext()) {
+                        categories[cursorCategories.getPosition()] = cursorCategories.getString(categoryIndex);
+
+                    }
+                    book.setCategories(categories);
+
+                } catch (Exception DatabaseQueryProblem){
+                    System.out.println("To categories exei problem");
+                }
 
                 //Query of authors of the current book
-                String q2 = null;
-                q2 = "SELECT * FROM " + AUTHORS_TABLE
+                String q2 = "SELECT * FROM " + AUTHORS_TABLE
                     + " WHERE " + AUTHORS_TABLE + "." + BOOK_KEY + "='" + book.getKey() + "'";
 
-                Cursor cursorAuthors = sqLiteDatabase.rawQuery(q2,null);
+                try {
+                    Cursor cursorAuthors = sqLiteDatabase.rawQuery(q2, null);
+                    int authorIndex = cursorAuthors.getColumnIndex(AUTHOR);
+                    String[] authors = new String[cursorAuthors.getCount()];
 
-                int categoryIndex = cursorCategories.getColumnIndex(CATEGORY);
+                    cursorAuthors.moveToPosition(-1);
 
-                int authorIndex = cursorAuthors.getColumnIndex(AUTHOR);
+                    //Create String[] of authors
+                    while (cursorAuthors.moveToNext()) { //<karakasis edit : to authorIndex einai -1. xtupaei kanei catch stin (line:316)
+                        //kai vgainei apo to prwto while
+                        authors[cursorAuthors.getPosition()] = cursorAuthors.getString(authorIndex);
 
-                String[] categories = new String[cursorCategories.getCount()];
+                    }
+                    book.setAuthor(authors);
 
-                String[] authors = new String[cursorAuthors.getCount()];
-
-                cursorCategories.moveToPosition(-1);
-                cursorAuthors.moveToPosition(-1);
-
-                //Create String[] of categories
-                while(cursorCategories.moveToNext()) {
-                    categories[cursorCategories.getPosition()] = cursorCategories.getString(categoryIndex);
-
+                } catch (Exception DatabaseQueryProblem){
+                    System.out.println("To authors exei problem exei problem");
                 }
-                book.setCategories(categories);
 
-                //Create String[] of authors
-                while(cursorAuthors.moveToNext()) { //<karakasis edit : to authorIndex einai -1. xtupaei kanei catch stin (line:316)
-                    //kai vgainei apo to prwto while
-                    authors[cursorAuthors.getPosition()] = cursorAuthors.getString(authorIndex);
+                //Index of each column AUTHORS_TABLE, CATEGORIES_TABLE
 
-                }
-                book.setAuthor(authors);
 
                 //Add book to list
                 savedBooksList.add(book);
+            }catch (Exception outOfBounds){
+                System.out.println("To authors einai -1");
             }
-        }catch (Exception outOfBounds){
+            finally {
 
-        }
-        finally {
-            cursor.close();
+            }
+
+
+
         }
 
 

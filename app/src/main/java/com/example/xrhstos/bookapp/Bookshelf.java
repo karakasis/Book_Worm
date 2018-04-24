@@ -24,6 +24,7 @@ public class Bookshelf {
 
         books = new ArrayList<>();
         currentQuery = "";
+        newBooksFetchedAmount = 0;
     }
 
     public static synchronized Bookshelf getInstance() {
@@ -55,7 +56,7 @@ public class Bookshelf {
                 currentQuery = MainMenu.query;
                 books = new ArrayList<>();
             }
-            newBooksFetchedAmount = 0;
+            //newBooksFetchedAmount = 0;
             //MyApp.getInstance().mainMenu.bitmapRequestCount = 0;
             for (int i=0;i<data.size();i++){
                 if(!data.get(i).getBookCoverURL().equals("https://s.gr-assets.com/assets/nophoto/book/111x148-bcc042a9c91a29c1d680899eff700a03.png")){
@@ -65,7 +66,7 @@ public class Bookshelf {
                     Log.v("New book",books.get(books.size()-1).getBookTitle());
                 }
             }
-            Log.i("Nubers","Page: "+MainMenu.getPage()+"Books fetched: "+data.size()+" - Books saved: "+newBooksFetchedAmount);
+            Log.v("Nubers","Page: "+MainMenu.getPage()+"Books fetched: "+data.size()+" - Books saved: "+newBooksFetchedAmount);
         }
         //MyApp.getInstance().mainMenu.bitmapMaxCount = newBooksFetchedAmount;
 
@@ -83,6 +84,7 @@ public class Bookshelf {
         for(int i=books.size()-newBooksFetchedAmount; i<books.size();i++){
             booksExtra.add(books.get(i));
         }
+        newBooksFetchedAmount = 0;
         return new ArrayList<>(booksExtra);
     }
 
@@ -92,6 +94,7 @@ public class Bookshelf {
 
     //returns the list of the book objects
     public ArrayList<Book> getBooks(){
+        newBooksFetchedAmount = 0;
         return new ArrayList<>(books);
     }
 

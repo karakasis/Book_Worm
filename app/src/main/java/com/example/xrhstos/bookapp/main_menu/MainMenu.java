@@ -18,6 +18,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.bumptech.glide.Glide;
 import com.example.xrhstos.bookapp.Book;
 import com.example.xrhstos.bookapp.BookInfoActivity;
 import com.example.xrhstos.bookapp.Bookshelf;
@@ -39,6 +40,8 @@ import java.util.regex.Pattern;
  */
 
 public class MainMenu extends AppCompatActivity{
+
+  private int MIN_BOUND_API = 20;
 
   private static final String BOOKSHELF_KEY = "BOOKSHELF";
   private static final String SEARCH_ONLINE_QUERY_KEY = "QUERY_ONLINE";
@@ -83,11 +86,11 @@ public class MainMenu extends AppCompatActivity{
 
     ping = new Ping();
 
-    /*
-    if(Collection.getInstance().isEmpty()){
+/*
+    if(Collection.getInstance().isEmpty()) {
       Collection.getInstance().fetchBooksFromDB(Database.getInstance(this).getSavedBooksList());
     }
-    */
+*/
 
 
     MyApp app = (MyApp) getApplication();
@@ -102,9 +105,14 @@ public class MainMenu extends AppCompatActivity{
     ViewStub stub = (ViewStub) findViewById(R.id.layout_stub);
     stub.setLayoutResource(R.layout.loading);
     loading = stub.inflate();
-
+    /*
+    Glide.with(this)
+        .asGif().load(R.drawable.book_loading_ring)
+        .into((ImageView)loading.findViewById(R.id.glide));
+*/
     ViewStub stub1 = (ViewStub) findViewById(R.id.layout_stub_grid);
     grid = stub1.inflate();
+
     if(previewController == null){
       previewController = new PreviewController(
           (RecyclerView) grid.findViewById(R.id.grid_view),this);
@@ -350,27 +358,25 @@ public class MainMenu extends AppCompatActivity{
   }
 
   public void update(ArrayList<Book> bookData){
-    Bookshelf.getInstance().addBooks(bookData,this);
 
-    if(MainMenu.loadingData){
-      informAdapter(Bookshelf.getInstance().getNewBooksFetchedAmount(),Bookshelf.getInstance().fetchExtraBooksOnly());
-    }
-    else{
-      updateAdapter(Bookshelf.getInstance().getBooks());
+    Bookshelf.getInstance().addBooks(bookData, this);
+    if((Bookshelf.getInstance().getNewBooksFetchedAmount() < MIN_BOUND_API)
+        && (bookData.size() != 0)){ // << bookdata size can be used for other purposes as well
+      showLoading();
+      requestMoreResults();
+    }else{
+      startUI();
     }
 
   }
 
   public void startUI(){
-    System.out.println(bitmapRequestCount);
-    if(!(bitmapRequestCount<bitmapMaxCount)){
-      if(MainMenu.loadingData){
-        informAdapter(Bookshelf.getInstance().getNewBooksFetchedAmount()
-            ,Bookshelf.getInstance().fetchExtraBooksOnly());
-      }
-      else{
-        updateAdapter(Bookshelf.getInstance().getBooks());
-      }
+    showGrid();
+    if(MainMenu.loadingData){
+      informAdapter(Bookshelf.getInstance().getNewBooksFetchedAmount(),Bookshelf.getInstance().fetchExtraBooksOnly());
+    }
+    else{
+      updateAdapter(Bookshelf.getInstance().getBooks());
     }
   }
 

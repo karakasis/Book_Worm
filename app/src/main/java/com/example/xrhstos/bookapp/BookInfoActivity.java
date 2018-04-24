@@ -46,8 +46,8 @@ public class BookInfoActivity extends AppCompatActivity {
       }
     });
     //for now hot fix to prevent sql lag?
-    //if(Database.getInstance(MyApp.getContext()).isBookSaved(currentBook))
-      //Database.getInstance(MyApp.getContext()).updateRecord(currentBook);
+//    if(Database.getInstance(MyApp.getContext()).isBookSaved(currentBook))
+ //     Database.getInstance(MyApp.getContext()).updateRecord(currentBook);
     super.onBackPressed();
   }
 
@@ -171,7 +171,7 @@ public class BookInfoActivity extends AppCompatActivity {
     currentBook.setBookInCollection(true);
     Collection.getInstance().addBook(currentBook);
     //update sql here
-//    Database.getInstance(MyApp.getContext()).addRecord(currentBook);
+ //   Database.getInstance(MyApp.getContext()).addRecord(currentBook);
     buttonsController.swapToRead(currentBook.isBookRead());
   }
 
@@ -179,7 +179,7 @@ public class BookInfoActivity extends AppCompatActivity {
     currentBook.setBookInCollection(false);
     Collection.getInstance().removeBook();
     //update sql here
-//   Database.getInstance(MyApp.getContext()).deleteRecord(currentBook);
+ //  Database.getInstance(MyApp.getContext()).deleteRecord(currentBook);
     buttonsController.swapToWish(currentBook.isBookInWishlist());
   }
 
