@@ -21,7 +21,7 @@ public class Database extends SQLiteOpenHelper {
 
     //DATABASE NAME,TABLES' NAMES
     private static final String DATABASE_NAME = "book_db.db";
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 7;
     private static final String BOOKS_TABLE = "books";//<--TABLE
     private static final String BOOK_CATEGORIES_TABLE = "categories";//<--TABLE
     private static final String AUTHORS_TABLE = "authorsTable";//<--TABLE
@@ -180,7 +180,7 @@ public class Database extends SQLiteOpenHelper {
                 for (i = 0; i < book.getAuthor().length; i++) {
 
 
-                    CategoriesTableValues.put(AUTHOR, book.getAuthor()[i]);
+                    authorsTableValues.put(AUTHOR, book.getAuthor()[i]);
                     sqLiteDatabase.insertOrThrow(AUTHORS_TABLE, null, authorsTableValues);
                 }
 
@@ -244,8 +244,8 @@ public class Database extends SQLiteOpenHelper {
 
                 //Set every book field according to each database column.
                 book.setId(cursor.getString(IdIndex));
-                book.setAverageRating(averageRatingIndex);
-                book.setPersonalRating(personalRatingIndex);
+                book.setAverageRating(cursor.getFloat(averageRatingIndex));
+                book.setPersonalRating(cursor.getFloat(personalRatingIndex));
                 book.setBookTitle(cursor.getString(titleIndex));
                 book.setBookCoverURL(cursor.getString(urlIndex));
                 book.setDescription(cursor.getString(descriptionIndex));
@@ -292,7 +292,11 @@ public class Database extends SQLiteOpenHelper {
                         categories[cursorCategories.getPosition()] = cursorCategories.getString(categoryIndex);
 
                     }
-                    book.setCategories(categories);
+                    if(categories.length == 0){
+                        book.setCategories(null);
+                    }else{
+                        book.setCategories(categories);
+                    }
 
                 } catch (Exception DatabaseQueryProblem){
                     System.out.println("To categories exei problem");

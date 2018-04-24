@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:fbutton="http://schemas.android.com/tools">
+
+  <LinearLayout
+    android:id="@+id/framesContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.csot.fliplayout.lib.FlipLayout
+      android:id="@+id/fliplayout1"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      app:transition="TRANSLATE_X">
+
+      <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include
+          layout="@layout/manual_add"/>
+
+      </FrameLayout>
+
+    </com.csot.fliplayout.lib.FlipLayout>
+
+    <com.csot.fliplayout.lib.FlipLayout
+      android:id="@+id/fliplayout2"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      app:transition="TRANSLATE_X">
+
+      <info.hoang8f.widget.FButton
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.7"
+        android:text="Add by ISBN "
+        android:textSize="32sp"
+        fbutton:shadowEnabled="true"
+        fbutton:shadowHeight="5dp"
+        fbutton:cornerRadius="5dp"
+        />
+
+
+      <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+          layout="@layout/manual_add_isbn"/>
+
+      </FrameLayout>
+
+    </com.csot.fliplayout.lib.FlipLayout>
+
+  </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

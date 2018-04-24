@@ -24,6 +24,7 @@ import com.example.xrhstos.bookapp.BookInfoActivity;
 import com.example.xrhstos.bookapp.Bookshelf;
 import com.example.xrhstos.bookapp.Collection;
 import com.example.xrhstos.bookapp.Database;
+import com.example.xrhstos.bookapp.ManualAddMenu;
 import com.example.xrhstos.bookapp.MyApp;
 import com.example.xrhstos.bookapp.Ping;
 import com.example.xrhstos.bookapp.R;
@@ -310,7 +311,7 @@ public class MainMenu extends AppCompatActivity{
   }
 
   public void addBookManual(MenuItem item){
-
+    /*
     IntentIntegrator integrator = new IntentIntegrator(this);
     integrator.setDesiredBarcodeFormats(IntentIntegrator.ONE_D_CODE_TYPES);
     integrator.setPrompt("Scan a barcode");
@@ -319,9 +320,15 @@ public class MainMenu extends AppCompatActivity{
     integrator.setBarcodeImageEnabled(true);
     integrator.setOrientationLocked(false);
     integrator.initiateScan();
+    */
+    Intent intent = new Intent(this, ManualAddMenu.class);
+    //this will pass the book object itself so any changes will be made to the Book
+    //class as well
+    startActivity(intent);
 
   }
 
+  /*
   public void onActivityResult(int requestCode, int resultCode, Intent intent) {
     IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
     if (scanResult != null) {
@@ -339,7 +346,7 @@ public class MainMenu extends AppCompatActivity{
     }
     // else continue with any other code you need in the method
   }
-
+*/
   public void updateByISBN(ArrayList<Book> bookData){
     currentPage = 1; // ? maybe yes maybe not
     if(scannerCounter == 0){

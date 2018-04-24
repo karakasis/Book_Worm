@@ -21,4 +21,14 @@
     <item name="android:textColor">@color/colorPrimaryDark</item>
   </style>
 
+  <style parent="Theme.AppCompat.Light.NoActionBar" name="fragsButtons">
+
+    <!-- Customize your theme here. -->
+
+
+    <item name="android:textSize">32sp</item>
+
+    <item name="android:textColor">@color/gridColor</item>
+  </style>
+
 </resources>

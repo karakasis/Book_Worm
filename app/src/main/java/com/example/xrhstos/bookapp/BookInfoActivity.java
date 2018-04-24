@@ -241,7 +241,7 @@ public class BookInfoActivity extends AppCompatActivity {
       @Override
       public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser){
         ratingBar.setRating(rating);
-
+        currentBook.setPersonalRating(rating);
       }
     });
 

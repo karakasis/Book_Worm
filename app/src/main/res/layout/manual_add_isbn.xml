@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  xmlns:fbutton="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/LinearLayout1"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:orientation="vertical"
+  tools:context="com.example.xrhstos.bookapp.ManualAddMenu">
+
+  <TableLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TableRow tools:ignore="ExtraText"
+      android:id = "@+id/tableRow1"
+      android:layout_width = "match_parent"
+      android:layout_height = "wrap_content"
+      android:layout_margin="8dp"
+      android:gravity="center_horizontal">
+
+
+      <TextView
+
+        android:textSize="16dp"
+        android:id = "@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ISBN :"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+      <EditText
+        android:inputType="text"
+        android:id = "@+id/book"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:ems="10"/>
+
+
+    </TableRow>
+
+  </TableLayout>
+
+  <info.hoang8f.widget.FButton
+    android:id = "@+id/addManualButtonYES"
+    android:layout_marginLeft="40dp"
+    android:layout_marginRight="40dp"
+    android:layout_marginBottom="8dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Search"
+    android:textSize="32dp"
+    android:textColor="@color/gridColor"
+    app:fButtonColor="@color/fbutton_color_clouds"
+    android:alpha="0.7"
+    fbutton:shadowEnabled="true"
+    fbutton:shadowHeight="5dp"
+    fbutton:cornerRadius="5dp"
+    />
+
+
+</LinearLayout>

@@ -245,7 +245,7 @@ public class Book implements Parcelable {
     return personalRating;
   }
 
-  public void setPersonalRating(int personalRating) {
+  public void setPersonalRating(float personalRating) {
     this.personalRating = personalRating;
   }
 

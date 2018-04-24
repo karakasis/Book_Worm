@@ -58,7 +58,8 @@
           android:rating="0"
           android:stepSize="0.5"
           android:paddingTop="8dp"
-          style="@style/Base.Widget.AppCompat.RatingBar.Small"/>
+          android:isIndicator="false"
+        style="@style/Base.Widget.AppCompat.RatingBar.Indicator"/>
 
       <LinearLayout
           android:paddingTop="16dp"
@@ -161,7 +162,7 @@
             android:numStars="5"
             android:rating="0"
             android:stepSize="0.5"
-            style="@style/Base.Widget.AppCompat.RatingBar.Small"/>
+          style="@style/Base.Widget.AppCompat.RatingBar.Small"/>
 
       </LinearLayout>
 
