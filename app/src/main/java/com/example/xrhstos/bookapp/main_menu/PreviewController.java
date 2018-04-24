@@ -41,6 +41,7 @@ public class PreviewController{
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 // Triggered only when new data needs to be appended to the list
                 loadNextDataFromApi(page);
+                System.out.println("Page from on load more is :" + page);
             }
         };
 

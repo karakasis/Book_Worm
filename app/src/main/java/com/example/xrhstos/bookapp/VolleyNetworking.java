@@ -396,10 +396,10 @@ public class VolleyNetworking {
           @Override
           public void onResponse(String response) {
 
-            BookInfoActivity bia = (BookInfoActivity) mCtx;
+            //BookInfoActivity bia = (BookInfoActivity) mCtx;
             XmlParserID.stringToList(response);
 
-            bia.update(XmlParserID
+            MyApp.getInstance().bookInfoActivity.update(XmlParserID
                 .parse(new String[]{"isbn13", "isbn", "publication_year", "publication_month"
                         , "publication_day", "description", "average_rating", "num_pages", "url"},
                     "book", book));
@@ -442,8 +442,8 @@ public class VolleyNetworking {
       @Override
       public void onResponse(JSONObject response) {
 
-        BookInfoActivity bia = (BookInfoActivity) mCtx;
-        bia.update(JsonIDParser.parse(response, book));
+        //BookInfoActivity bia = (BookInfoActivity) mCtx;
+        MyApp.getInstance().bookInfoActivity.update(JsonIDParser.parse(response, book));
 
         System.out.println("Source : GoogleID");
       }

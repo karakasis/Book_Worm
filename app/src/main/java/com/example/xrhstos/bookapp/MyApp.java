@@ -13,6 +13,7 @@ public class MyApp extends Application {
   private static MyApp instance;
   public MainMenu mainMenu;
   public GalleryBackend galleryBackend;
+  public BookInfoActivity bookInfoActivity;
 
   public static MyApp getInstance() {
     return instance;
