@@ -21,7 +21,7 @@ public class Database extends SQLiteOpenHelper {
 
     //DATABASE NAME,TABLES' NAMES
     private static final String DATABASE_NAME = "book_db.db";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
     private static final String BOOKS_TABLE = "books";//<--TABLE
     private static final String BOOK_CATEGORIES_TABLE = "categories";//<--TABLE
     private static final String AUTHORS_TABLE = "authorsTable";//<--TABLE
@@ -85,12 +85,12 @@ public class Database extends SQLiteOpenHelper {
         //No boolean type in SQLite, INT used instead.
 
         //CATEGORIES TABLE CREATE
-        sqLiteDatabase.execSQL(" CREATE TABLE " + AUTHORS_TABLE + "(" + BOOK_KEY + " TEXT, "   + CATEGORY +
-            " TEXT, PRIMARY KEY("+ BOOK_KEY +"," + CATEGORY +"))");
+        sqLiteDatabase.execSQL(" CREATE TABLE " + AUTHORS_TABLE + "(" + BOOK_KEY + " TEXT, "   + AUTHOR +
+            " TEXT, PRIMARY KEY("+ BOOK_KEY +"," + AUTHOR +"))");
 
         //AUTHORS TABLE CREATE
-        sqLiteDatabase.execSQL(" CREATE TABLE " + BOOK_CATEGORIES_TABLE + "(" + BOOK_KEY + " TEXT, "   + AUTHOR +
-            " TEXT, PRIMARY KEY("+ BOOK_KEY +"," + AUTHOR +"))");
+        sqLiteDatabase.execSQL(" CREATE TABLE " + BOOK_CATEGORIES_TABLE + "(" + BOOK_KEY + " TEXT, "   + CATEGORY +
+            " TEXT, PRIMARY KEY("+ BOOK_KEY +"," + CATEGORY +"))");
     }
 
     @Override
@@ -273,12 +273,14 @@ public class Database extends SQLiteOpenHelper {
 
             try {  //Try to fill the book with categories and authors.
 
-                //Query of categories of the current book
-                String q1 = "SELECT * FROM " + BOOK_CATEGORIES_TABLE
-                    + " WHERE " + BOOK_CATEGORIES_TABLE + "." + BOOK_KEY + "='" + book.getKey() + "'";
+
 
 
                 try {
+                    //Query of categories of the current book
+                    String q1 = "SELECT * FROM " + BOOK_CATEGORIES_TABLE
+                        + " WHERE " + BOOK_CATEGORIES_TABLE + "." + BOOK_KEY + "='" + book.getKey() + "'";
+
                     Cursor cursorCategories = sqLiteDatabase.rawQuery(q1, null);
                     int categoryIndex = cursorCategories.getColumnIndex(CATEGORY);
                     String[] categories = new String[cursorCategories.getCount()];
@@ -296,11 +298,14 @@ public class Database extends SQLiteOpenHelper {
                     System.out.println("To categories exei problem");
                 }
 
-                //Query of authors of the current book
-                String q2 = "SELECT * FROM " + AUTHORS_TABLE
-                    + " WHERE " + AUTHORS_TABLE + "." + BOOK_KEY + "='" + book.getKey() + "'";
+
 
                 try {
+
+                    //Query of authors of the current book
+                    String q2 = "SELECT * FROM " + AUTHORS_TABLE
+                        + " WHERE " + AUTHORS_TABLE + "." + BOOK_KEY + "='" + book.getKey() + "'";
+
                     Cursor cursorAuthors = sqLiteDatabase.rawQuery(q2, null);
                     int authorIndex = cursorAuthors.getColumnIndex(AUTHOR);
                     String[] authors = new String[cursorAuthors.getCount()];
@@ -317,6 +322,7 @@ public class Database extends SQLiteOpenHelper {
 
                 } catch (Exception DatabaseQueryProblem){
                     System.out.println("To authors exei problem exei problem");
+                    System.out.println("To authors einai -1");
                 }
 
                 //Index of each column AUTHORS_TABLE, CATEGORIES_TABLE
@@ -325,7 +331,7 @@ public class Database extends SQLiteOpenHelper {
                 //Add book to list
                 savedBooksList.add(book);
             }catch (Exception outOfBounds){
-                System.out.println("To authors einai -1");
+
             }
             finally {
 
