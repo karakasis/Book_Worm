@@ -83,9 +83,11 @@ public class MainMenu extends AppCompatActivity{
 
     ping = new Ping();
 
+
     if(Collection.getInstance().isEmpty()){
       Collection.getInstance().fetchBooksFromDB(Database.getInstance(this).getSavedBooksList());
     }
+
 
     MyApp app = (MyApp) getApplication();
     app.mainMenu = this;

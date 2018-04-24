@@ -1,6 +1,8 @@
 package com.example.xrhstos.bookapp;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +18,9 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Picasso.LoadedFrom;
+import com.squareup.picasso.Target;
 import info.hoang8f.widget.FButton;
 
 /**
@@ -173,12 +178,39 @@ public class BookInfoActivity extends AppCompatActivity {
     currentBook.setBookInCollection(false);
     Collection.getInstance().removeBook();
     //update sql here
-    Database.getInstance(MyApp.getContext()).deleteRecord(currentBook);
+   Database.getInstance(MyApp.getContext()).deleteRecord(currentBook);
     buttonsController.swapToWish(currentBook.isBookInWishlist());
   }
 
   public void update(Book data){
     currentBook = data;
+
+    if(data.getBookCover() == null){
+      Picasso.with(this).load(data.getBookCoverURL()).into(new Target() {
+        @Override
+        public void onBitmapLoaded(Bitmap bitmap, LoadedFrom from) {
+          currentBook.setBookCover(bitmap);
+          startUI();
+        }
+
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable) {
+
+        }
+
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+        }
+      });
+    }else{
+      startUI();
+    }
+
+
+  }
+
+  private void startUI(){
     showInfo();
     //setContentView(R.layout.book_info);
 

@@ -1,3 +1,5 @@
+
+
 package com.example.xrhstos.bookapp;
 
 import java.util.ArrayList;
@@ -9,7 +11,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 
 /**
@@ -20,20 +21,21 @@ public class Database extends SQLiteOpenHelper {
 
     //DATABASE NAME,TABLES' NAMES
     private static final String DATABASE_NAME = "book_db.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 4;
     private static final String BOOKS_TABLE = "books";//<--TABLE
     private static final String BOOK_CATEGORIES_TABLE = "categories";//<--TABLE
     private static final String AUTHORS_TABLE = "authorsTable";//<--TABLE
 
     //BOOK_TABLE ATTRIBUTES
+    private static final String BOOK_KEY = "bookKey";
     private static final String BOOK_TITLE = "_bookTitle";
     private static final String PERSONAL_RATING = "_personalRating";
     private static final String AVERAGE_RATING = "_averageRating";
     private static final String IMAGE_DATA = "imageData";
     private static final String BOOK_ID = "bookId";
     private static final String GOOGLE_ID = "googleId";
-    private static final String ISBN10 = "isbn10";
-    private static final String ISBN13 = "isbn13";
+    private static final String ISBN_10 = "isbn10";
+    private static final String ISBN_13 = "isbn13";
     private static final String BOOK_COVER_URL = "bookCoverUrl";
     private static final String DESCRIPTION = "description";
     private static final String CALLBACK_URL = "callBackUrl";
@@ -66,27 +68,29 @@ public class Database extends SQLiteOpenHelper {
 
 
     private Database(Context context) {
-        super(context, DATABASE_NAME, null, 1);
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
         //TODO Auto-generated constructor stub
     }
+
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
         //BOOKS TABLE CREATE
-        sqLiteDatabase.execSQL(" CREATE TABLE " + BOOKS_TABLE + " ( " + BOOK_TITLE + " TEXT, " + PERSONAL_RATING + " REAL," + AVERAGE_RATING + " REAL," +
-            BOOK_ID + " TEXT," + GOOGLE_ID +" TEXT," + ISBN13 + " TEXT," + ISBN10 + " TEXT," + BOOK_COVER_URL + " TEXT," + DESCRIPTION + " TEXT," +
+        sqLiteDatabase.execSQL(" CREATE TABLE " + BOOKS_TABLE + "(" + BOOK_TITLE + " TEXT," + BOOK_KEY + " TEXT," + PERSONAL_RATING + " REAL,"
+            + AVERAGE_RATING + " REAL," +
+            BOOK_ID + " TEXT," + GOOGLE_ID +" TEXT," + ISBN_13 + " TEXT," + ISBN_10 + " TEXT," + BOOK_COVER_URL + " TEXT," + DESCRIPTION + " TEXT," +
             CALLBACK_URL + " TEXT," + PREVIEW_URL + " TEXT," + BUY_URL + " TEXT," + PAGE_COUNT + " INT," + PUBLISHED_DATE + " TEXT,"
-            + IS_BOOK_COLLECTION + " INT," + IS_BOOK_READ + " INT," + IS_BOOK_IN_WHISHLIST  + " INT," + IMAGE_DATA + " BLOB," + " PRIMARY KEY(" + GOOGLE_ID +") );");
+            + IS_BOOK_COLLECTION + " INT," + IS_BOOK_READ + " INT," + IS_BOOK_IN_WHISHLIST  + " INT," + IMAGE_DATA + " BLOB," + " PRIMARY KEY(" + BOOK_KEY +"))");
         //No boolean type in SQLite, INT used instead.
 
         //CATEGORIES TABLE CREATE
-        sqLiteDatabase.execSQL(" CREATE TABLE " + AUTHORS_TABLE + " ( " + GOOGLE_ID + " TEXT,"   + CATEGORY +
-            " TEXT, PRIMARY KEY("+ GOOGLE_ID +"," + CATEGORY +"));");
+        sqLiteDatabase.execSQL(" CREATE TABLE " + AUTHORS_TABLE + "(" + BOOK_KEY + " TEXT, "   + CATEGORY +
+            " TEXT, PRIMARY KEY("+ BOOK_KEY +"," + CATEGORY +"))");
 
         //AUTHORS TABLE CREATE
-        sqLiteDatabase.execSQL(" CREATE TABLE " + BOOK_CATEGORIES_TABLE + " ( " + GOOGLE_ID + " TEXT,"   + AUTHOR +
-            " TEXT, PRIMARY KEY("+ GOOGLE_ID +"," + AUTHOR +"));");
+        sqLiteDatabase.execSQL(" CREATE TABLE " + BOOK_CATEGORIES_TABLE + "(" + BOOK_KEY + " TEXT, "   + AUTHOR +
+            " TEXT, PRIMARY KEY("+ BOOK_KEY +"," + AUTHOR +"))");
     }
 
     @Override
@@ -112,13 +116,14 @@ public class Database extends SQLiteOpenHelper {
         ContentValues booksTableValues = new ContentValues();
 
         //BOOK TABLE VALUES   \\\\------///
+        booksTableValues.put(BOOK_KEY,book.getKey());
         booksTableValues.put(BOOK_TITLE,book.getBookTitle());
         booksTableValues.put(AVERAGE_RATING,book.getAverageRating());
         booksTableValues.put(PERSONAL_RATING,book.getPersonalRating());
         booksTableValues.put(BOOK_ID,book.getId());
         booksTableValues.put(GOOGLE_ID,book.getGoogleID());
-        booksTableValues.put(ISBN13,book.getISBN13());
-        booksTableValues.put(ISBN10,book.getISBN10());
+        booksTableValues.put(ISBN_13,book.getISBN13());
+        booksTableValues.put(ISBN_10,book.getISBN10());
         booksTableValues.put(BOOK_COVER_URL,book.getBookCoverURL());
         booksTableValues.put(DESCRIPTION,book.getDescription());
         booksTableValues.put(CALLBACK_URL,book.getCallbackURL());
@@ -143,45 +148,47 @@ public class Database extends SQLiteOpenHelper {
 
         //CATEGORY Table values
         ContentValues CategoriesTableValues = new ContentValues();
-        CategoriesTableValues.put(GOOGLE_ID,book.getGoogleID());
+        CategoriesTableValues.put(BOOK_KEY,book.getKey());
 
         //AUTHORS_TABLE values
         ContentValues authorsTableValues = new ContentValues();
-        authorsTableValues.put(GOOGLE_ID,book.getGoogleID());
+        authorsTableValues.put(BOOK_KEY,book.getKey());
 
         //Insert categories into BOOK_CATEGORIES_TABLE
         int i = 0;
-        if (book.getCategories().length >= 0) try {//Try inserting into CATEGORIES_TABLE
+        if(book.getCategories() != null)
+            if (book.getCategories().length >= 0) try {//Try inserting into CATEGORIES_TABLE
 
-            for (i = 0; i < book.getCategories().length; i++) {
+                for (i = 0; i < book.getCategories().length; i++) {
 
 
-                CategoriesTableValues.put(CATEGORY, book.getCategories()[i]);
-                sqLiteDatabase.insertOrThrow(BOOK_CATEGORIES_TABLE, null, CategoriesTableValues);
+                    CategoriesTableValues.put(CATEGORY, book.getCategories()[i]);
+                    sqLiteDatabase.insertOrThrow(BOOK_CATEGORIES_TABLE, null, CategoriesTableValues);
+                }
+
+                resultCategoriesTable = true;
+
+            } catch (SQLiteConstraintException alreadyInserted) {
+                //Row is already inserted
             }
-
-            resultCategoriesTable = true;
-
-        } catch (SQLiteConstraintException alreadyInserted) {
-            //Row is already inserted
-        }
 
         //Insert authors into AUTHORS_TABLE
         i = 0;
-        if (book.getAuthor().length >= 0) try {//Try inserting into CATEGORIES_TABLE
+        if(book.getAuthor() != null)
+            if (book.getAuthor().length >= 0) try {//Try inserting into CATEGORIES_TABLE
 
-            for (i = 0; i < book.getAuthor().length; i++) {
+                for (i = 0; i < book.getAuthor().length; i++) {
 
 
-                CategoriesTableValues.put(AUTHOR, book.getAuthor()[i]);
-                sqLiteDatabase.insertOrThrow(AUTHORS_TABLE, null, authorsTableValues);
+                    CategoriesTableValues.put(AUTHOR, book.getAuthor()[i]);
+                    sqLiteDatabase.insertOrThrow(AUTHORS_TABLE, null, authorsTableValues);
+                }
+
+                resultAuthorsTable = true;
+
+            } catch (SQLiteConstraintException alreadyInserted) {
+                //Row is already inserted
             }
-
-            resultAuthorsTable = true;
-
-        } catch (SQLiteConstraintException alreadyInserted) {
-            //Row is already inserted
-        }
 
 
         return resultBooksTable && resultAuthorsTable && resultCategoriesTable;
@@ -196,7 +203,7 @@ public class Database extends SQLiteOpenHelper {
 
         ArrayList<Book> savedBooksList = new ArrayList<Book>();
 
-        Book book;// = new Book(0,null, null,null,null);//First declaration so it's not undeclared.
+        Book book=new Book();//First declaration so it's not undeclared.
 
 
 
@@ -207,15 +214,17 @@ public class Database extends SQLiteOpenHelper {
 
         /////->One iteration for each book
 
-        try{
+        try{ //< karakasis edit auta ta try catch einai kakogramena spane tin while(line:243) sto 1o error pou tha broun
+            // an exei error se otidipote den kaleite savedBooksList.add(book);
             //Index of each collumn
+            int bookKeyIndex = cursor.getColumnIndex(BOOK_KEY);
             int titleIndex = cursor.getColumnIndex(BOOK_TITLE);
             int averageRatingIndex = cursor.getColumnIndex(AVERAGE_RATING);
             int personalRatingIndex = cursor.getColumnIndex(PERSONAL_RATING);
             int IdIndex = cursor.getColumnIndex(BOOK_ID);
             int googleIdIndex = cursor.getColumnIndex(GOOGLE_ID);
-            int isbn13Index = cursor.getColumnIndex(ISBN13);
-            int isbn10Index = cursor.getColumnIndex(ISBN10);
+            int isbn13Index = cursor.getColumnIndex(ISBN_13);
+            int isbn10Index = cursor.getColumnIndex(ISBN_10);
             int urlIndex = cursor.getColumnIndex(BOOK_COVER_URL);
             int descriptionIndex = cursor.getColumnIndex(DESCRIPTION);
             int callbackUrlIndex = cursor.getColumnIndex(CALLBACK_URL);
@@ -236,6 +245,7 @@ public class Database extends SQLiteOpenHelper {
 
 
                 book = new Book();
+
                 book.setId(cursor.getString(IdIndex));
                 book.setAverageRating(averageRatingIndex);
                 book.setPersonalRating(personalRatingIndex);
@@ -253,16 +263,26 @@ public class Database extends SQLiteOpenHelper {
                 book.setBookInCollection(1 == cursor.getInt(isBookCollectionIndex));//1==int var (converts int to boolean)
                 book.setBookRead(1 == cursor.getInt(isBookReadIndex));//SQLite doesn't support boolean.
                 book.setBookInWishlist(1 == cursor.getInt(isBookInWishlistIndex));
-                book.setBitmapFromByteArray(cursor.getBlob(bookCoverIndex));
+                try{ //< karakasis edit
+                    book.setBitmapFromByteArray(cursor.getBlob(bookCoverIndex));
+                }catch (Exception outOfBounds){
+                    System.out.println("cursor null here");
+                }
 
                 //Query of categories of the current book
-                String q1 = "SELECT * FROM " + BOOK_CATEGORIES_TABLE
-                    +" WHERE " + BOOK_CATEGORIES_TABLE + "." + GOOGLE_ID + "='" + book.getGoogleID() + "'";//The entire table
+                String q1 = null;
+
+                q1 = "SELECT * FROM " + BOOK_CATEGORIES_TABLE
+                    + " WHERE " + BOOK_CATEGORIES_TABLE + "." + BOOK_KEY + "='" + book.getKey() + "'";
+
+
                 Cursor cursorCategories = sqLiteDatabase.rawQuery(q1,null);
 
                 //Query of authors of the current book
-                String q2 = "SELECT * FROM " + AUTHORS_TABLE
-                    +" WHERE " + AUTHORS_TABLE + "." + GOOGLE_ID + "='" + book.getGoogleID() + "'";//The entire table
+                String q2 = null;
+                q2 = "SELECT * FROM " + AUTHORS_TABLE
+                    + " WHERE " + AUTHORS_TABLE + "." + BOOK_KEY + "='" + book.getKey() + "'";
+
                 Cursor cursorAuthors = sqLiteDatabase.rawQuery(q2,null);
 
                 int categoryIndex = cursorCategories.getColumnIndex(CATEGORY);
@@ -284,7 +304,8 @@ public class Database extends SQLiteOpenHelper {
                 book.setCategories(categories);
 
                 //Create String[] of authors
-                while(cursorAuthors.moveToNext()) {
+                while(cursorAuthors.moveToNext()) { //<karakasis edit : to authorIndex einai -1. xtupaei kanei catch stin (line:316)
+                    //kai vgainei apo to prwto while
                     authors[cursorAuthors.getPosition()] = cursorAuthors.getString(authorIndex);
 
                 }
@@ -318,7 +339,7 @@ public class Database extends SQLiteOpenHelper {
         int numOfRowsDeleted = 0;
 
         try{//Delete everything for this book from categories table
-            numOfRowsDeleted += sqLiteDatabase.delete(BOOK_CATEGORIES_TABLE, GOOGLE_ID + "='" + book.getGoogleID() +"'", null);
+            numOfRowsDeleted += sqLiteDatabase.delete(BOOK_CATEGORIES_TABLE, BOOK_KEY + "='" + book.getKey() +"'", null);
 
         }catch (Exception noSuchColumn){
             //No such column
@@ -326,7 +347,7 @@ public class Database extends SQLiteOpenHelper {
         }
 
         try{
-            numOfRowsDeleted += sqLiteDatabase.delete(BOOKS_TABLE, GOOGLE_ID + "='" + book.getGoogleID() +"'", null);
+            numOfRowsDeleted += sqLiteDatabase.delete(BOOKS_TABLE, BOOK_KEY + "='" + book.getKey() +"'", null);
 
         }catch (Exception noSuchColumn){
             //No such column
@@ -334,9 +355,10 @@ public class Database extends SQLiteOpenHelper {
         }
 
         try{//Delete everything for this book from authors table
-            numOfRowsDeleted += sqLiteDatabase.delete(AUTHORS_TABLE, GOOGLE_ID + "='" + book.getGoogleID() +"'", null);
+            numOfRowsDeleted += sqLiteDatabase.delete(AUTHORS_TABLE, BOOK_KEY + "='" + book.getKey() +"'", null);
 
         }catch (Exception noSuchColumn){
+
             //No such column
             //numOfRowsDeleted = 0;
         }
@@ -360,8 +382,9 @@ public class Database extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         String q = "SELECT * FROM " + BOOKS_TABLE
             + " WHERE "
-            + BOOKS_TABLE + "." + GOOGLE_ID + "='" + book.getGoogleID()
-            + "'";
+            + BOOK_KEY + "='" + book.getKey() + "'";
+
+
 
         Cursor cursor = sqLiteDatabase.rawQuery(q,null);
 
@@ -387,8 +410,8 @@ public class Database extends SQLiteOpenHelper {
         booksTableValues.put(PERSONAL_RATING,book.getPersonalRating());
         booksTableValues.put(BOOK_ID,book.getId());
         booksTableValues.put(GOOGLE_ID,book.getGoogleID());
-        booksTableValues.put(ISBN13,book.getISBN13());
-        booksTableValues.put(ISBN10,book.getISBN10());
+        booksTableValues.put(ISBN_13,book.getISBN13());
+        booksTableValues.put(ISBN_10,book.getISBN10());
         booksTableValues.put(BOOK_COVER_URL,book.getBookCoverURL());
         booksTableValues.put(DESCRIPTION,book.getDescription());
         booksTableValues.put(CALLBACK_URL,book.getCallbackURL());
@@ -402,10 +425,11 @@ public class Database extends SQLiteOpenHelper {
         booksTableValues.put(IMAGE_DATA,book.getByteArray());
 
 
-        String q = "SELECT * FROM " + BOOKS_TABLE +" WHERE " + GOOGLE_ID + " ='" + book.getGoogleID() + "'";
+        String q1 = BOOK_KEY + " ='" + book.getKey() + "'";
+        String q = "SELECT * FROM " + BOOKS_TABLE + " WHERE " + BOOK_KEY + " ='" + book.getKey() + "'";
         Cursor cursor = sqLiteDatabase.rawQuery(q,null);
         if(cursor.moveToFirst()){
-            sqLiteDatabase.update(BOOKS_TABLE, booksTableValues, q, null);
+            sqLiteDatabase.update(BOOKS_TABLE, booksTableValues, q1, null);
             result = true;
         }
         cursor.close();

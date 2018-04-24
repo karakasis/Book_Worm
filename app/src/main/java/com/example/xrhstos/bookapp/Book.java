@@ -2,8 +2,14 @@ package com.example.xrhstos.bookapp;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Picasso.LoadedFrom;
+import com.squareup.picasso.Target;
 import java.io.ByteArrayOutputStream;
 
 /**
@@ -60,10 +66,24 @@ public class Book implements Parcelable {
 
 
   // convert from bitmap to byte array
-  public byte[] getBytes(Bitmap bitmap) {
-    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-    bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
-    return stream.toByteArray();
+  public void setByteArrayFromBitmap() {
+    if(bookCover!=null){
+      ByteArrayOutputStream stream = new ByteArrayOutputStream();
+      bookCover.compress(Bitmap.CompressFormat.PNG, 0, stream);
+      byteArray = stream.toByteArray();
+      System.out.println("Bitmap loaded and saved");
+    }else{
+      /*
+      int placeholder = R.drawable.placeholder;
+      Drawable myIcon = MyApp.getContext().getResources().getDrawable( placeholder );
+      bookCover = ((BitmapDrawable)myIcon).getBitmap();
+      ByteArrayOutputStream stream = new ByteArrayOutputStream();
+      bookCover.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+      byteArray = stream.toByteArray();
+      */
+      byteArray = null;
+      System.out.println("Bitmap saved - loaded placeholder");
+    }
   }
 
   // convert from byte array to bitmap
@@ -74,7 +94,12 @@ public class Book implements Parcelable {
   public void setBitmapFromByteArray(byte[] byteArray){
     this.bookCover = getImage(byteArray);
   }
-  public byte[] getByteArray(){ return byteArray; }
+  public byte[] getByteArray(){
+    if(byteArray==null){
+      setByteArrayFromBitmap();
+    }
+    return byteArray;
+  }
 
   public Book(){ // for sql
     pageCount = -1;

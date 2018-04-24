@@ -124,6 +124,7 @@ public class VolleyNetworking {
         }
         MainMenu mm = (MainMenu) mCtx;
         mm.notifier.setText(message);
+        System.out.println(message);
       }
     });
   }
@@ -177,6 +178,8 @@ public class VolleyNetworking {
         MainMenu mm = (MainMenu) mCtx;
         mm.notifier.setText(message);
         mm.updateByISBN(null);
+
+        System.out.println(message);
       }
     });
 
@@ -251,6 +254,7 @@ public class VolleyNetworking {
         }
         MainMenu mm = (MainMenu) mCtx;
         mm.notifier.setText(message);
+        System.out.println(message);
       }
     });
 
@@ -295,6 +299,7 @@ public class VolleyNetworking {
         MainMenu mm = (MainMenu) mCtx;
         mm.notifier.setText(message);
         mm.updateByISBN(null);
+        System.out.println(message);
       }
     });
 
@@ -419,6 +424,7 @@ public class VolleyNetworking {
         } else if (volleyError instanceof TimeoutError) {
           message = "Connection TimeOut! Please check your internet connection.";
         }
+        System.out.println(message);
       }
     });
 
@@ -459,6 +465,7 @@ public class VolleyNetworking {
         } else if (volleyError instanceof TimeoutError) {
           message = "Connection TimeOut! Please check your internet connection.";
         }
+        System.out.println(message);
       }
     });
 
