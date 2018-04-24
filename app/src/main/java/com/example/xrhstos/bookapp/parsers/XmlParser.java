@@ -76,7 +76,7 @@ public class XmlParser {
               url = str;
             }
 
-            System.out.println(str);
+            //System.out.println(str);
             counterLock++;
 
             break;

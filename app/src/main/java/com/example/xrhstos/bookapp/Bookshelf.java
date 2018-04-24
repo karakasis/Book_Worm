@@ -1,5 +1,6 @@
 package com.example.xrhstos.bookapp;
 
+import android.util.Log;
 import com.example.xrhstos.bookapp.main_menu.MainMenu;
 import java.util.ArrayList;
 
@@ -61,8 +62,10 @@ public class Bookshelf {
                     books.add(data.get(i));
                     //books.get(books.size()-1).requestBookCover(context);
                     newBooksFetchedAmount++;
+                    Log.v("New book",books.get(books.size()-1).getBookTitle());
                 }
             }
+            Log.i("Nubers","Page: "+MainMenu.getPage()+"Books fetched: "+data.size()+" - Books saved: "+newBooksFetchedAmount);
         }
         //MyApp.getInstance().mainMenu.bitmapMaxCount = newBooksFetchedAmount;
 

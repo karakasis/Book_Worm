@@ -40,8 +40,7 @@ public class PreviewController{
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 // Triggered only when new data needs to be appended to the list
-                loadNextDataFromApi(page);
-                System.out.println("Page from on load more is :" + page);
+                loadNextDataFromApi();
             }
         };
 
@@ -96,7 +95,7 @@ public class PreviewController{
 
     }
 
-    private void loadNextDataFromApi(int page) {
+    private void loadNextDataFromApi() {
         MainMenu.loadingData = true;
         parent.requestMoreResults();
     }
