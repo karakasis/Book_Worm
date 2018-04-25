@@ -103,9 +103,19 @@ public class ManualAddMenu extends AppCompatActivity {
     setContentView(R.layout.manual);
     menu = this;
     MyApp.getInstance().manualAddMenu = this;
-
     orientation = this.getResources().getConfiguration().orientation;
 
+    if(savedInstanceState!=null){
+      currentIndexInflated = savedInstanceState.getInt("INFLATED_INDEX");
+      int child = savedInstanceState.getInt("VISIBLE_CHILD");
+      if(currentIndexInflated == 0){
+        fliplayout1.showChild(child,false);
+      }else if(currentIndexInflated == 1){
+        fliplayout2.showChild(child,false);
+      }else if(currentIndexInflated == 2){
+        fliplayout3.showChild(child,false);
+      }
+    }
 
 
     fliplayout1 = findViewById(R.id.fliplayout1);
@@ -171,21 +181,6 @@ public class ManualAddMenu extends AppCompatActivity {
     barBut.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        //v.startAnimation(c2r);
-        /*
-        right.start();
-        up.start();
-        down.start();
-        down.addListener(new AnimatorListenerAdapter() {
-          @Override
-          public void onAnimationEnd(Animator animation) {
-            super.onAnimationEnd(animation);
-
-          }
-        });
-        */
-        //fliplayout1.showChild(1,true);
-
         IntentIntegrator integrator = new IntentIntegrator(menu);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.ONE_D_CODE_TYPES);
         integrator.setPrompt("Scan a barcode");
@@ -209,20 +204,6 @@ public class ManualAddMenu extends AppCompatActivity {
     isbnBut.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        //v.startAnimation(c2r);
-        /*
-        right.start();
-        up.start();
-        down.start();
-        down.addListener(new AnimatorListenerAdapter() {
-          @Override
-          public void onAnimationEnd(Animator animation) {
-
-
-
-          }
-        });
-*/
         //fliplayout3.showChild(1,true);
         fliplayout3.showNextChild();
         if(currentIndexInflated == 0){
@@ -238,26 +219,6 @@ public class ManualAddMenu extends AppCompatActivity {
     manBut.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        /*
-        right.start();
-        right.addListener(new AnimatorListenerAdapter() {
-          @Override
-          public void onAnimationEnd(Animator animation) {
-            super.onAnimationEnd(animation);
-
-            currentIndexInflated = 1;
-          }
-
-          @Override
-          public void onAnimationStart(Animator animation) {
-            super.onAnimationStart(animation);
-            View adder =  getLayoutInflater().inflate(R.layout.manual_add, null);
-            ll.removeViewAt(1);
-            ll.addView(adder,1);
-            //adder.startAnimation(l2r);
-          }
-        });
-        */
         //fliplayout2.showChild(1,true);
         fliplayout2.showNextChild();
         if(currentIndexInflated == 0){
@@ -286,6 +247,21 @@ public class ManualAddMenu extends AppCompatActivity {
         //fliplayout3.showNextChild();
       }
     });
+  }
+
+  @Override
+  protected void onSaveInstanceState(Bundle bundle) {
+    super.onSaveInstanceState(bundle);
+    bundle.putInt("INFLATED_INDEX",currentIndexInflated);
+    if(currentIndexInflated == 0){
+      bundle.putInt("VISIBLE_CHILD",fliplayout1.getVisibleChild());
+    }else if(currentIndexInflated == 1){
+
+      bundle.putInt("VISIBLE_CHILD",fliplayout2.getVisibleChild());
+    }else if(currentIndexInflated == 2){
+
+      bundle.putInt("VISIBLE_CHILD",fliplayout3.getVisibleChild());
+    }
   }
 
   public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -382,14 +358,7 @@ public class ManualAddMenu extends AppCompatActivity {
   }
 
   private int calculateNoOfColumns() {
-    /*
-    Display display = getWindowManager().getDefaultDisplay();
-    Point size = new Point();
-    display.getSize(size);
-    manBut.measure(size.x, size.y);
-    int width = manBut.getMeasuredWidth();
-    int height = manBut.getMeasuredHeight();
-    */
+
     DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
     float dpWidth;
     if (orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -434,39 +403,3 @@ public class ManualAddMenu extends AppCompatActivity {
     }
   }
 }
-
-
-    /*
-    //button slide r2left
-    final TranslateAnimation r2l = new TranslateAnimation(1500.0f, 0.0f, 0.0f,
-        0.0f); // new TranslateAnimation(xFrom,xTo, yFrom,yTo)
-    r2l.setDuration(1000); // animation duration
-    r2l.setFillAfter(true);
-
-    //button slide l2right
-    l2r = new TranslateAnimation(-1500.0f, 0.0f, 0.0f,
-        0.0f); // new TranslateAnimation(xFrom,xTo, yFrom,yTo)
-    l2r.setDuration(1000); // animation duration
-    l2r.setFillAfter(true);
-
-
-    final ObjectAnimator right = ObjectAnimator.ofFloat(manBut, "translationX", 1500.0f);
-
-    right.setInterpolator(new AccelerateInterpolator());
-    right.setDuration(500);
-
-    final ObjectAnimator up = ObjectAnimator.ofFloat(barBut, "translationY", -1500.0f);
-
-    up.setInterpolator(new AccelerateInterpolator());
-    up.setDuration(500);
-
-    final ObjectAnimator down = ObjectAnimator.ofFloat(isbnBut, "translationY", 1500.0f);
-
-    down.setInterpolator(new AccelerateInterpolator());
-    down.setDuration(500);
-
-
-    //barBut.startAnimation(l2r);
-    //manBut.startAnimation(r2l);
-    //isbnBut.startAnimation(l2r);
-*/
