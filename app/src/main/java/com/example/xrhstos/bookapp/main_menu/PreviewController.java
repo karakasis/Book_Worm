@@ -100,8 +100,9 @@ public class PreviewController{
         parent.requestMoreResults();
     }
 
-    public void acceptResponseFromMainThread(int newDataSize , ArrayList<Book> newData){
+    public void acceptResponseFromMainThread(ArrayList<Book> newData){
         final int curSize = gridAdapter.getItemCount();
+        parent.showGrid();
         gridAdapter.getDataSet().addAll(newData);
         final int finSize = gridAdapter.getItemCount();
 

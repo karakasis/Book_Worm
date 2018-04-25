@@ -3,6 +3,7 @@ package com.example.xrhstos.bookapp.main_menu;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewStub;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -54,6 +56,10 @@ public class MainMenu extends AppCompatActivity{
   private static final String GOOGLE_ON_KEY = "GOOGLE";
   private static final String GOODREADS_ON_KEY = "GOODREADS";
   private static final String IS_API_LOADING_KEY = "IS_API_LOADING";
+  private static final String IS_API_ERROR_KEY = "IS_API_ERROR";
+  private static final String IS_API_ERROR_STRING_KEY = "IS_API_ERROR_STRING";
+  private static final String IS_API_ERROR_REF_KEY = "IS_API_ERROR_REF";
+  private static final String IS_API_ERROR_TYPE_KEY = "IS_API_ERROR_TYPE";
 
   private boolean googleON;
   private boolean goodreadsON;
@@ -66,7 +72,14 @@ public class MainMenu extends AppCompatActivity{
   private View footer;
   private View loading;
   private View grid;
+  private View errors;
+  private ViewFlipper vFlipper;
   private boolean isLoading;
+  private boolean isError;
+  private String error;
+  private boolean refreshable;
+  private int errorType;
+  private Snackbar snackbar;
 
   private PreviewController previewController;
   private int firstVisibleItem;
@@ -102,17 +115,19 @@ public class MainMenu extends AppCompatActivity{
     Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
     setSupportActionBar(myToolbar);
 
-    notifier = (TextView) findViewById(R.id.resultNotify);
+    ViewFlipper vFlipper = findViewById(R.id.container);
+    vFlipper.setAutoStart(false);
+
+
     ViewStub stub = (ViewStub) findViewById(R.id.layout_stub);
     stub.setLayoutResource(R.layout.loading);
     loading = stub.inflate();
-    /*
-    Glide.with(this)
-        .asGif().load(R.drawable.book_loading_ring)
-        .into((ImageView)loading.findViewById(R.id.glide));
-*/
+
     ViewStub stub1 = (ViewStub) findViewById(R.id.layout_stub_grid);
     grid = stub1.inflate();
+
+    ViewStub stub2 = (ViewStub) findViewById(R.id.layout_error_stub);
+    errors = stub2.inflate();
 
     if(previewController == null){
       previewController = new PreviewController(
@@ -132,6 +147,11 @@ public class MainMenu extends AppCompatActivity{
       goodreadsON = savedInstanceState.getBoolean(GOODREADS_ON_KEY);
       loadingData = savedInstanceState.getBoolean(LOADING_KEY);
       isLoading = savedInstanceState.getBoolean(IS_API_LOADING_KEY);
+      isError = savedInstanceState.getBoolean(IS_API_ERROR_KEY);
+
+      error = savedInstanceState.getString(IS_API_ERROR_STRING_KEY);
+      refreshable = savedInstanceState.getBoolean(IS_API_ERROR_REF_KEY);
+      errorType = savedInstanceState.getInt(IS_API_ERROR_TYPE_KEY);
       if(googleON){
         ImageView logo = (ImageView) findViewById(R.id.logo);
         logo.setImageResource(R.drawable.google_logo);
@@ -147,10 +167,16 @@ public class MainMenu extends AppCompatActivity{
       query = "";
       langQuery = "";
       isLoading = false;
+      isError = false;
+      error = "";
+      errorType = -1;
+      refreshable = false;
     }
 
     if(isLoading){
       showLoading();
+    }else if(isError){
+      errorHandling(error,refreshable,errorType);
     }else{
       showGrid();
     }
@@ -171,6 +197,11 @@ public class MainMenu extends AppCompatActivity{
     bundle.putBoolean(GOODREADS_ON_KEY,goodreadsON);
     bundle.putBoolean(GOOGLE_ON_KEY,googleON);
     bundle.putBoolean(IS_API_LOADING_KEY,isLoading);
+    bundle.putBoolean(IS_API_ERROR_KEY,isError);
+
+    bundle.putString(IS_API_ERROR_STRING_KEY,error);
+    bundle.putBoolean(IS_API_ERROR_REF_KEY,refreshable);
+    bundle.putInt(IS_API_ERROR_TYPE_KEY,errorType);
 
     // Save list state
     glmState = previewController.getLayoutManager().onSaveInstanceState();
@@ -191,7 +222,9 @@ public class MainMenu extends AppCompatActivity{
     super.onResume();
 
     if (glmState != null) {
-      rotateUpdate();
+      if(!isLoading && !isError) {
+        rotateUpdate();
+      }
       previewController.getLayoutManager().onRestoreInstanceState(glmState);
     }
   }
@@ -251,12 +284,12 @@ public class MainMenu extends AppCompatActivity{
 
 
     System.out.println("Current page: " + getPage());
-    footer.setVisibility(View.VISIBLE);
     if(langQuery.isEmpty() || langQuery.equals("en")){
       requestGoodReads();
     }else{
       requestGoogle();
     }
+    showLoading();
 
   }
 
@@ -268,8 +301,6 @@ public class MainMenu extends AppCompatActivity{
       requestGoogle();
     }else{
       VolleyNetworking.getInstance(this).addToRequestQueue(stringRequest);
-      ImageView logo = (ImageView) findViewById(R.id.logo);
-      logo.setImageResource(R.drawable.goodreads_logo);
       goodreadsON = true;
       googleON = false;
     }
@@ -279,11 +310,8 @@ public class MainMenu extends AppCompatActivity{
 
     JsonObjectRequest jsonObjectRequest;
     jsonObjectRequest = VolleyNetworking.getInstance(this).googleRequest(query);
+
     VolleyNetworking.getInstance(this).addToRequestQueue(jsonObjectRequest);
-
-
-    ImageView logo = (ImageView) findViewById(R.id.logo);
-    logo.setImageResource(R.drawable.google_logo);
     goodreadsON = false;
     googleON = true;
 
@@ -291,6 +319,11 @@ public class MainMenu extends AppCompatActivity{
 
   public void toGallery(MenuItem item){
     Intent intent = new Intent(this,GalleryBackend.class);
+    startActivity(intent);
+  }
+
+  public void addBookManual(MenuItem item){
+    Intent intent = new Intent(this, ManualAddMenu.class);
     startActivity(intent);
   }
 
@@ -310,66 +343,11 @@ public class MainMenu extends AppCompatActivity{
 
   }
 
-  public void addBookManual(MenuItem item){
-    /*
-    IntentIntegrator integrator = new IntentIntegrator(this);
-    integrator.setDesiredBarcodeFormats(IntentIntegrator.ONE_D_CODE_TYPES);
-    integrator.setPrompt("Scan a barcode");
-    integrator.setCameraId(0);  // Use a specific camera of the device
-    integrator.setBeepEnabled(true);
-    integrator.setBarcodeImageEnabled(true);
-    integrator.setOrientationLocked(false);
-    integrator.initiateScan();
-    */
-    Intent intent = new Intent(this, ManualAddMenu.class);
-    //this will pass the book object itself so any changes will be made to the Book
-    //class as well
-    startActivity(intent);
-
-  }
-
-  /*
-  public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-    IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-    if (scanResult != null) {
-      // handle scan result
-      System.out.println(scanResult.toString());
-
-      showLoading();
-
-      StringRequest grISBN = VolleyNetworking.getInstance(this).goodReadsRequestByISBN(scanResult.getContents());
-      VolleyNetworking.getInstance(this).addToRequestQueue(grISBN);
-      JsonObjectRequest gISBN = VolleyNetworking.getInstance(this).googleRequestByISBN(scanResult.getContents());
-      VolleyNetworking.getInstance(this).addToRequestQueue(gISBN);
-    }else{
-      notifier.setText("Could not find book from QR");
-    }
-    // else continue with any other code you need in the method
-  }
-*/
-  public void updateByISBN(ArrayList<Book> bookData){
-    currentPage = 1; // ? maybe yes maybe not
-    if(scannerCounter == 0){
-      booksFromScanner = new ArrayList<>();
-    }
-    if(bookData!=null){
-      booksFromScanner.addAll(bookData);
-    }
-    scannerCounter++;
-
-    if(scannerCounter==2){
-      scannerCounter = 0;
-      Bookshelf.getInstance().addBooksByISBN(booksFromScanner);
-      updateAdapter(Bookshelf.getInstance().getBooks());
-    }
-  }
-
   public void update(ArrayList<Book> bookData){
 
     Bookshelf.getInstance().addBooks(bookData, this);
     if((Bookshelf.getInstance().getNewBooksFetchedAmount() < MIN_BOUND_API)
         && (bookData.size() != 0)){ // << bookdata size can be used for other purposes as well
-      showLoading();
       requestMoreResults();
     }else{
       startUI();
@@ -378,9 +356,8 @@ public class MainMenu extends AppCompatActivity{
   }
 
   public void startUI(){
-    showGrid();
     if(MainMenu.loadingData){
-      informAdapter(Bookshelf.getInstance().getNewBooksFetchedAmount(),Bookshelf.getInstance().fetchExtraBooksOnly());
+      informAdapter(Bookshelf.getInstance().fetchExtraBooksOnly());
     }
     else{
       updateAdapter(Bookshelf.getInstance().getBooks());
@@ -406,16 +383,12 @@ public class MainMenu extends AppCompatActivity{
     previewController.setData(data);
   }
 
-  public void informAdapter(int value, ArrayList<Book> newData){
-    previewController.acceptResponseFromMainThread(value,newData);
+  public void informAdapter(ArrayList<Book> newData){
+    previewController.acceptResponseFromMainThread(newData);
   }
 
   public static int getPage(){
     return currentPage;
-  }
-
-  public static String getQuery(){
-    return MainMenu.query;
   }
 
   public String getAPI(){
@@ -429,15 +402,91 @@ public class MainMenu extends AppCompatActivity{
   }
 
   public void showGrid(){
+    isError = false;
     isLoading = false;
-    loading.setVisibility(View.GONE);
+    footer.setVisibility(View.VISIBLE);
+    if(googleON){
+      ImageView logo = (ImageView) findViewById(R.id.logo);
+      logo.setImageResource(R.drawable.google_logo);
+    }else if (goodreadsON){
+      ImageView logo = (ImageView) findViewById(R.id.logo);
+      logo.setImageResource(R.drawable.goodreads_logo);
+    }else{
+      footer.setVisibility(View.INVISIBLE);
+    }
+    flipViews(0);
+    /*
+    loading.setVisibility(View.INVISIBLE);
     grid.setVisibility(View.VISIBLE);
+    errors.setVisibility(View.GONE);
+    */
   }
 
   public void showLoading(){
+    isError = false;
     isLoading = true;
+    snackbar.dismiss();
+    footer.setVisibility(View.INVISIBLE);
+    flipViews(1);
+    /*
     grid.setVisibility(View.INVISIBLE);
     loading.setVisibility(View.VISIBLE);
+    errors.setVisibility(View.GONE);
+    */
+  }
+
+  public void showError(){
+    isError = true;
+    isLoading = false;
+    footer.setVisibility(View.INVISIBLE);
+    flipViews(2);
+    /*
+    errors.setVisibility(View.VISIBLE);
+    grid.setVisibility(View.INVISIBLE);
+    loading.setVisibility(View.GONE);
+    */
+  }
+
+  public void flipViews(int index){
+
+    vFlipper.setDisplayedChild(index);
+  }
+
+  public void errorHandling(String error,boolean refreshable,int errorType){
+    this.error = error;
+    this.refreshable = refreshable;
+    this.errorType = errorType;
+    showError();
+    if(refreshable){
+      snackbar = Snackbar.make(findViewById(R.id.main),error,Snackbar.LENGTH_INDEFINITE)
+          .setAction("REFRESH", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+              searchBooks(query);
+            }
+          })
+          .setActionTextColor(getResources().getColor(R.color.poweredColor));
+      View sbView = snackbar.getView();
+      TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+      textView.setTextColor(getResources().getColor(R.color.fbutton_color_wet_asphalt));
+      sbView.setBackgroundColor(getResources().getColor(R.color.logoBackgroundColor));
+      snackbar.show();
+
+    }else{
+      snackbar = Snackbar.make(findViewById(R.id.main),error,Snackbar.LENGTH_LONG);
+      View sbView = snackbar.getView();
+      TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+      textView.setTextColor(getResources().getColor(R.color.fbutton_color_wet_asphalt));
+      sbView.setBackgroundColor(getResources().getColor(R.color.logoBackgroundColor));
+      snackbar.show();
+    }
+    ImageView eView = (ImageView) errors.findViewById(R.id.error_image);
+    if(errorType == 0){
+      eView.setImageResource(R.drawable.no_server);
+    }else if(errorType == 1){
+      eView.setImageResource(R.drawable.no_internet);
+    }
+
   }
 }
 

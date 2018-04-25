@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.widget.ImageView.ScaleType;
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkError;
 import com.android.volley.NoConnectionError;
 import com.android.volley.ParseError;
@@ -91,7 +92,7 @@ public class VolleyNetworking {
         .build();
     String requestURL = builtURI.toString();
 
-    return new StringRequest(Request.Method.GET, requestURL,
+    StringRequest sr = new StringRequest(Request.Method.GET, requestURL,
         new Response.Listener<String>() {
           @Override
           public void onResponse(String response) {
@@ -108,25 +109,38 @@ public class VolleyNetworking {
         , new Response.ErrorListener() {
       @Override
       public void onErrorResponse(VolleyError volleyError) {
+        MainMenu mm = (MainMenu) mCtx;
         String message = "";
-        if (volleyError instanceof NetworkError) {
-          message = "Cannot connect to Internet...Please check your connection!";
-        } else if (volleyError instanceof ServerError) {
+        if (volleyError instanceof ServerError) {
           message = "The server could not be found. Please try again after some time!!";
+          mm.errorHandling(message,true, 0);
         } else if (volleyError instanceof AuthFailureError) {
           message = "Cannot connect to Internet...Please check your connection!";
+          mm.errorHandling(message,false, 1);
         } else if (volleyError instanceof ParseError) {
           message = "Parsing error! Please try again after some time!!";
+          mm.errorHandling(message,false, 0);
         } else if (volleyError instanceof NoConnectionError) {
           message = "Cannot connect to Internet...Please check your connection!";
+          mm.errorHandling(message,true, 1);
         } else if (volleyError instanceof TimeoutError) {
           message = "Connection TimeOut! Please check your internet connection.";
+          mm.errorHandling(message,true, 1);
+        } else if (volleyError instanceof NetworkError) {
+          message = "Cannot connect to Internet...Please check your connection!";
+          mm.errorHandling(message,true, 1);
         }
-        MainMenu mm = (MainMenu) mCtx;
-        mm.notifier.setText(message);
-        System.out.println(message);
+        //mm.notifier.setText(message);
+        //System.out.println(message);
       }
     });
+    /*
+    sr.setRetryPolicy(new DefaultRetryPolicy(
+        5000,
+        0,
+        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        */
+    return sr;
   }
 
 
@@ -238,23 +252,30 @@ public class VolleyNetworking {
 
       @Override
       public void onErrorResponse(VolleyError volleyError) {
+
+        MainMenu mm = (MainMenu) mCtx;
         String message = "";
-        if (volleyError instanceof NetworkError) {
-          message = "Cannot connect to Internet...Please check your connection!";
-        } else if (volleyError instanceof ServerError) {
+        if (volleyError instanceof ServerError) {
           message = "The server could not be found. Please try again after some time!!";
+          mm.errorHandling(message,true, 0);
         } else if (volleyError instanceof AuthFailureError) {
           message = "Cannot connect to Internet...Please check your connection!";
+          mm.errorHandling(message,false, 1);
         } else if (volleyError instanceof ParseError) {
           message = "Parsing error! Please try again after some time!!";
+          mm.errorHandling(message,false, 0);
         } else if (volleyError instanceof NoConnectionError) {
           message = "Cannot connect to Internet...Please check your connection!";
+          mm.errorHandling(message,true, 1);
         } else if (volleyError instanceof TimeoutError) {
           message = "Connection TimeOut! Please check your internet connection.";
+          mm.errorHandling(message,true, 1);
+        } else if (volleyError instanceof NetworkError) {
+          message = "Cannot connect to Internet...Please check your connection!";
+          mm.errorHandling(message,true, 1);
         }
-        MainMenu mm = (MainMenu) mCtx;
-        mm.notifier.setText(message);
-        System.out.println(message);
+        //mm.notifier.setText(message);
+        //System.out.println(message);
       }
     });
 
@@ -304,40 +325,6 @@ public class VolleyNetworking {
     });
 
 
-  }
-
-  public ImageRequest bitmapRequest(final String mImageURLString, final Book book) {
-    return new ImageRequest(
-        mImageURLString, // Image URL
-        new Response.Listener<Bitmap>() { // Bitmap listener
-          @Override
-          public void onResponse(Bitmap response) {
-            // Do something with response
-            /*
-            book.responseBookCover(response);
-            MainMenu mm = (MainMenu) mCtx;
-            mm.startUI();
-            */
-
-            // Save this downloaded bitmap to internal storage
-            //Uri uri = saveImageToInternalStorage(response);
-
-            // Display the internal storage saved image to image view
-            //mImageViewInternal.setImageURI(uri);
-          }
-        }, 0, // Image width
-        0, // Image height
-        ScaleType.FIT_XY, // Image scale type
-        Bitmap.Config.RGB_565,
-        new Response.ErrorListener() { // Error listener
-          @Override
-          public void onErrorResponse(VolleyError error) {
-            // Do something with error response
-            //error.printStackTrace();
-            System.out.println("Failed loading " + book.getId());
-          }
-        }
-    );
   }
 
   // Custom method to save a bitmap into internal storage

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
+  android:id="@+id/main"
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
@@ -22,27 +23,36 @@
       android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
       app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
-    <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:id="@+id/resultNotify"
-      android:layout_toEndOf="@+id/collectionButton"
-      android:layout_toRightOf="@id/collectionButton"
-      android:layout_marginTop="8dp"
-      android:layout_above="@id/container"/>
 
-
-
-    <FrameLayout
+    <ViewFlipper
       android:id="@+id/container"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:layout_below="@id/my_toolbar"
-      android:layout_above="@id/logo_container">
+      android:layout_above="@id/logo_container"
+      android:inAnimation="@android:anim/fade_in"
+      android:outAnimation="@android:anim/fade_out">
+
+      <include
+      android:id="@+id/recycler_id"
+      layout="@layout/recycler_view"/>
+
+      <include
+        android:id="@+id/loading_id"
+        layout="@layout/loading"/>
+
+      <include
+        android:id="@+id/error_id"
+        layout="@layout/error_page"/>
+
+    </ViewFlipper>
+
+
 
       <ViewStub
         android:id="@+id/layout_stub"
         android:inflatedId="@+id/inflated_gif"
+        android:layout="@layout/loading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
       <ViewStub
@@ -52,8 +62,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
+      <ViewStub
+        android:layout_gravity="center"
+        android:id="@+id/layout_error_stub"
+        android:inflatedId="@+id/inflated_error"
+        android:layout="@layout/error_page"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
-    </FrameLayout>
 
 
     <FrameLayout
@@ -64,6 +80,7 @@
       android:layout_alignParentBottom="true">
 
       <include
+        android:visibility="invisible"
         android:id="@+id/footer"
         layout="@layout/footer_logo"/>
 
