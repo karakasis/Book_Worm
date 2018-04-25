@@ -5,6 +5,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build.VERSION;
@@ -13,6 +15,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLayoutChangeListener;
@@ -45,6 +48,7 @@ public class ManualAddMenu extends AppCompatActivity {
 
   private ManualAddMenu menu;
   private int currentIndexInflated = -1;
+  private int orientation;
 
   private FButton barBut;
   private FButton isbnBut;
@@ -100,6 +104,10 @@ public class ManualAddMenu extends AppCompatActivity {
     menu = this;
     MyApp.getInstance().manualAddMenu = this;
 
+    orientation = this.getResources().getConfiguration().orientation;
+
+
+
     fliplayout1 = findViewById(R.id.fliplayout1);
     barBut = findViewById(R.id.barcodeButton);
     barBut.setButtonColor(this.getResources().getColor(R.color.fbutton_color_beige));
@@ -136,7 +144,7 @@ public class ManualAddMenu extends AppCompatActivity {
 
     glm1 = new WrapContentGridLayoutManager(
         this,
-        calculateNoOfColumns(this)
+        calculateNoOfColumns()
     );
     recyclerView1.setLayoutManager(glm1);
 
@@ -145,7 +153,7 @@ public class ManualAddMenu extends AppCompatActivity {
 
     glm2 = new WrapContentGridLayoutManager(
         this,
-        calculateNoOfColumns(this)
+        calculateNoOfColumns()
     );
     recyclerView2.setLayoutManager(glm2);
 
@@ -154,7 +162,7 @@ public class ManualAddMenu extends AppCompatActivity {
 
     glm3 = new WrapContentGridLayoutManager(
         this,
-        calculateNoOfColumns(this)
+        calculateNoOfColumns()
     );
     recyclerView3.setLayoutManager(glm3);
 
@@ -338,6 +346,9 @@ public class ManualAddMenu extends AppCompatActivity {
     bookPublisher[0] = publisher.getText().toString();
     Book book = new Book(null,title,bookPublisher,null);
 
+    //hotfix for bookinfoactivity to bypass api search
+    book.setDescription("");
+    //
     int placeholder = R.drawable.placeholder;
     Drawable myIcon = getResources().getDrawable( placeholder );
     book.setBookCover(((BitmapDrawable)myIcon).getBitmap());
@@ -370,16 +381,34 @@ public class ManualAddMenu extends AppCompatActivity {
 
   }
 
-  private static int calculateNoOfColumns(Context context) {
-    DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-    float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+  private int calculateNoOfColumns() {
+    /*
+    Display display = getWindowManager().getDefaultDisplay();
+    Point size = new Point();
+    display.getSize(size);
+    manBut.measure(size.x, size.y);
+    int width = manBut.getMeasuredWidth();
+    int height = manBut.getMeasuredHeight();
+    */
+    DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
+    float dpWidth;
+    if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+      dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+    } else {
+      dpWidth = (displayMetrics.widthPixels/3) / displayMetrics.density;
+    }
     int noOfColumns = (int) (dpWidth / 120);
     return noOfColumns;
   }
 
   public void bookClick(int pos){
     if(currentIndexInflated == 0){
-
+      Book b = ga1.getDataSet().get(pos);
+      Intent intent = new Intent(this, BookInfoActivity.class);
+      //this will pass the book object itself so any changes will be made to the Book
+      //class as well
+      intent.putExtra("manual", b);
+      startActivity(intent);
     }else if(currentIndexInflated == 1){
       Book b = ga2.getDataSet().get(pos);
       Intent intent = new Intent(this, BookInfoActivity.class);
@@ -388,7 +417,12 @@ public class ManualAddMenu extends AppCompatActivity {
       intent.putExtra("manual", b);
       startActivity(intent);
     }else if(currentIndexInflated == 2){
-
+      Book b = ga3.getDataSet().get(pos);
+      Intent intent = new Intent(this, BookInfoActivity.class);
+      //this will pass the book object itself so any changes will be made to the Book
+      //class as well
+      intent.putExtra("manual", b);
+      startActivity(intent);
     }
   }
 

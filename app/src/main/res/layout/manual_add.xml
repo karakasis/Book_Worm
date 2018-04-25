@@ -4,69 +4,75 @@
   xmlns:tools="http://schemas.android.com/tools"
   xmlns:fbutton="http://schemas.android.com/apk/res-auto"
   android:id="@+id/LinearLayout1"
-  android:layout_width="match_parent"
+  android:layout_width="wrap_content"
   android:layout_height="wrap_content"
   android:orientation="vertical"
   tools:context="com.example.xrhstos.bookapp.ManualAddMenu">
 
-  <TableLayout
+  <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <TableRow tools:ignore="ExtraText"
-      android:id = "@+id/tableRow1"
-      android:layout_width = "match_parent"
-      android:layout_height = "wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_margin="4dp">
+    <android.support.v7.widget.AppCompatTextView
+      android:id = "@+id/view1"
+      android:layout_width="0dp"
+      android:layout_weight="0.3"
+      android:layout_height="wrap_content"
+      android:textAlignment="center"
+      android:gravity="start"
 
-      android:gravity="center_horizontal">
+      android:text="Title :"
+      android:ellipsize="end"
+      android:maxLines="1"
+      android:textSize="16sp"
+      app:autoSizeMaxTextSize="16sp"
+      app:autoSizeMinTextSize="8sp"
+      app:autoSizeStepGranularity="0.5sp"
+      app:autoSizeTextType="uniform"
+      />
+    <EditText
+      android:layout_weight="0.7"
+      android:inputType="text"
+      android:id = "@+id/book"
+      android:layout_height="wrap_content"
+      android:layout_width="0dp"
+      android:ems="10"/>
 
+  </LinearLayout>
 
-      <TextView
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_margin="4dp">
+    <android.support.v7.widget.AppCompatTextView
+      android:id = "@+id/view2"
+      android:layout_width="0dp"
+      android:layout_weight="0.3"
+      android:layout_height="wrap_content"
+      android:textAlignment="center"
+      android:gravity="start"
 
-        android:textSize="16dp"
-        android:id = "@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Book :"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-      <EditText
-        android:inputType="text"
-        android:id = "@+id/book"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:ems="10"/>
+      android:text="Author :"
+      android:ellipsize="end"
+      android:maxLines="1"
+      android:textSize="16sp"
+      app:autoSizeMaxTextSize="16sp"
+      app:autoSizeMinTextSize="8sp"
+      app:autoSizeStepGranularity="0.5sp"
+      app:autoSizeTextType="uniform"
+      />
+    <EditText
+      android:layout_weight="0.7"
+      android:inputType="text"
+      android:id = "@+id/bookPublisher"
+      android:layout_height="wrap_content"
+      android:layout_width="0dp"
+      android:ems="10"/>
 
+  </LinearLayout>
 
-    </TableRow>
-    <TableRow tools:ignore="ExtraText"
-      android:id = "@+id/tableRow2"
-      android:layout_width = "match_parent"
-      android:layout_height = "wrap_content"
-
-      android:gravity="center_horizontal">
-
-      <TextView
-        android:id = "@+id/textVeiw2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Author :"
-        android:textSize="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-      <EditText
-        android:inputType="text"
-        android:id = "@+id/bookPublisher"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:ems="10"/>
-
-
-    </TableRow>
-  </TableLayout>
 
   <RatingBar
     android:layout_margin="8dp"
@@ -76,6 +82,7 @@
     android:layout_height="wrap_content"
     android:layout_centerHorizontal="true"
     android:progressTint="@color/orange300"
+    android:secondaryProgressTint="@color/orange300"
     android:backgroundTint="@color/orange300"
     android:numStars="5"
     android:rating="0"
@@ -89,7 +96,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:text="Add"
-    android:textSize="32dp"
+    android:textSize="24sp"
+    app:autoSizeMaxTextSize="32sp"
+    app:autoSizeMinTextSize="8sp"
+    app:autoSizeStepGranularity="0.5sp"
+    app:autoSizeTextType="uniform"
     android:textColor="@color/gridColor"
     app:fButtonColor="@color/fbutton_color_clouds"
     android:alpha="0.7"

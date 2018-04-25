@@ -10,14 +10,14 @@
     android:id="@+id/framesContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layout_margin="8dp">
 
     <com.csot.fliplayout.lib.FlipLayout
-      android:layout_marginBottom="8dp"
+      android:layout_marginRight="8dp"
       android:id="@+id/fliplayout1"
-      android:layout_width="match_parent"
-      android:layout_height="0dp"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
       android:layout_weight="1"
       app:transition="TRANSLATE_X">
 
@@ -35,8 +35,8 @@
         />
 
       <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center">
 
         <include
@@ -47,8 +47,8 @@
 
       <FrameLayout
         android:id="@+id/pr_view_1"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center">
 
         <include
@@ -60,10 +60,10 @@
     </com.csot.fliplayout.lib.FlipLayout>
 
     <com.csot.fliplayout.lib.FlipLayout
-      android:layout_marginBottom="8dp"
+      android:layout_marginRight="8dp"
       android:id="@+id/fliplayout2"
-      android:layout_width="match_parent"
-      android:layout_height="0dp"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
       android:layout_weight="1"
       app:transition="TRANSLATE_X">
 
@@ -81,7 +81,7 @@
         />
 
       <FrameLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center">
 
@@ -92,8 +92,8 @@
 
       <FrameLayout
         android:id="@+id/pr_view_2"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center">
 
         <include
@@ -106,8 +106,8 @@
 
     <com.csot.fliplayout.lib.FlipLayout
       android:id="@+id/fliplayout3"
-      android:layout_width="match_parent"
-      android:layout_height="0dp"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
       android:layout_weight="1"
       app:transition="TRANSLATE_X">
 
@@ -125,7 +125,7 @@
         />
 
       <FrameLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center">
 
@@ -135,8 +135,8 @@
       </FrameLayout>
 
       <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center">
 
         <include
@@ -147,8 +147,8 @@
 
       <FrameLayout
         android:id="@+id/pr_view_3"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center">
 
         <include
