@@ -34,6 +34,7 @@ import com.example.xrhstos.bookapp.VolleyNetworking;
 import com.example.xrhstos.bookapp.gallery.GalleryBackend;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import info.hoang8f.widget.FButton;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -60,6 +61,7 @@ public class MainMenu extends AppCompatActivity{
   private static final String IS_API_ERROR_STRING_KEY = "IS_API_ERROR_STRING";
   private static final String IS_API_ERROR_REF_KEY = "IS_API_ERROR_REF";
   private static final String IS_API_ERROR_TYPE_KEY = "IS_API_ERROR_TYPE";
+  private static final String FLIPPER_KEY = "FLIPPER";
 
   private boolean googleON;
   private boolean goodreadsON;
@@ -69,10 +71,8 @@ public class MainMenu extends AppCompatActivity{
   private static int currentPage;
   public TextView notifier;
 
+  private SearchView searchView;
   private View footer;
-  private View loading;
-  private View grid;
-  private View errors;
   private ViewFlipper vFlipper;
   private boolean isLoading;
   private boolean isError;
@@ -84,20 +84,19 @@ public class MainMenu extends AppCompatActivity{
   private PreviewController previewController;
   private int firstVisibleItem;
   private Parcelable glmState;
-  public int bitmapRequestCount;
-  public int bitmapMaxCount;
 
   private Database myDb;
   private Ping ping;
 
   private int scannerCounter = 0;
   private ArrayList<Book> booksFromScanner;
+  private int currentFlippedView;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main_menu);
-
+    System.out.println("OnCreate");
     ping = new Ping();
 
 
@@ -115,23 +114,13 @@ public class MainMenu extends AppCompatActivity{
     Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
     setSupportActionBar(myToolbar);
 
-    ViewFlipper vFlipper = findViewById(R.id.container);
+    vFlipper = findViewById(R.id.container);
     vFlipper.setAutoStart(false);
 
 
-    ViewStub stub = (ViewStub) findViewById(R.id.layout_stub);
-    stub.setLayoutResource(R.layout.loading);
-    loading = stub.inflate();
-
-    ViewStub stub1 = (ViewStub) findViewById(R.id.layout_stub_grid);
-    grid = stub1.inflate();
-
-    ViewStub stub2 = (ViewStub) findViewById(R.id.layout_error_stub);
-    errors = stub2.inflate();
-
     if(previewController == null){
       previewController = new PreviewController(
-          (RecyclerView) grid.findViewById(R.id.grid_view),this);
+          (RecyclerView) vFlipper.getChildAt(0).findViewById(R.id.grid_view),this);
     }
 
 
@@ -152,6 +141,8 @@ public class MainMenu extends AppCompatActivity{
       error = savedInstanceState.getString(IS_API_ERROR_STRING_KEY);
       refreshable = savedInstanceState.getBoolean(IS_API_ERROR_REF_KEY);
       errorType = savedInstanceState.getInt(IS_API_ERROR_TYPE_KEY);
+
+      currentFlippedView = savedInstanceState.getInt(FLIPPER_KEY);
       if(googleON){
         ImageView logo = (ImageView) findViewById(R.id.logo);
         logo.setImageResource(R.drawable.google_logo);
@@ -171,11 +162,10 @@ public class MainMenu extends AppCompatActivity{
       error = "";
       errorType = -1;
       refreshable = false;
+      currentFlippedView = 0;
     }
 
-    if(isLoading){
-      showLoading();
-    }else if(isError){
+    if(isError){
       errorHandling(error,refreshable,errorType);
     }else{
       showGrid();
@@ -186,6 +176,7 @@ public class MainMenu extends AppCompatActivity{
   @Override
   protected void onSaveInstanceState(Bundle bundle) {
     super.onSaveInstanceState(bundle);
+    System.out.println("onSaveInstanceState");
     //bundle.putSerializable(BOOKSHELF_KEY, bookshelf);
     bundle.putString(SEARCH_ONLINE_QUERY_KEY,query);
     bundle.putString(SEARCH_ONLINE_LANG_QUERY_KEY,langQuery);
@@ -203,6 +194,8 @@ public class MainMenu extends AppCompatActivity{
     bundle.putBoolean(IS_API_ERROR_REF_KEY,refreshable);
     bundle.putInt(IS_API_ERROR_TYPE_KEY,errorType);
 
+    bundle.putInt(FLIPPER_KEY,currentFlippedView);
+
     // Save list state
     glmState = previewController.getLayoutManager().onSaveInstanceState();
     bundle.putParcelable(GLM_KEY, glmState);
@@ -212,6 +205,7 @@ public class MainMenu extends AppCompatActivity{
   protected void onRestoreInstanceState(Bundle bundle) {
     super.onRestoreInstanceState(bundle);
 
+    System.out.println("onRestoreInstanceState");
     // Retrieve list state and list/item positions
     if(bundle != null)
       glmState = bundle.getParcelable(GLM_KEY);
@@ -221,10 +215,10 @@ public class MainMenu extends AppCompatActivity{
   protected void onResume() {
     super.onResume();
 
+    System.out.println("onResume");
+    System.out.println(isError);
     if (glmState != null) {
-      if(!isLoading && !isError) {
-        rotateUpdate();
-      }
+      //rotateUpdate();
       previewController.getLayoutManager().onRestoreInstanceState(glmState);
     }
   }
@@ -233,9 +227,10 @@ public class MainMenu extends AppCompatActivity{
   public boolean onCreateOptionsMenu(Menu menu) {
     getMenuInflater().inflate(R.menu.menu, menu);
 
+    System.out.println("onCreateOptionsMenu");
     final MenuItem searchMenuItem = menu.findItem(R.id.action_search);
 
-    final SearchView searchView = (SearchView) searchMenuItem.getActionView();
+    searchView = (SearchView) searchMenuItem.getActionView();
     searchView.setQueryHint("Dan Brown :el");
     searchView.setOnQueryTextListener(new OnQueryTextListener() {
 
@@ -266,7 +261,6 @@ public class MainMenu extends AppCompatActivity{
         return false;
       }
     });
-
     return super.onCreateOptionsMenu(menu);
   }
 
@@ -289,7 +283,6 @@ public class MainMenu extends AppCompatActivity{
     }else{
       requestGoogle();
     }
-    showLoading();
 
   }
 
@@ -365,10 +358,7 @@ public class MainMenu extends AppCompatActivity{
   }
 
   private void rotateUpdate(){
-    //previewController = new PreviewController(
-        //(RecyclerView) findViewById(R.id.grid_view),this);
     updateAdapter(Bookshelf.getInstance().getBooks());
-    //previewController.setData(Bookshelf.getInstance().getBooks());
     previewController.scrollToVisibleItem(firstVisibleItem);
   }
 
@@ -379,7 +369,7 @@ public class MainMenu extends AppCompatActivity{
 
   public void updateAdapter(ArrayList<Book> data){
     previewController = new PreviewController(
-        (RecyclerView) grid.findViewById(R.id.grid_view),this);
+        (RecyclerView) vFlipper.getChildAt(0).findViewById(R.id.grid_view),this);
     previewController.setData(data);
   }
 
@@ -425,7 +415,9 @@ public class MainMenu extends AppCompatActivity{
   public void showLoading(){
     isError = false;
     isLoading = true;
-    snackbar.dismiss();
+    if(snackbar!=null){
+      snackbar.dismiss();
+    }
     footer.setVisibility(View.INVISIBLE);
     flipViews(1);
     /*
@@ -448,8 +440,8 @@ public class MainMenu extends AppCompatActivity{
   }
 
   public void flipViews(int index){
-
     vFlipper.setDisplayedChild(index);
+    currentFlippedView = index;
   }
 
   public void errorHandling(String error,boolean refreshable,int errorType){
@@ -462,7 +454,7 @@ public class MainMenu extends AppCompatActivity{
           .setAction("REFRESH", new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-              searchBooks(query);
+              searchView.setQuery(query,true);
             }
           })
           .setActionTextColor(getResources().getColor(R.color.poweredColor));
@@ -480,7 +472,7 @@ public class MainMenu extends AppCompatActivity{
       sbView.setBackgroundColor(getResources().getColor(R.color.logoBackgroundColor));
       snackbar.show();
     }
-    ImageView eView = (ImageView) errors.findViewById(R.id.error_image);
+    ImageView eView = (ImageView) vFlipper.getChildAt(2).findViewById(R.id.error_image);
     if(errorType == 0){
       eView.setImageResource(R.drawable.no_server);
     }else if(errorType == 1){

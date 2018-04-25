@@ -47,31 +47,6 @@
 
     </ViewFlipper>
 
-
-
-      <ViewStub
-        android:id="@+id/layout_stub"
-        android:inflatedId="@+id/inflated_gif"
-        android:layout="@layout/loading"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-      <ViewStub
-        android:id="@+id/layout_stub_grid"
-        android:inflatedId="@+id/inflated_grid"
-        android:layout="@layout/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
-      <ViewStub
-        android:layout_gravity="center"
-        android:id="@+id/layout_error_stub"
-        android:inflatedId="@+id/inflated_error"
-        android:layout="@layout/error_page"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
-
-
     <FrameLayout
       android:visibility="gone"
       android:id="@+id/logo_container"
