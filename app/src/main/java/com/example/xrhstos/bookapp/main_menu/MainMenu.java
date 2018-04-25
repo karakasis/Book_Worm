@@ -402,7 +402,7 @@ public class MainMenu extends AppCompatActivity{
 
   public void updateAdapter(ArrayList<Book> data){
     previewController = new PreviewController(
-        (RecyclerView) findViewById(R.id.grid_view),this);
+        (RecyclerView) grid.findViewById(R.id.grid_view),this);
     previewController.setData(data);
   }
 

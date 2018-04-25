@@ -10,7 +10,8 @@
     android:id="@+id/framesContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_margin="8dp">
 
     <com.csot.fliplayout.lib.FlipLayout
       android:id="@+id/fliplayout1"
@@ -19,12 +20,38 @@
       android:layout_weight="1"
       app:transition="TRANSLATE_X">
 
+      <info.hoang8f.widget.FButton
+        android:id="@+id/barcodeButton"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.7"
+        android:text="Scan barcode"
+        android:textColor="@color/gridColor"
+        android:textSize="32sp"
+        fbutton:shadowEnabled="true"
+        fbutton:shadowHeight="5dp"
+        fbutton:cornerRadius="5dp"
+        />
+
       <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <include
-          layout="@layout/manual_add"/>
+          android:id="@+id/load_view_1"
+          layout="@layout/loading"/>
+
+      </FrameLayout>
+
+      <FrameLayout
+        android:id="@+id/pr_view_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <include
+          android:id="@+id/r_view_1"
+          layout="@layout/recycler_view"/>
 
       </FrameLayout>
 
@@ -38,23 +65,91 @@
       app:transition="TRANSLATE_X">
 
       <info.hoang8f.widget.FButton
+        android:id="@+id/manualButton"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha="0.7"
-        android:text="Add by ISBN "
+        android:text="Add manually "
+        android:textColor="@color/gridColor"
         android:textSize="32sp"
         fbutton:shadowEnabled="true"
         fbutton:shadowHeight="5dp"
         fbutton:cornerRadius="5dp"
         />
 
+      <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <include
+          layout="@layout/manual_add"/>
+
+      </FrameLayout>
+
+      <FrameLayout
+        android:id="@+id/pr_view_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <include
+          android:id="@+id/r_view_2"
+          layout="@layout/recycler_view"/>
+
+      </FrameLayout>
+
+    </com.csot.fliplayout.lib.FlipLayout>
+
+    <com.csot.fliplayout.lib.FlipLayout
+      android:id="@+id/fliplayout3"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      app:transition="TRANSLATE_X">
+
+      <info.hoang8f.widget.FButton
+        android:id="@+id/isbnButton"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.7"
+        android:text="Add by ISBN "
+        android:textColor="@color/gridColor"
+        android:textSize="32sp"
+        fbutton:shadowEnabled="true"
+        fbutton:shadowHeight="5dp"
+        fbutton:cornerRadius="5dp"
+        />
 
       <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
 
         <include
           layout="@layout/manual_add_isbn"/>
+
+      </FrameLayout>
+
+      <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include
+          android:id="@+id/load_view_3"
+          layout="@layout/loading"/>
+
+      </FrameLayout>
+
+      <FrameLayout
+        android:id="@+id/pr_view_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <include
+          android:id="@+id/r_view_3"
+          layout="@layout/recycler_view"/>
 
       </FrameLayout>
 

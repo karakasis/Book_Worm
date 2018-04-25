@@ -14,6 +14,7 @@ public class MyApp extends Application {
   public MainMenu mainMenu;
   public GalleryBackend galleryBackend;
   public BookInfoActivity bookInfoActivity;
+  public ManualAddMenu manualAddMenu;
 
   public static MyApp getInstance() {
     return instance;

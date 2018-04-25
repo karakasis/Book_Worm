@@ -14,7 +14,7 @@
     android:layout_above="@id/logo_container">
 
     <include
-      android:id="@+id/previewGrid"
+      android:id="@+id/previewGridGallery"
       layout="@layout/recycler_view"/>
 
   </FrameLayout>

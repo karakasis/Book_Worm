@@ -47,6 +47,8 @@ public class GalleryBackend extends AppCompatActivity {
   private RecyclerView.LayoutManager gLayoutManager;
   private ArrayList<Book> myDataset;
 
+  private View includedView;
+
 
 
   @Override
@@ -58,7 +60,7 @@ public class GalleryBackend extends AppCompatActivity {
     app.galleryBackend = this;
 
     myDataset = Collection.getInstance().getBooks();
-
+    includedView = findViewById(R.id.previewGridGallery);
 
     //footer = (View) findViewById(R.id.logo_container);
 
@@ -69,7 +71,7 @@ public class GalleryBackend extends AppCompatActivity {
 
     if(previewController == null){
       previewController = new PreviewController2(
-          (RecyclerView) findViewById(R.id.grid_view),this);
+          (RecyclerView) includedView.findViewById(R.id.grid_view),this);
     }
 
     previewController.setData(myDataset);
@@ -201,7 +203,7 @@ public class GalleryBackend extends AppCompatActivity {
 
   public void updateAdapter(ArrayList<Book> data){
     previewController = new PreviewController2(
-        (RecyclerView) findViewById(R.id.grid_view),this);
+        (RecyclerView) includedView.findViewById(R.id.grid_view),this);
     previewController.setData(data);
   }
 }

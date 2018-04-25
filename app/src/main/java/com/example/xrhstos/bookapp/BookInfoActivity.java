@@ -86,7 +86,9 @@ public class BookInfoActivity extends AppCompatActivity {
     Bundle data = getIntent().getExtras();
     if(data.containsKey("gallery")){
       currentBook = (Book) data.getParcelable("gallery");
-    }else{
+    }else if( data.containsKey("manual")){
+      currentBook = (Book) data.getParcelable("manual");
+    } else{
       int position = data.getInt("bookObjectPos");
       currentBook = Bookshelf.getInstance().getSingleBook(position);
     }

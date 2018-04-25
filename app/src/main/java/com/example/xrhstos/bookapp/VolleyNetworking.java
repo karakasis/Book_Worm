@@ -139,7 +139,7 @@ public class VolleyNetworking {
           @Override
           public void onResponse(String response) {
 
-            MainMenu mm = (MainMenu) mCtx;
+            //MainMenu mm = (MainMenu) mCtx;
             XmlParserISBN.stringToList(response);
             Book book = XmlParserISBN.parse(
                 new String[]{"id", "title", "image_url", "name", "isbn13", "isbn",
@@ -150,9 +150,9 @@ public class VolleyNetworking {
             ArrayList<Book> res = new ArrayList<>();
             res.add(book);
             if (book == null) {
-              mm.updateByISBN(null);
+              MyApp.getInstance().manualAddMenu.updateByISBN(null);
             } else {
-              mm.updateByISBN(res);
+              MyApp.getInstance().manualAddMenu.updateByISBN(res);
             }
 
             System.out.println("Source : Goodreads");
@@ -175,9 +175,9 @@ public class VolleyNetworking {
         } else if (volleyError instanceof TimeoutError) {
           message = "Connection TimeOut! Please check your internet connection.";
         }
-        MainMenu mm = (MainMenu) mCtx;
-        mm.notifier.setText(message);
-        mm.updateByISBN(null);
+        //MainMenu mm = (MainMenu) mCtx;
+        //mm.notifier.setText(message);
+        MyApp.getInstance().manualAddMenu.updateByISBN(null);
 
         System.out.println(message);
       }
@@ -273,8 +273,8 @@ public class VolleyNetworking {
       @Override
       public void onResponse(JSONObject response) {
 
-        MainMenu mm = (MainMenu) mCtx;
-        mm.updateByISBN(JsonParser.parse(response, true));
+        //MainMenu mm = (MainMenu) mCtx;
+        MyApp.getInstance().manualAddMenu.updateByISBN(JsonParser.parse(response, true));
 
         System.out.println("Source : Google");
       }
@@ -296,9 +296,9 @@ public class VolleyNetworking {
         } else if (volleyError instanceof TimeoutError) {
           message = "Connection TimeOut! Please check your internet connection.";
         }
-        MainMenu mm = (MainMenu) mCtx;
-        mm.notifier.setText(message);
-        mm.updateByISBN(null);
+        //MainMenu mm = (MainMenu) mCtx;
+        //mm.notifier.setText(message);
+        MyApp.getInstance().manualAddMenu.updateByISBN(null);
         System.out.println(message);
       }
     });

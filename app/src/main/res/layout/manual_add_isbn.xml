@@ -33,7 +33,7 @@
         app:layout_constraintTop_toTopOf="parent" />
       <EditText
         android:inputType="text"
-        android:id = "@+id/book"
+        android:id = "@+id/isbnEditText"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:ems="10"/>
@@ -44,7 +44,7 @@
   </TableLayout>
 
   <info.hoang8f.widget.FButton
-    android:id = "@+id/addManualButtonYES"
+    android:id = "@+id/findIsbnButtonYES"
     android:layout_marginLeft="40dp"
     android:layout_marginRight="40dp"
     android:layout_marginBottom="8dp"
