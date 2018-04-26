@@ -61,6 +61,11 @@ public class VolleyNetworking {
     return mInstance;
   }
 
+  public static synchronized  VolleyNetworking refresh(Context context){
+    mInstance = new VolleyNetworking(context);
+    return  mInstance;
+  }
+
   public RequestQueue getRequestQueue() {
     if (mRequestQueue == null) {
       // getApplicationContext() is key, it keeps you from leaking the
@@ -134,12 +139,12 @@ public class VolleyNetworking {
         //System.out.println(message);
       }
     });
-    /*
+
     sr.setRetryPolicy(new DefaultRetryPolicy(
         5000,
         0,
         DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        */
+
     return sr;
   }
 
@@ -397,21 +402,27 @@ public class VolleyNetworking {
         , new Response.ErrorListener() {
       @Override
       public void onErrorResponse(VolleyError volleyError) {
+        BookInfoActivity mm = MyApp.getInstance().bookInfoActivity;
         String message = "";
-        if (volleyError instanceof NetworkError) {
-          message = "Cannot connect to Internet...Please check your connection!";
-        } else if (volleyError instanceof ServerError) {
+        if (volleyError instanceof ServerError) {
           message = "The server could not be found. Please try again after some time!!";
+          mm.errorHandling(message,true, 0);
         } else if (volleyError instanceof AuthFailureError) {
           message = "Cannot connect to Internet...Please check your connection!";
+          mm.errorHandling(message,false, 1);
         } else if (volleyError instanceof ParseError) {
           message = "Parsing error! Please try again after some time!!";
+          mm.errorHandling(message,false, 0);
         } else if (volleyError instanceof NoConnectionError) {
           message = "Cannot connect to Internet...Please check your connection!";
+          mm.errorHandling(message,true, 1);
         } else if (volleyError instanceof TimeoutError) {
           message = "Connection TimeOut! Please check your internet connection.";
+          mm.errorHandling(message,true, 1);
+        } else if (volleyError instanceof NetworkError) {
+          message = "Cannot connect to Internet...Please check your connection!";
+          mm.errorHandling(message,true, 1);
         }
-        System.out.println(message);
       }
     });
 
@@ -438,21 +449,27 @@ public class VolleyNetworking {
 
       @Override
       public void onErrorResponse(VolleyError volleyError) {
+        BookInfoActivity mm = MyApp.getInstance().bookInfoActivity;
         String message = "";
-        if (volleyError instanceof NetworkError) {
-          message = "Cannot connect to Internet...Please check your connection!";
-        } else if (volleyError instanceof ServerError) {
+        if (volleyError instanceof ServerError) {
           message = "The server could not be found. Please try again after some time!!";
+          mm.errorHandling(message,true, 0);
         } else if (volleyError instanceof AuthFailureError) {
           message = "Cannot connect to Internet...Please check your connection!";
+          mm.errorHandling(message,false, 1);
         } else if (volleyError instanceof ParseError) {
           message = "Parsing error! Please try again after some time!!";
+          mm.errorHandling(message,false, 0);
         } else if (volleyError instanceof NoConnectionError) {
           message = "Cannot connect to Internet...Please check your connection!";
+          mm.errorHandling(message,true, 1);
         } else if (volleyError instanceof TimeoutError) {
           message = "Connection TimeOut! Please check your internet connection.";
+          mm.errorHandling(message,true, 1);
+        } else if (volleyError instanceof NetworkError) {
+          message = "Cannot connect to Internet...Please check your connection!";
+          mm.errorHandling(message,true, 1);
         }
-        System.out.println(message);
       }
     });
 

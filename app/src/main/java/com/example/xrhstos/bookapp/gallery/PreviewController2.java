@@ -96,7 +96,7 @@ public class PreviewController2{
   }
 
   private void loadNextDataFromApi(int page) {
-    MainMenu.loadingData = true;
+    //MainMenu.loadingData = true;
     parent.requestMoreResults();
   }
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
+  android:id="@+id/info_main"
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
@@ -9,19 +10,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ViewStub
-      android:id="@+id/layout_stub_load"
-      android:inflatedId="@+id/inflated_gif"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"/>
-    <ViewStub
-      android:id="@+id/layout_stub_info"
-      android:inflatedId="@+id/inflated_info"
-      android:layout="@layout/book_info"
+    <ViewFlipper
+      android:id="@+id/container"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      />
+      android:inAnimation="@android:anim/fade_in"
+      android:outAnimation="@android:anim/fade_out">
 
+      <include
+        android:id="@+id/info_id"
+        layout="@layout/book_info"/>
+
+      <include
+        android:id="@+id/loading_id"
+        layout="@layout/loading"/>
+
+      <include
+        android:id="@+id/error_id"
+        layout="@layout/error_page"/>
+
+    </ViewFlipper>
   </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>

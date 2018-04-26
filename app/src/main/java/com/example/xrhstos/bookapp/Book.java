@@ -337,7 +337,7 @@ public class Book implements Parcelable {
     if(googleID==null){
 
       return null;
-    }else if(id==null){
+    }else if(id==null && buyURL!=null){
       String market;
       market = buyURL.replace("https://play.google.com/store/books/","");
       return market;

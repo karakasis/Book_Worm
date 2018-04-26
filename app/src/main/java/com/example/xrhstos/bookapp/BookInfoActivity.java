@@ -1,19 +1,26 @@
 package com.example.xrhstos.bookapp;
 
+import static com.example.xrhstos.bookapp.LockActivityOrientation.lockActivityOrientation;
+
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -36,6 +43,21 @@ public class BookInfoActivity extends AppCompatActivity {
   private View info;
 
   private boolean isLoading;
+  private ViewFlipper vFlipper;
+
+  private static final String IS_API_ERROR_KEY = "IS_API_ERROR";
+  private static final String IS_API_ERROR_STRING_KEY = "IS_API_ERROR_STRING";
+  private static final String IS_API_ERROR_REF_KEY = "IS_API_ERROR_REF";
+  private static final String IS_API_ERROR_TYPE_KEY = "IS_API_ERROR_TYPE";
+
+  private boolean isError;
+  private String error;
+  private boolean refreshable;
+  private int errorType;
+  private Snackbar snackbar;
+  private int currentFlippedView;
+  private String googleID;
+  private String id;
 
   @Override
   public void onBackPressed(){
@@ -58,26 +80,27 @@ public class BookInfoActivity extends AppCompatActivity {
 
     MyApp.getInstance().bookInfoActivity=this;
 
-    ViewStub stub = (ViewStub) findViewById(R.id.layout_stub_load);
-    stub.setLayoutResource(R.layout.loading);
-    loading = stub.inflate();
-    loading.setVisibility(View.VISIBLE);
+    vFlipper = findViewById(R.id.container);
+    vFlipper.setAutoStart(false);
 
-    ViewStub stub1 = (ViewStub) findViewById(R.id.layout_stub_info);
-    info = stub1.inflate();
-    info.setVisibility(View.GONE);
-
-
+    VolleyNetworking.refresh(MyApp.getContext());
 
     if(savedInstanceState!=null){
       isLoading = savedInstanceState.getBoolean("IS_LOADING");
+      isError = savedInstanceState.getBoolean(IS_API_ERROR_KEY);
+
+      error = savedInstanceState.getString(IS_API_ERROR_STRING_KEY);
+      refreshable = savedInstanceState.getBoolean(IS_API_ERROR_REF_KEY);
+      errorType = savedInstanceState.getInt(IS_API_ERROR_TYPE_KEY);
       if(isLoading){
         showLoading();
-      }else{
+      }else if(isError){
+        errorHandling(error,refreshable,errorType);
+      } else{
         showInfo();
       }
     }else{
-      isLoading = true;
+      showLoading();
     }
 
 
@@ -94,8 +117,8 @@ public class BookInfoActivity extends AppCompatActivity {
     }
 
 
-    String googleID = currentBook.getGoogleID();
-    String id = currentBook.getId();
+    googleID = currentBook.getGoogleID();
+    id = currentBook.getId();
 
     Book matchedBook = Collection.getInstance().matchBook(currentBook.getKey());
     if(matchedBook != null){
@@ -105,13 +128,7 @@ public class BookInfoActivity extends AppCompatActivity {
 
     if(currentBook.getDescription() == null){//hot fix not to ask for api if api is already inputted
       showLoading();
-      if(googleID != null){
-        JsonObjectRequest jor = VolleyNetworking.getInstance(MyApp.getContext()).googleRequestByID(googleID,currentBook);
-        VolleyNetworking.getInstance(MyApp.getContext()).addToRequestQueue(jor);
-      }else if(id != null){
-        StringRequest stringRequest = VolleyNetworking.getInstance(MyApp.getContext()).goodReadsRequestByID(id,currentBook);
-        VolleyNetworking.getInstance(MyApp.getContext()).addToRequestQueue(stringRequest);
-      }
+      apiCall();
     }else{ //go to update anyways
       update(currentBook);
     }
@@ -122,6 +139,12 @@ public class BookInfoActivity extends AppCompatActivity {
   protected void onSaveInstanceState(Bundle bundle) {
     super.onSaveInstanceState(bundle);
     bundle.putBoolean("IS_LOADING",isLoading);
+
+    bundle.putBoolean(IS_API_ERROR_KEY,isError);
+
+    bundle.putString(IS_API_ERROR_STRING_KEY,error);
+    bundle.putBoolean(IS_API_ERROR_REF_KEY,refreshable);
+    bundle.putInt(IS_API_ERROR_TYPE_KEY,errorType);
   }
 
   private void createButtons(){
@@ -216,18 +239,18 @@ public class BookInfoActivity extends AppCompatActivity {
   private void startUI(){
     showInfo();
     //setContentView(R.layout.book_info);
-
+    View view = vFlipper.getChildAt(0);
     String title = currentBook.getBookTitle();
     String[] author = currentBook.getAuthor();
 
     //start ui elements
-    ImageButton iv = (ImageButton) info.findViewById(R.id.bookImage);
+    ImageButton iv = (ImageButton) view.findViewById(R.id.bookImage);
     iv.setImageBitmap(currentBook.getBookCover());
 
-    AppCompatTextView tv = (AppCompatTextView) info.findViewById(R.id.bookTitle);
+    AppCompatTextView tv = (AppCompatTextView) view.findViewById(R.id.bookTitle);
     tv.setText(title);
 
-    AppCompatTextView tv2 = (AppCompatTextView) info.findViewById(R.id.bookPublisher);
+    AppCompatTextView tv2 = (AppCompatTextView) view.findViewById(R.id.bookPublisher);
     tv2.setText("by ");
     for(int i=0; i<currentBook.getAuthor().length; i++){
       tv2.setText(tv2.getText()+currentBook.getAuthor()[i]+", ");
@@ -235,9 +258,9 @@ public class BookInfoActivity extends AppCompatActivity {
     int l = tv2.getText().length();
     tv2.setText(tv2.getText().toString().substring(0,l-2));
 
-    RatingBar rb2 = info.findViewById(R.id.ratingBar2);
+    RatingBar rb2 = view.findViewById(R.id.ratingBar2);
     rb2.setRating(currentBook.getAverageRating());
-    RatingBar rb1 = info.findViewById(R.id.ratingBar1);
+    RatingBar rb1 = view.findViewById(R.id.ratingBar1);
     rb1.setRating(currentBook.getPersonalRating());
     rb1.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener(){
       @Override
@@ -247,10 +270,16 @@ public class BookInfoActivity extends AppCompatActivity {
       }
     });
 
-    TextView tvDesc = info.findViewById(R.id.description);
-    tvDesc.setText(Html.fromHtml(currentBook.getDescription()));
+    if(currentBook.getDescription()!=null){ // can happen if book is from google and no desc found
+      TextView tvDesc = view.findViewById(R.id.description);
+      tvDesc.setText(Html.fromHtml(currentBook.getDescription()));
+    }else{
+      TextView tvDesc = view.findViewById(R.id.description);
+      tvDesc.setText("");
+    }
 
-    LinearLayout infoLL = info.findViewById(R.id.moreInfo);
+
+    LinearLayout infoLL = view.findViewById(R.id.moreInfo);
     if(currentBook.getPublishedDate()!=null){
       TextView tvPublishedDate = new TextView(this);
       tvPublishedDate.setText("Published: "+currentBook.getPublishedDate());
@@ -301,7 +330,15 @@ public class BookInfoActivity extends AppCompatActivity {
 
       }
      } catch (android.content.ActivityNotFoundException anfe) {
-      startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(currentBook.getBuyURL())));
+      try {
+
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(currentBook.getBuyURL())));
+      } catch(Exception e){
+        Log.e("GPlay-but","buy-url is null");
+      }
+    }
+    catch (Exception e){
+      Log.e("GPlay-but","buy-url is null");
     }
   }
 
@@ -313,16 +350,85 @@ public class BookInfoActivity extends AppCompatActivity {
     }
   }
 
+  private void apiCall(){
+    if(googleID != null){
+      JsonObjectRequest jor = VolleyNetworking.getInstance(MyApp.getContext()).googleRequestByID(googleID,currentBook);
+      VolleyNetworking.getInstance(MyApp.getContext()).addToRequestQueue(jor);
+    }else if(id != null){
+      StringRequest stringRequest = VolleyNetworking.getInstance(MyApp.getContext()).goodReadsRequestByID(id,currentBook);
+      VolleyNetworking.getInstance(MyApp.getContext()).addToRequestQueue(stringRequest);
+    }
+  }
+
+
+
   public void showInfo(){
+    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+    isError = false;
     isLoading = false;
-    info.setVisibility(View.VISIBLE);
-    loading.setVisibility(View.GONE);
+    flipViews(0);
+
   }
 
   public void showLoading(){
+    lockActivityOrientation(this);
+    isError = false;
     isLoading = true;
-    info.setVisibility(View.INVISIBLE);
-    loading.setVisibility(View.VISIBLE);
+    if(snackbar!=null){
+      snackbar.dismiss();
+    }
+    flipViews(1);
+  }
+
+  public void showError(){
+    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+    isError = true;
+    isLoading = false;
+    flipViews(2);
+  }
+
+  public void flipViews(int index){
+    vFlipper.setDisplayedChild(index);
+    currentFlippedView = index;
+  }
+
+  public void errorHandling(String error,boolean refreshable,int errorType){
+    this.error = error;
+    this.refreshable = refreshable;
+    this.errorType = errorType;
+    showError();
+    if(refreshable){
+      snackbar = Snackbar.make(findViewById(R.id.info_main),error,Snackbar.LENGTH_INDEFINITE)
+          .setAction("REFRESH", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+              apiCall();
+            }
+          })
+          .setActionTextColor(getResources().getColor(R.color.poweredColor));
+      View sbView = snackbar.getView();
+      TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+      textView.setTextColor(getResources().getColor(R.color.fbutton_color_wet_asphalt));
+      sbView.setBackgroundColor(getResources().getColor(R.color.logoBackgroundColor));
+      snackbar.show();
+
+    }else{
+      snackbar = Snackbar.make(findViewById(R.id.info_main),error,Snackbar.LENGTH_LONG);
+      View sbView = snackbar.getView();
+      TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+      textView.setTextColor(getResources().getColor(R.color.fbutton_color_wet_asphalt));
+      sbView.setBackgroundColor(getResources().getColor(R.color.logoBackgroundColor));
+      snackbar.show();
+    }
+    ImageView eView = (ImageView) vFlipper.getChildAt(2).findViewById(R.id.error_image);
+    AppCompatTextView tView = vFlipper.getChildAt(2).findViewById(R.id.error_text);
+    tView.setText("We cant get information about this book. Try later.");
+    if(errorType == 0){
+      eView.setImageResource(R.drawable.no_server);
+    }else if(errorType == 1){
+      eView.setImageResource(R.drawable.no_internet);
+    }
+
   }
 
 }

@@ -1,6 +1,9 @@
 package com.example.xrhstos.bookapp.main_menu;
 
+import static com.example.xrhstos.bookapp.LockActivityOrientation.lockActivityOrientation;
+
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
@@ -9,10 +12,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.SearchView.OnQueryTextListener;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewStub;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
@@ -20,7 +23,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
-import com.bumptech.glide.Glide;
 import com.example.xrhstos.bookapp.Book;
 import com.example.xrhstos.bookapp.BookInfoActivity;
 import com.example.xrhstos.bookapp.Bookshelf;
@@ -32,9 +34,8 @@ import com.example.xrhstos.bookapp.Ping;
 import com.example.xrhstos.bookapp.R;
 import com.example.xrhstos.bookapp.VolleyNetworking;
 import com.example.xrhstos.bookapp.gallery.GalleryBackend;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
-import info.hoang8f.widget.FButton;
+import com.github.jorgecastillo.FillableLoader;
+import com.github.jorgecastillo.FillableLoaderBuilder;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,18 +46,20 @@ import java.util.regex.Pattern;
 
 public class MainMenu extends AppCompatActivity{
 
+  public static boolean loadingData;
+  public static String query;
+  public static String langQuery;
+  private static int currentPage;
+
   private int MIN_BOUND_API = 20;
 
-  private static final String BOOKSHELF_KEY = "BOOKSHELF";
   private static final String SEARCH_ONLINE_QUERY_KEY = "QUERY_ONLINE";
   private static final String SEARCH_ONLINE_PAGE_KEY = "PAGE_ONLINE";
   private static final String SEARCH_ONLINE_LANG_QUERY_KEY = "LANG_QUERY_ONLINE";
   private static final String FIRST_VISIBLE_KEY = "LAST_VISIBLE";
-  private static final String LOADING_KEY = "LOADING";
   private static final String GLM_KEY = "GLM";
   private static final String GOOGLE_ON_KEY = "GOOGLE";
   private static final String GOODREADS_ON_KEY = "GOODREADS";
-  private static final String IS_API_LOADING_KEY = "IS_API_LOADING";
   private static final String IS_API_ERROR_KEY = "IS_API_ERROR";
   private static final String IS_API_ERROR_STRING_KEY = "IS_API_ERROR_STRING";
   private static final String IS_API_ERROR_REF_KEY = "IS_API_ERROR_REF";
@@ -65,11 +68,6 @@ public class MainMenu extends AppCompatActivity{
 
   private boolean googleON;
   private boolean goodreadsON;
-  public static boolean loadingData;
-  public static String query;
-  public static String langQuery;
-  private static int currentPage;
-  public TextView notifier;
 
   private SearchView searchView;
   private View footer;
@@ -85,11 +83,8 @@ public class MainMenu extends AppCompatActivity{
   private int firstVisibleItem;
   private Parcelable glmState;
 
-  private Database myDb;
   private Ping ping;
 
-  private int scannerCounter = 0;
-  private ArrayList<Book> booksFromScanner;
   private int currentFlippedView;
 
   @Override
@@ -104,7 +99,7 @@ public class MainMenu extends AppCompatActivity{
       Collection.getInstance().fetchBooksFromDB(Database.getInstance(this).getSavedBooksList());
     }
 
-
+    VolleyNetworking.refresh(this);
 
     MyApp app = (MyApp) getApplication();
     app.mainMenu = this;
@@ -117,15 +112,6 @@ public class MainMenu extends AppCompatActivity{
     vFlipper = findViewById(R.id.container);
     vFlipper.setAutoStart(false);
 
-
-    if(previewController == null){
-      previewController = new PreviewController(
-          (RecyclerView) vFlipper.getChildAt(0).findViewById(R.id.grid_view),this);
-    }
-
-
-
-
     if (savedInstanceState != null) {
       query = savedInstanceState.getString(SEARCH_ONLINE_QUERY_KEY);
       langQuery = savedInstanceState.getString(SEARCH_ONLINE_LANG_QUERY_KEY);
@@ -134,8 +120,7 @@ public class MainMenu extends AppCompatActivity{
       firstVisibleItem = savedInstanceState.getInt(FIRST_VISIBLE_KEY);
       googleON = savedInstanceState.getBoolean(GOOGLE_ON_KEY);
       goodreadsON = savedInstanceState.getBoolean(GOODREADS_ON_KEY);
-      loadingData = savedInstanceState.getBoolean(LOADING_KEY);
-      isLoading = savedInstanceState.getBoolean(IS_API_LOADING_KEY);
+
       isError = savedInstanceState.getBoolean(IS_API_ERROR_KEY);
 
       error = savedInstanceState.getString(IS_API_ERROR_STRING_KEY);
@@ -165,6 +150,15 @@ public class MainMenu extends AppCompatActivity{
       currentFlippedView = 0;
     }
 
+    if(previewController == null){
+      previewController = new PreviewController(
+          (RecyclerView) vFlipper.getChildAt(0).findViewById(R.id.grid_view),this);
+    }
+    if(!Bookshelf.getInstance().getBooks().isEmpty()){
+      updateAdapter(Bookshelf.getInstance().getBooks());
+      previewController.scrollToVisibleItem(firstVisibleItem);
+    }
+
     if(isError){
       errorHandling(error,refreshable,errorType);
     }else{
@@ -184,10 +178,10 @@ public class MainMenu extends AppCompatActivity{
     firstVisibleItem = previewController.getFirstVisibleItem();
     bundle.putInt(FIRST_VISIBLE_KEY, firstVisibleItem);
 
-    bundle.putBoolean(LOADING_KEY,loadingData);
+
     bundle.putBoolean(GOODREADS_ON_KEY,goodreadsON);
     bundle.putBoolean(GOOGLE_ON_KEY,googleON);
-    bundle.putBoolean(IS_API_LOADING_KEY,isLoading);
+
     bundle.putBoolean(IS_API_ERROR_KEY,isError);
 
     bundle.putString(IS_API_ERROR_STRING_KEY,error);
@@ -357,11 +351,6 @@ public class MainMenu extends AppCompatActivity{
     }
   }
 
-  private void rotateUpdate(){
-    updateAdapter(Bookshelf.getInstance().getBooks());
-    previewController.scrollToVisibleItem(firstVisibleItem);
-  }
-
   public void requestMoreResults(){
     currentPage++;
     searchBooks(query);
@@ -392,6 +381,7 @@ public class MainMenu extends AppCompatActivity{
   }
 
   public void showGrid(){
+    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
     isError = false;
     isLoading = false;
     footer.setVisibility(View.VISIBLE);
@@ -413,6 +403,7 @@ public class MainMenu extends AppCompatActivity{
   }
 
   public void showLoading(){
+    lockActivityOrientation(this);
     isError = false;
     isLoading = true;
     if(snackbar!=null){
@@ -428,8 +419,10 @@ public class MainMenu extends AppCompatActivity{
   }
 
   public void showError(){
+    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
     isError = true;
     isLoading = false;
+    loadingData = false;
     footer.setVisibility(View.INVISIBLE);
     flipViews(2);
     /*
@@ -480,5 +473,6 @@ public class MainMenu extends AppCompatActivity{
     }
 
   }
+
 }
 
