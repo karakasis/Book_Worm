@@ -129,17 +129,6 @@ public class ManualAddMenu extends AppCompatActivity {
     isbnBut = findViewById(R.id.isbnButton);
     isbnBut.setButtonColor(this.getResources().getColor(R.color.fbutton_color_beige));
 
-    if(savedInstanceState!=null){
-      currentIndexInflated = savedInstanceState.getInt("INFLATED_INDEX");
-      int child = savedInstanceState.getInt("VISIBLE_CHILD");
-      if(currentIndexInflated == 0){
-        fliplayout1.showChild(child,false);
-      }else if(currentIndexInflated == 1){
-        fliplayout2.showChild(child,false);
-      }else if(currentIndexInflated == 2){
-        fliplayout3.showChild(child,false);
-      }
-    }
 
     bookTitle = (EditText) findViewById(R.id.book);//bookTitle editText
     publisher = (EditText) findViewById(R.id.bookPublisher);//publisher editText
@@ -156,6 +145,24 @@ public class ManualAddMenu extends AppCompatActivity {
 
     isbnText = (EditText) findViewById(R.id.isbnEditText);//bookTitle editText
     searchByIsbn = findViewById(R.id.findIsbnButtonYES);
+
+    if(savedInstanceState!=null){
+      currentIndexInflated = savedInstanceState.getInt("INFLATED_INDEX");
+      int child = savedInstanceState.getInt("VISIBLE_CHILD");
+      if(currentIndexInflated == 0){
+        fliplayout1.showChild(child,false);
+      }else if(currentIndexInflated == 1){
+        fliplayout2.showChild(child,false);
+      }else if(currentIndexInflated == 2){
+        fliplayout3.showChild(child,false);
+      }
+      scannerCounter = savedInstanceState.getInt("SCANNER");
+      bookTitle.setText(savedInstanceState.getString("TITLE"));
+      publisher.setText(savedInstanceState.getString("PUBLISHER"));
+      isbnText.setText(savedInstanceState.getString("ISBN"));
+      ratingValue = savedInstanceState.getFloat("RATING");
+      ratingBar.setRating(ratingValue);
+    }
 
     //recyclers:
 
@@ -299,6 +306,12 @@ public class ManualAddMenu extends AppCompatActivity {
 
       bundle.putInt("VISIBLE_CHILD",fliplayout3.getVisibleChild());
     }
+    bundle.putInt("SCANNER",scannerCounter);
+    bundle.putString("TITLE",bookTitle.getText().toString());
+    bundle.putString("PUBLISHER",publisher.getText().toString());
+    bundle.putString("ISBN",isbnText.getText().toString());
+    bundle.putFloat("RATING",ratingValue);
+
   }
 
   public void onActivityResult(int requestCode, int resultCode, Intent intent) {
