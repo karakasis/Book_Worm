@@ -321,7 +321,7 @@ public class ManualAddMenu extends AppCompatActivity {
         JsonObjectRequest gISBN = VolleyNetworking.getInstance(MyApp.getContext()).googleRequestByISBN(scanResult.getContents());
         VolleyNetworking.getInstance(this).addToRequestQueue(gISBN);
       }else{
-        //notifier.setText("Could not find book from QR");
+        //notifier.setText(R.string.couldNotQR);//Could not get info on QR
 
       }
       // else continue with any other code you need in the method

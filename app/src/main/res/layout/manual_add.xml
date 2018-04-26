@@ -22,7 +22,7 @@
       android:textAlignment="center"
       android:gravity="start"
 
-      android:text="Title :"
+      android:text="@string/title"
       android:ellipsize="end"
       android:maxLines="1"
       android:textSize="16sp"
@@ -54,7 +54,7 @@
       android:textAlignment="center"
       android:gravity="start"
 
-      android:text="Author :"
+      android:text="@string/author"
       android:ellipsize="end"
       android:maxLines="1"
       android:textSize="16sp"
@@ -95,7 +95,7 @@
     android:layout_marginRight="40dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text="Add"
+    android:text="@string/add"
     android:textSize="24sp"
     app:autoSizeMaxTextSize="32sp"
     app:autoSizeMinTextSize="8sp"

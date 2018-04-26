@@ -22,7 +22,7 @@
       android:textAlignment="center"
       android:gravity="start"
 
-      android:text="ISBN :"
+      android:text="@string/ISBN"
       android:ellipsize="end"
       android:maxLines="1"
       android:textSize="16sp"
@@ -48,7 +48,7 @@
     android:layout_marginBottom="8dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text="Search"
+    android:text="@string/Search"
     android:textSize="24sp"
     app:autoSizeMaxTextSize="32sp"
     app:autoSizeMinTextSize="8sp"
