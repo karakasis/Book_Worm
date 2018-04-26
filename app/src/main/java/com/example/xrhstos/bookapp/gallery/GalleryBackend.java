@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
+import com.eightbitlab.bottomnavigationbar.BottomBarItem;
+import com.eightbitlab.bottomnavigationbar.BottomNavigationBar;
 import com.example.xrhstos.bookapp.Book;
 import com.example.xrhstos.bookapp.BookInfoActivity;
 import com.example.xrhstos.bookapp.Collection;
@@ -17,37 +19,29 @@ import java.util.ArrayList;
 
 public class GalleryBackend extends AppCompatActivity {
 
-  private static final String BOOKSHELF_KEY = "BOOKSHELF";
   private static final String SEARCH_ONLINE_QUERY_KEY = "QUERY_ONLINE";
   private static final String SEARCH_ONLINE_PAGE_KEY = "PAGE_ONLINE";
   private static final String SEARCH_ONLINE_LANG_QUERY_KEY = "LANG_QUERY_ONLINE";
   private static final String FIRST_VISIBLE_KEY = "LAST_VISIBLE";
   private static final String LOADING_KEY = "LOADING";
   private static final String GLM_KEY = "GLM";
-  private static final String GOOGLE_ON_KEY = "GOOGLE";
-  private static final String GOODREADS_ON_KEY = "GOODREADS";
 
-  private boolean googleON;
-  private boolean goodreadsON;
+  private static final String TAB_KEY = "TAB";
+
   public static boolean loadingData;
   public static String query;
   public static String langQuery;
   private static int currentPage;
-  public TextView notifier;
-
-  private View footer;
 
   private PreviewController2 previewController;
   private int firstVisibleItem;
   private Parcelable glmState;
 
-
-  private RecyclerView galleryRecycler;
-  private RecyclerView.Adapter gAdapter;
-  private RecyclerView.LayoutManager gLayoutManager;
   private ArrayList<Book> myDataset;
 
   private View includedView;
+  private BottomNavigationBar bottomNavigationBar;
+  private int currentTab;
 
 
   //TODO find a way to display either all books, collection only or wishlist only
@@ -59,24 +53,8 @@ public class GalleryBackend extends AppCompatActivity {
     MyApp app = (MyApp) getApplication();
     app.galleryBackend = this;
 
-    myDataset = Collection.getInstance().getBooks();
-    includedView = findViewById(R.id.previewGridGallery);
-
-    //footer = (View) findViewById(R.id.logo_container);
-
-    //Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-    //setSupportActionBar(myToolbar);
-
-    //notifier = (TextView) findViewById(R.id.resultNotify);
-
-    if(previewController == null){
-      previewController = new PreviewController2(
-          (RecyclerView) includedView.findViewById(R.id.grid_view),this);
-    }
-
-    previewController.setData(myDataset);
-
     if (savedInstanceState != null) {
+      currentTab = savedInstanceState.getInt(TAB_KEY);
       query = savedInstanceState.getString(SEARCH_ONLINE_QUERY_KEY);
       langQuery = savedInstanceState.getString(SEARCH_ONLINE_LANG_QUERY_KEY);
       currentPage = savedInstanceState.getInt(SEARCH_ONLINE_PAGE_KEY);
@@ -87,6 +65,7 @@ public class GalleryBackend extends AppCompatActivity {
 
     }else{
 
+      currentTab = 0;
       currentPage = 1;
       loadingData = false;
 
@@ -94,12 +73,31 @@ public class GalleryBackend extends AppCompatActivity {
       langQuery = "";
     }
 
+    BottomBarItem collectionTab = new BottomBarItem(R.drawable.ic_local_library_indigo_a200_24dp);
+    BottomBarItem wishlistTab = new BottomBarItem(R.drawable.ic_favorite_red_400_24dp);
+    bottomNavigationBar = findViewById(R.id.bottom_bar);
+    bottomNavigationBar.addTab(collectionTab);
+    bottomNavigationBar.addTab(wishlistTab);
+
+    bottomNavigationBar.setOnSelectListener(new BottomNavigationBar.OnSelectListener() {
+      @Override
+      public void onSelect(int position) {
+        System.out.println("onselect");
+        currentTab = position;
+        handleTabs();
+      }
+    });
+
+    bottomNavigationBar.selectTab(currentTab,false);
+    handleTabs();
+
   }
 
   @Override
   protected void onSaveInstanceState(Bundle bundle) {
     super.onSaveInstanceState(bundle);
     //bundle.putSerializable(BOOKSHELF_KEY, bookshelf);
+    bundle.putInt(TAB_KEY,currentTab);
     bundle.putString(SEARCH_ONLINE_QUERY_KEY,query);
     bundle.putString(SEARCH_ONLINE_LANG_QUERY_KEY,langQuery);
     bundle.putInt(SEARCH_ONLINE_PAGE_KEY,currentPage);
@@ -131,6 +129,8 @@ public class GalleryBackend extends AppCompatActivity {
       rotateUpdate();
       previewController.getLayoutManager().onRestoreInstanceState(glmState);
     }
+    bottomNavigationBar.selectTab(currentTab,false);
+    handleTabs();
   }
 
 
@@ -175,6 +175,38 @@ public class GalleryBackend extends AppCompatActivity {
   }
   */
 
+  private void handleTabs(){
+    if(currentTab == 0){
+      showGallery();
+    }else if(currentTab == 1){
+      showWishlist();
+    }
+  }
+
+  private void showGallery(){
+    myDataset = Collection.getInstance().getBooks();
+    includedView = findViewById(R.id.previewGridGallery);
+
+    //if(previewController == null){
+    previewController = new PreviewController2(
+        (RecyclerView) includedView.findViewById(R.id.grid_view),this);
+    //}
+
+    previewController.setData(myDataset);
+  }
+
+  private void showWishlist(){
+    myDataset = Collection.getInstance().getBooksWishlist();
+    includedView = findViewById(R.id.previewGridGallery);
+
+    //if(previewController == null){
+    previewController = new PreviewController2(
+        (RecyclerView) includedView.findViewById(R.id.grid_view),this);
+    //}
+
+    previewController.setData(myDataset);
+  }
+
   //to theloume, na mpei anazitisi analoga me title ktl sto gallery.
   private void searchBooks(String query) {
   }
@@ -189,7 +221,12 @@ public class GalleryBackend extends AppCompatActivity {
     Intent intent = new Intent(this, BookInfoActivity.class);
     //this will pass the book object itself so any changes will be made to the Book
     //class as well
-    intent.putExtra("gallery", Collection.getInstance().getSingleBook(position));
+    if(currentTab == 0){
+      intent.putExtra("gallery", Collection.getInstance().getSingleBook(position));
+    }else if( currentTab == 1){
+      intent.putExtra("gallery", Collection.getInstance()
+          .getSingleBookWishlist(position));
+    }
     startActivity(intent);
   }
 

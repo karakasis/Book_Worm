@@ -21,7 +21,7 @@ public class Database extends SQLiteOpenHelper {
 
     //DATABASE NAME,TABLES' NAMES
     private static final String DATABASE_NAME = "book_db.db";
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 9;
     private static final String BOOKS_TABLE = "books";//<--TABLE
     private static final String BOOK_CATEGORIES_TABLE = "categories";//<--TABLE
     private static final String AUTHORS_TABLE = "authorsTable";//<--TABLE

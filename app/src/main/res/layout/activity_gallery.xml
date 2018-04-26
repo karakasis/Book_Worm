@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
+<android.support.constraint.ConstraintLayout
+  android:id="@+id/main"
+  xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
-  android:layout_height="wrap_content"
-  tools:context="com.example.xrhstos.bookapp.gallery.GalleryBackend">
+  android:layout_height="match_parent"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
-  <cn.gavinliu.android.lib.scale.ScaleFrameLayout
+
+
+<cn.gavinliu.android.lib.scale.ScaleRelativeLayout
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical"
+  >
+
+  <FrameLayout
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -15,6 +23,18 @@
       android:id="@+id/previewGridGallery"
       layout="@layout/recycler_view"/>
 
-  </cn.gavinliu.android.lib.scale.ScaleFrameLayout>
+  </FrameLayout>
+
+  <com.eightbitlab.bottomnavigationbar.BottomNavigationBar
+    android:id="@+id/bottom_bar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:background="@color/logoBackgroundColor"
+    app:activeTabColor="@color/poweredColor"
+    app:inactiveTabColor="@color/bottomBarDefaultTextColor"/>
+
+
+</cn.gavinliu.android.lib.scale.ScaleRelativeLayout>
 
 </android.support.constraint.ConstraintLayout>

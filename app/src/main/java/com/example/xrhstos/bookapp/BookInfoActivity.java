@@ -194,13 +194,13 @@ public class BookInfoActivity extends AppCompatActivity {
   public void wishlistRemoveBook() {
     currentBook.setBookInWishlist(false);
     Collection.getInstance().removeBookWishlist();
-    Database.getInstance(MyApp.getContext()).addRecord(currentBook); //safe since it cant be in collection
+    Database.getInstance(MyApp.getContext()).deleteRecord(currentBook); //safe since it cant be in collection
   }
 
   public void wishlistAddBook() {
     currentBook.setBookInWishlist(true);
     Collection.getInstance().addBookWishlist(currentBook);
-    Database.getInstance(MyApp.getContext()).deleteRecord(currentBook); //safe since it cant be in collection
+    Database.getInstance(MyApp.getContext()).addRecord(currentBook); //safe since it cant be in collection
   }
 
   public void addBook(){

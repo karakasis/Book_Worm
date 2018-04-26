@@ -187,7 +187,8 @@ public class Buttons {
         layoutBot.removeAllViews();
         layoutBot.addView(wishRemoveStr);
         layoutBot.addView(wishRemove);
-        parent.removeReadBook();
+
+        parent.wishlistAddBook();
       }
     });
     wishAddStr.setLayoutParams(params);
@@ -207,7 +208,8 @@ public class Buttons {
         layoutBot.addView(wishAddStr);
         layoutBot.addView(wishAdd);
 
-        parent.removeReadBook();
+
+        parent.wishlistRemoveBook();
       }
     });
     wishRemoveStr.setLayoutParams(params);
