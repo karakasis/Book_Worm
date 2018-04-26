@@ -33,7 +33,6 @@ dependencies {
     compile 'com.journeyapps:zxing-android-embedded:3.6.0'
     compile 'com.github.cmfsotelo:fliplayout:v1.1.1'
     compile 'com.github.ybq:Android-SpinKit:1.1.0'
-    compile 'cn.gavinliu.android.lib:ScaleLayout:1.0.4'
     compile 'com.eightbitlab:bottomnavigationbar:0.9.5'
 
     compile 'com.android.support:support-v4:27.1.1'

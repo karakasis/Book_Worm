@@ -8,7 +8,7 @@
 
 
 
-<cn.gavinliu.android.lib.scale.ScaleRelativeLayout
+<RelativeLayout
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:orientation="vertical"
@@ -35,6 +35,6 @@
     app:inactiveTabColor="@color/bottomBarDefaultTextColor"/>
 
 
-</cn.gavinliu.android.lib.scale.ScaleRelativeLayout>
+</RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>

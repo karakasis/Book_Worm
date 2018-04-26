@@ -8,7 +8,7 @@
 
 
 
-  <cn.gavinliu.android.lib.scale.ScaleRelativeLayout
+  <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -47,7 +47,7 @@
 
     </ViewFlipper>
 
-    <cn.gavinliu.android.lib.scale.ScaleFrameLayout
+    <FrameLayout
       android:visibility="gone"
       android:id="@+id/logo_container"
       android:layout_width="wrap_content"
@@ -59,8 +59,8 @@
         android:id="@+id/footer"
         layout="@layout/footer_logo"/>
 
-    </cn.gavinliu.android.lib.scale.ScaleFrameLayout>
+    </FrameLayout>
 
-  </cn.gavinliu.android.lib.scale.ScaleRelativeLayout>
+  </RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>
