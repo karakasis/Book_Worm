@@ -272,7 +272,7 @@ public class BookInfoActivity extends AppCompatActivity {
     tv.setText(title);
 
     AppCompatTextView tv2 = (AppCompatTextView) view.findViewById(R.id.bookPublisher);
-    tv2.setText("by ");
+    tv2.setText(R.string.by);
     for(int i=0; i<currentBook.getAuthor().length; i++){
       tv2.setText(tv2.getText()+currentBook.getAuthor()[i]+", ");
     }
@@ -303,14 +303,14 @@ public class BookInfoActivity extends AppCompatActivity {
     LinearLayout infoLL = view.findViewById(R.id.moreInfo);
     if(currentBook.getPublishedDate()!=null){
       TextView tvPublishedDate = new TextView(this);
-      tvPublishedDate.setText("Published: "+currentBook.getPublishedDate());
+      tvPublishedDate.setText(R.string.Published+currentBook.getPublishedDate());
       infoLL.addView(tvPublishedDate);
     }
     if(currentBook.getCategories()!=null){
       String[] catStr = currentBook.getCategories();
       int cat = catStr.length;
       TextView tvCatTitle = new TextView(this);
-      tvCatTitle.setText("Genres: ");
+      tvCatTitle.setText(R.string.Genres);
       infoLL.addView(tvCatTitle);
       TextView[] tvcats = new TextView[cat];
       for(int i=0; i<cat; i++){
@@ -324,17 +324,17 @@ public class BookInfoActivity extends AppCompatActivity {
     }
     if(currentBook.getISBN13()!= null){
       TextView tvISBN13 = new TextView(this);
-      tvISBN13.setText("ISBN_13: "+currentBook.getISBN13());
+      tvISBN13.setText(R.string.ISBN_13+currentBook.getISBN13());
       infoLL.addView(tvISBN13);
     }
     if(currentBook.getISBN10()!= null){
       TextView tvISBN10 = new TextView(this);
-      tvISBN10.setText("ISBN_10: "+currentBook.getISBN10());
+      tvISBN10.setText(R.string.ISBN_10+currentBook.getISBN10());
       infoLL.addView(tvISBN10);
     }
     if(currentBook.getPageCount()!=-1){
       TextView tvPagecount = new TextView(this);
-      tvPagecount.setText("Pages: "+String.valueOf(currentBook.getPageCount()));
+      tvPagecount.setText(R.string.Pages+String.valueOf(currentBook.getPageCount()));
       infoLL.addView(tvPagecount);
     }
 
@@ -443,7 +443,7 @@ public class BookInfoActivity extends AppCompatActivity {
     }
     ImageView eView = (ImageView) vFlipper.getChildAt(2).findViewById(R.id.error_image);
     AppCompatTextView tView = vFlipper.getChildAt(2).findViewById(R.id.error_text);
-    tView.setText("We cant get information about this book. Try later.");
+    tView.setText(R.string.WeCantGetInfo);
     if(errorType == 0){
       eView.setImageResource(R.drawable.no_server);
     }else if(errorType == 1){

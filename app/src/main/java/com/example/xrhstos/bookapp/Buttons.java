@@ -101,7 +101,7 @@ public class Buttons {
     wishRemove.setLayoutParams(params);
 
     read = new FButton(mCtx);
-    read.setText("Mark as read");
+    read.setText(R.string.MarkAsRead);
     read.setButtonColor(mCtx.getResources().getColor(R.color.fbutton_color_belize_hole));
     read.setShadowColor(mCtx.getResources().getColor(R.color.buttonShadow));
     read.setShadowEnabled(true);
@@ -119,7 +119,7 @@ public class Buttons {
     read.setLayoutParams(params);
 
     notRead = new FButton(mCtx);
-    notRead.setText("Mark as not read");
+    notRead.setText(R.string.MarkAsNotRead);
     notRead.setButtonColor(mCtx.getResources().getColor(R.color.fbutton_color_belize_hole));
     notRead.setShadowColor(mCtx.getResources().getColor(R.color.buttonShadow));
     notRead.setShadowEnabled(true);
@@ -137,7 +137,7 @@ public class Buttons {
     notRead.setLayoutParams(params);
 
     addStr = new FButton(mCtx);
-    addStr.setText("Add to Collection");
+    addStr.setText(R.string.AddtoCollection);
     addStr.setButtonColor(mCtx.getResources().getColor(R.color.green800));
     addStr.setShadowColor(mCtx.getResources().getColor(R.color.green900));
     addStr.setShadowEnabled(true);
@@ -156,7 +156,7 @@ public class Buttons {
     addStr.setLayoutParams(params);
 
     removeStr = new FButton(mCtx);
-    removeStr.setText("Remove from Collection");
+    removeStr.setText(R.string.RemovefromCollection);
     removeStr.setButtonColor(mCtx.getResources().getColor(R.color.red400));
     removeStr.setShadowColor(mCtx.getResources().getColor(R.color.red600));
     removeStr.setShadowEnabled(true);
@@ -175,7 +175,7 @@ public class Buttons {
     removeStr.setLayoutParams(params);
 
     wishAddStr = new FButton(mCtx);
-    wishAddStr.setText("Add to Wishlist");
+    wishAddStr.setText(R.string.AddtoWishlist);
     wishAddStr.setButtonColor(mCtx.getResources().getColor(R.color.red400));
     wishAddStr.setShadowColor(mCtx.getResources().getColor(R.color.red600));
     wishAddStr.setShadowEnabled(true);
@@ -194,7 +194,7 @@ public class Buttons {
     wishAddStr.setLayoutParams(params);
 
     wishRemoveStr = new FButton(mCtx);
-    wishRemoveStr.setText("Remove from Wishlist");
+    wishRemoveStr.setText(R.string.RemovefromWishlist);
     wishRemoveStr.setButtonColor(mCtx.getResources().getColor(R.color.red400));
     wishRemoveStr.setShadowColor(mCtx.getResources().getColor(R.color.red600));
     wishRemoveStr.setShadowEnabled(true);

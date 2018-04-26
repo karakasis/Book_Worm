@@ -14,7 +14,7 @@
       android:id="@+id/logoPowered"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="powered by"
+      android:text="@string/poweredBy"
       android:textSize="20sp"
       android:textColor="@color/poweredColor"
       android:layout_alignParentBottom="true"

@@ -1,9 +1,52 @@
-<resources>
-  <string name="app_name">BookApp</string>
+<resources xml:space="preserve">
+  <string name="app_name" translatable="false">BookApp</string>
   <string name="instructions">Enter a full or partial book name or text from the book. Click Search Books to find out who wrote the book. </string>
   <string name="button_text">Search Books</string>
   <string name="input_hint">Book Title</string>
-  <string name="no_search_term">Please enter a search term</string>
+  <string name="no_search_term">Please enter a search term.</string>
   <string name="no_network">Please check your network connection and try again.</string>
   <string name="no_results">No Results Found</string>
+
+  <!--BookInfo>-->
+
+  <string name="Average_Rating">Average Rating:&#160;</string>
+  <string name="by">by </string>
+  <string name="Published">Published:&#160;</string>
+  <string name="Genres">Genres:&#160;</string>
+  <string name="ISBN_13" translatable="false">ISBN_13:&#160;</string>
+  <string name="ISBN_10" translatable="false">ISBN_10:&#160;</string>
+  <string name="Pages">Pages:&#160;</string>
+  <string name="WeCantGetInfo">We cant get information about this book. Try later."</string>
+
+  <!--Buttons>-->
+  <string name="MarkAsRead">Mark as read</string>
+  <string name="MarkAsNotRead">Mark as not read</string>
+  <string name="AddtoCollection">Add to Collection</string>
+  <string name="RemovefromCollection">Remove from Collection</string>
+  <string name="AddtoWishlist">Add to Wishlist</string>
+  <string name="RemovefromWishlist">Remove from Wishlist</string>
+
+  <!--MainMenu>-->
+  <string name="couldNotQR">Could not find book from QR</string>
+  <!--footer_logo>-->
+  <string name="poweredBy" translatable="false">"powered by"</string>
+
+  <!--menu>-->
+  <string name="Search">Search</string>
+  <string name="Collection">Go to Collection</string>
+  <string name="AddManual">Add Manually</string>
+
+  <!--error_page-->
+  <string name="TryAddingManually">Try adding a book manually from the toolbar.</string>
+
+  <!--manual-->
+  <string name="Scanbarcode">Scan barcode</string>
+  <string name="AddISBN">Add by ISBN</string>
+
+  <!--manual_add-->
+    <string name="title">Title :</string>
+  <string name="author">Author :</string>
+  <string name="add">Add</string>
+  <!--manual_add_isbn-->
+<string name="ISBN">ISBN</string>
 </resources>
