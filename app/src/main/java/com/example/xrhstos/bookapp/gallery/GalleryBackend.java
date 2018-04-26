@@ -50,7 +50,7 @@ public class GalleryBackend extends AppCompatActivity {
   private View includedView;
 
 
-
+  //TODO find a way to display either all books, collection only or wishlist only
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);

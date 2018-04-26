@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract.Data;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
@@ -122,8 +123,14 @@ public class BookInfoActivity extends AppCompatActivity {
 
     Book matchedBook = Collection.getInstance().matchBook(currentBook.getKey());
     if(matchedBook != null){
-      System.out.println("found ok");
+      System.out.println("found collection ok");
       currentBook = matchedBook;
+    }else{
+      matchedBook = Collection.getInstance().matchBookWishlist(currentBook.getKey());
+      if(matchedBook != null){
+        System.out.println("found wishlist ok");
+        currentBook = matchedBook;
+      }
     }
 
     if(currentBook.getDescription() == null){//hot fix not to ask for api if api is already inputted
@@ -186,17 +193,26 @@ public class BookInfoActivity extends AppCompatActivity {
 
   public void wishlistRemoveBook() {
     currentBook.setBookInWishlist(false);
+    Collection.getInstance().removeBookWishlist();
+    Database.getInstance(MyApp.getContext()).addRecord(currentBook); //safe since it cant be in collection
   }
 
   public void wishlistAddBook() {
     currentBook.setBookInWishlist(true);
+    Collection.getInstance().addBookWishlist(currentBook);
+    Database.getInstance(MyApp.getContext()).deleteRecord(currentBook); //safe since it cant be in collection
   }
 
   public void addBook(){
     currentBook.setBookInCollection(true);
     Collection.getInstance().addBook(currentBook);
     //update sql here
-    Database.getInstance(MyApp.getContext()).addRecord(currentBook);
+    if(currentBook.isBookInWishlist()) // means that book is already in Database
+    {
+      Database.getInstance(MyApp.getContext()).updateRecord(currentBook);
+    }else{
+      Database.getInstance(MyApp.getContext()).addRecord(currentBook);
+    }
     buttonsController.swapToRead(currentBook.isBookRead());
   }
 
@@ -204,7 +220,12 @@ public class BookInfoActivity extends AppCompatActivity {
     currentBook.setBookInCollection(false);
     Collection.getInstance().removeBook();
     //update sql here
-   Database.getInstance(MyApp.getContext()).deleteRecord(currentBook);
+    if(currentBook.isBookInWishlist()) // means that book is already in Database
+    {
+      Database.getInstance(MyApp.getContext()).updateRecord(currentBook);
+    }else{
+      Database.getInstance(MyApp.getContext()).deleteRecord(currentBook);
+    }
     buttonsController.swapToWish(currentBook.isBookInWishlist());
   }
 
