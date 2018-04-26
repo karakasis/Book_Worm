@@ -356,7 +356,7 @@ public class ManualAddMenu extends AppCompatActivity {
   private void addBookManually(String title,String author){
     String[] bookPublisher = new String[1];
     bookPublisher[0] = author;
-    Book book = new Book(null,title,bookPublisher,null);
+    Book book = new Book(title+"-"+bookPublisher[0],title,bookPublisher,null);
 
     //hotfix for bookinfoactivity to bypass api search
     book.setDescription("");

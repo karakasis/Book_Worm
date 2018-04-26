@@ -116,8 +116,8 @@ public class Collection {
   public Book removeBookWishlist(){
     if(isBookWishlistLoaded){
       String key = currentBookWishlistLoaded.getKey();
-      isBookLoaded = false;
-      return bookMap.remove(key);
+      isBookWishlistLoaded = false;
+      return bookWishlistMap.remove(key);
     }else{
       return null;
     }
