@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.xrhstos.bookapp.Book;
 import com.example.xrhstos.bookapp.ManualAddMenu;
+import com.example.xrhstos.bookapp.MyApp;
 import com.example.xrhstos.bookapp.R;
 import com.example.xrhstos.bookapp.main_menu.PreviewController;
 import com.squareup.picasso.Picasso;
@@ -31,7 +32,6 @@ import java.util.ArrayList;
 public class GridAdapter3 extends RecyclerView.Adapter<GridAdapter3.ViewHolder> {
 
   private Context mContext;
-  private ManualAddMenu mam;
   private ArrayList<Book> data;
   private int lastPosition = -1;
   private Picasso instance;
@@ -40,7 +40,6 @@ public class GridAdapter3 extends RecyclerView.Adapter<GridAdapter3.ViewHolder> 
   // Pass in the contact array into the constructor
   public GridAdapter3(Context c, ArrayList<Book> data, boolean useSmallInflater){
     mContext = c;
-    mam = (ManualAddMenu) c;
     this.data = data;
     instance = Picasso.with(mContext);
     this.useSmallInflater = useSmallInflater;
@@ -78,7 +77,7 @@ public class GridAdapter3 extends RecyclerView.Adapter<GridAdapter3.ViewHolder> 
 
         @Override
         public void onClick(View view) {
-          mam.bookClick(pos);
+          MyApp.getInstance().manualAddMenu.bookClick(pos);
         }
 
       });

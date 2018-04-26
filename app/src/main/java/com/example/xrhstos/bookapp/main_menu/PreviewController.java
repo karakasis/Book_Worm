@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import com.example.xrhstos.bookapp.Book;
+import com.example.xrhstos.bookapp.MyApp;
 import com.example.xrhstos.bookapp.grid.EndlessScrollListener;
 import com.example.xrhstos.bookapp.grid.GridAdapter;
 import com.example.xrhstos.bookapp.grid.WrapContentGridLayoutManager;
@@ -18,7 +19,6 @@ import java.util.ArrayList;
 
 public class PreviewController{
 
-    private final MainMenu parent;
     private static GridAdapter gridAdapter;
     private RecyclerView recyclerView;
     private WrapContentGridLayoutManager glm;
@@ -27,7 +27,6 @@ public class PreviewController{
 
     public PreviewController(RecyclerView rv, final MainMenu parent){
 
-        this.parent = parent;
         recyclerView = rv;
 
          glm = new WrapContentGridLayoutManager(
@@ -70,12 +69,13 @@ public class PreviewController{
                 }
             }, 1500);
             */
-            parent.showGrid();
+            MyApp.getInstance().mainMenu.showGrid();
             recyclerView.setAdapter(gridAdapter);
+
 
             recyclerView.scrollToPosition(0);
         }else{
-            PreviewController.gridAdapter = new GridAdapter(this,parent,books);
+            PreviewController.gridAdapter = new GridAdapter(this,MyApp.getInstance().mainMenu,books);
             /*
             Handler handler = new Handler();
 
@@ -86,7 +86,7 @@ public class PreviewController{
                 }
             }, 1500);
             */
-            parent.showGrid();
+            MyApp.getInstance().mainMenu.showGrid();
             recyclerView.setAdapter(gridAdapter);
 
 
@@ -97,13 +97,13 @@ public class PreviewController{
 
     private void loadNextDataFromApi() {
         MainMenu.loadingData = true;
-        parent.showLoading();
-        parent.requestMoreResults();
+        MyApp.getInstance().mainMenu.showLoading();
+        MyApp.getInstance().mainMenu.requestMoreResults();
     }
 
     public void acceptResponseFromMainThread(ArrayList<Book> newData){
         final int curSize = gridAdapter.getItemCount();
-        parent.showGrid();
+        MyApp.getInstance().mainMenu.showGrid();
         gridAdapter.getDataSet().addAll(newData);
         final int finSize = gridAdapter.getItemCount();
 
@@ -117,7 +117,7 @@ public class PreviewController{
     }
 
     public MainMenu getParent() {
-        return parent;
+        return MyApp.getInstance().mainMenu;
     }
 
     private static int calculateNoOfColumns(Context context) {

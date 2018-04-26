@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import com.example.xrhstos.bookapp.Book;
+import com.example.xrhstos.bookapp.MyApp;
 import com.example.xrhstos.bookapp.gallery.GalleryBackend;
 import com.example.xrhstos.bookapp.grid.EndlessScrollListener;
 import com.example.xrhstos.bookapp.grid.GridAdapter;
@@ -21,7 +22,6 @@ import java.util.ArrayList;
 
 public class PreviewController2{
 
-  private final GalleryBackend parent;
   private static GridAdapter2 gridAdapter;
   private RecyclerView recyclerView;
   private WrapContentGridLayoutManager glm;
@@ -30,7 +30,6 @@ public class PreviewController2{
 
   public PreviewController2(RecyclerView rv, final GalleryBackend parent){
 
-    this.parent = parent;
     recyclerView = rv;
 
     glm = new WrapContentGridLayoutManager(
@@ -77,7 +76,7 @@ public class PreviewController2{
 
       recyclerView.scrollToPosition(0);
     }else{
-      PreviewController2.gridAdapter = new GridAdapter2(this,parent,books);
+      PreviewController2.gridAdapter = new GridAdapter2(this, MyApp.getInstance().galleryBackend,books);
       Handler handler = new Handler();
             /*
             handler.postDelayed(new Runnable() {
@@ -97,7 +96,7 @@ public class PreviewController2{
 
   private void loadNextDataFromApi(int page) {
     //MainMenu.loadingData = true;
-    parent.requestMoreResults();
+    MyApp.getInstance().galleryBackend.requestMoreResults();
   }
 
   public void acceptResponseFromMainThread(int newDataSize , ArrayList<Book> newData){
@@ -115,7 +114,7 @@ public class PreviewController2{
   }
 
   public GalleryBackend getParent() {
-    return parent;
+    return MyApp.getInstance().galleryBackend;
   }
 
   private static int calculateNoOfColumns(Context context) {

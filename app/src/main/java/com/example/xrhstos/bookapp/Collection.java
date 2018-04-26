@@ -104,7 +104,7 @@ public class Collection {
   public Book matchBookWishlist(String key){
     isBookWishlistLoaded = false;
     if(bookWishlistMap.containsKey(key)){
-      currentBookLoaded = bookWishlistMap.get(key);
+      currentBookWishlistLoaded = bookWishlistMap.get(key);
       isBookWishlistLoaded = true;
       return currentBookWishlistLoaded;
     }else{
