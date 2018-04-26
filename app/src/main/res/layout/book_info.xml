@@ -175,12 +175,8 @@
         <TextView
             android:id="@+id/description"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="After the climate wars, a floating city is constructed in the Arctic Circle, a remarkable feat of mechanical and social engineering, complete with geothermal heating and sustainable energy. The cityβ€™s denizens have become accustomed to a roughshod new way of living, however, the city is starting to fray along the edgesβ€”crime and corruption have set in, the contradictions of incredible wealth alongside direst poverty are spawning unrest, and a new disease called β€the breaksβ€ is ravaging the population.
+            android:layout_height="match_parent"/>
 
-When a strange new visitor arrivesβ€”a woman riding an orca, with a polar bear at her sideβ€”the city is entranced. The β€orcamancer,β€ as sheβ€™s known, very subtly brings together four peopleβ€”each living on the peripheryβ€”to stage unprecedented acts of resistance. By banding together to save their city before it crumbles under the weight of its own decay, they will learn shocking truths about themselves.
-
-Blackfish City is a remarkably urgentβ€”and ultimately very hopefulβ€”novel about political corruption, organized crime, technology run amok, the consequences of climate change, gender identity, and the unifying power of human connection."/>
       </ScrollView>
 
       <LinearLayout

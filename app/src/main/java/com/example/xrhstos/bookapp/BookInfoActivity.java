@@ -274,7 +274,7 @@ public class BookInfoActivity extends AppCompatActivity {
     AppCompatTextView tv2 = (AppCompatTextView) view.findViewById(R.id.bookPublisher);
     tv2.setText(R.string.by);
     for(int i=0; i<currentBook.getAuthor().length; i++){
-      tv2.setText(tv2.getText()+currentBook.getAuthor()[i]+", ");
+      tv2.setText(tv2.getText()+""+currentBook.getAuthor()[i]+", ");
     }
     int l = tv2.getText().length();
     tv2.setText(tv2.getText().toString().substring(0,l-2));
@@ -303,7 +303,7 @@ public class BookInfoActivity extends AppCompatActivity {
     LinearLayout infoLL = view.findViewById(R.id.moreInfo);
     if(currentBook.getPublishedDate()!=null){
       TextView tvPublishedDate = new TextView(this);
-      tvPublishedDate.setText(R.string.Published+currentBook.getPublishedDate());
+      tvPublishedDate.setText(R.string.Published+""+currentBook.getPublishedDate());
       infoLL.addView(tvPublishedDate);
     }
     if(currentBook.getCategories()!=null){
@@ -324,17 +324,17 @@ public class BookInfoActivity extends AppCompatActivity {
     }
     if(currentBook.getISBN13()!= null){
       TextView tvISBN13 = new TextView(this);
-      tvISBN13.setText(R.string.ISBN_13+currentBook.getISBN13());
+      tvISBN13.setText(R.string.ISBN_13+""+currentBook.getISBN13());
       infoLL.addView(tvISBN13);
     }
     if(currentBook.getISBN10()!= null){
       TextView tvISBN10 = new TextView(this);
-      tvISBN10.setText(R.string.ISBN_10+currentBook.getISBN10());
+      tvISBN10.setText(R.string.ISBN_10+""+currentBook.getISBN10());
       infoLL.addView(tvISBN10);
     }
     if(currentBook.getPageCount()!=-1){
       TextView tvPagecount = new TextView(this);
-      tvPagecount.setText(R.string.Pages+String.valueOf(currentBook.getPageCount()));
+      tvPagecount.setText(R.string.Pages+""+String.valueOf(currentBook.getPageCount()));
       infoLL.addView(tvPagecount);
     }
 

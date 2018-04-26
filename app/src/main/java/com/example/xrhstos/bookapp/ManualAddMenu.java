@@ -61,7 +61,7 @@ public class ManualAddMenu extends AppCompatActivity {
 
   //VIEW1
   private int scannerCounter = 0;
-  private ArrayList<Book> booksFromScanner;
+  private static ArrayList<Book> booksFromScanner;
   //VIEW2
   EditText bookTitle, publisher;
   RatingBar ratingBar;
@@ -148,14 +148,6 @@ public class ManualAddMenu extends AppCompatActivity {
 
     if(savedInstanceState!=null){
       currentIndexInflated = savedInstanceState.getInt("INFLATED_INDEX");
-      int child = savedInstanceState.getInt("VISIBLE_CHILD");
-      if(currentIndexInflated == 0){
-        fliplayout1.showChild(child,false);
-      }else if(currentIndexInflated == 1){
-        fliplayout2.showChild(child,false);
-      }else if(currentIndexInflated == 2){
-        fliplayout3.showChild(child,false);
-      }
       scannerCounter = savedInstanceState.getInt("SCANNER");
       bookTitle.setText(savedInstanceState.getString("TITLE"));
       publisher.setText(savedInstanceState.getString("PUBLISHER"));
@@ -194,6 +186,30 @@ public class ManualAddMenu extends AppCompatActivity {
     recyclerView3.setLayoutManager(glm3);
 
 
+    if(savedInstanceState!=null){
+      int child = savedInstanceState.getInt("VISIBLE_CHILD");
+      if(currentIndexInflated == 0){
+        if(child == 2){
+          ga1 = new GridAdapter3(this,booksFromScanner,useSmallInflater);
+          fliplayout1.showChild(2,false);
+          recyclerView1.setAdapter(ga1);
+        }
+        fliplayout1.showChild(child,false);
+      }else if(currentIndexInflated == 1){
+        if(child == 2){
+          addBookManually(bookTitle.getText().toString(),publisher.getText().toString());
+        }
+        fliplayout2.showChild(child,false);
+      }else if(currentIndexInflated == 2){
+        if(child == 3){
+          ga3 = new GridAdapter3(this,booksFromScanner,useSmallInflater);
+          fliplayout3.showChild(3,false);
+          recyclerView3.setAdapter(ga3);
+        }
+        fliplayout3.showChild(child,false);
+      }
+      setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+    }
 
     barBut.setOnClickListener(new OnClickListener() {
       @Override
@@ -285,7 +301,7 @@ public class ManualAddMenu extends AppCompatActivity {
           addBookByISBN(replaced2);
         }else{
           isbnText.setHint("Enter a valid ISBN");
-          bookTitle.setError("Enter a valid ISBN");
+          isbnText.setError("Enter a valid ISBN");
         }
 
         //fliplayout3.showNextChild();
@@ -377,7 +393,7 @@ public class ManualAddMenu extends AppCompatActivity {
     int placeholder = R.drawable.placeholder;
     Drawable myIcon = getResources().getDrawable( placeholder );
     book.setBookCover(((BitmapDrawable)myIcon).getBitmap());
-
+    book.setPersonalRating(ratingValue);
     ArrayList<Book> list = new ArrayList<>();
     list.add(book);
     ga2 = new GridAdapter3(this,list,useSmallInflater);

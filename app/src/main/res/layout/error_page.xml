@@ -16,7 +16,7 @@
       android:padding="8dp"
       android:textAlignment="center"
       android:gravity="center"
-      android:text="Try adding a book manually from the toolbar"
+      android:text="@string/TryAddingManually"
       android:ellipsize="end"
       android:maxLines="1"
       android:textSize="24sp"

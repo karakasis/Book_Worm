@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
   xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
-  xmlns:fbutton="http://schemas.android.com/apk/res-auto"
-  android:id="@+id/LinearLayout1"
+  xmlns:fbutton="http://schemas.android.com/tools">
+
+<LinearLayout
   android:layout_width="wrap_content"
   android:layout_height="wrap_content"
-  android:orientation="vertical"
-  tools:context="com.example.xrhstos.bookapp.ManualAddMenu">
-
+  android:orientation="vertical">
   <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="0dp"
+    android:layout_weight="0.5"
     android:orientation="horizontal"
     android:layout_margin="4dp">
     <android.support.v7.widget.AppCompatTextView
@@ -47,9 +49,11 @@
     android:layout_marginRight="40dp"
     android:layout_marginBottom="8dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="0dp"
+    android:layout_weight="0.5"
     android:text="@string/Search"
     android:textSize="24sp"
+    android:padding="8dp"
     app:autoSizeMaxTextSize="32sp"
     app:autoSizeMinTextSize="8sp"
     app:autoSizeStepGranularity="0.5sp"
@@ -61,6 +65,8 @@
     fbutton:shadowHeight="5dp"
     fbutton:cornerRadius="5dp"
     />
-
-
 </LinearLayout>
+
+
+
+</android.support.constraint.ConstraintLayout>
