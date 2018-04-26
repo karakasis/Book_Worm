@@ -34,8 +34,6 @@ import com.example.xrhstos.bookapp.Ping;
 import com.example.xrhstos.bookapp.R;
 import com.example.xrhstos.bookapp.VolleyNetworking;
 import com.example.xrhstos.bookapp.gallery.GalleryBackend;
-import com.github.jorgecastillo.FillableLoader;
-import com.github.jorgecastillo.FillableLoaderBuilder;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -95,7 +93,7 @@ public class MainMenu extends AppCompatActivity{
     ping = new Ping();
 
 
-    if(Collection.getInstance().isEmpty()) {
+    if(!Collection.getInstance().isSqlFetched()) {
       Collection.getInstance().fetchBooksFromDB(Database.getInstance(this).getSavedBooksList());
     }
 

@@ -6,17 +6,15 @@
   android:layout_height="wrap_content"
   tools:context="com.example.xrhstos.bookapp.gallery.GalleryBackend">
 
-  <FrameLayout
+  <cn.gavinliu.android.lib.scale.ScaleFrameLayout
     android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_below="@id/my_toolbar"
-    android:layout_above="@id/logo_container">
+    android:layout_height="match_parent">
 
     <include
       android:id="@+id/previewGridGallery"
       layout="@layout/recycler_view"/>
 
-  </FrameLayout>
+  </cn.gavinliu.android.lib.scale.ScaleFrameLayout>
 
 </android.support.constraint.ConstraintLayout>

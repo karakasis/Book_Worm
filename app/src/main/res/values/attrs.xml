@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ScaleLayout">
+
+        <attr name="layout_scale_by" format="enum">
+            <enum name="width" value="0"/>
+            <enum name="height" value="1"/>
+        </attr>
+
+        <attr name="android:layout_width"/>
+        <attr name="android:layout_height"/>
+
+        <attr name="android:layout_margin"/>
+        <attr name="android:layout_marginLeft"/>
+        <attr name="android:layout_marginTop"/>
+        <attr name="android:layout_marginRight"/>
+        <attr name="android:layout_marginBottom"/>
+        <attr name="android:layout_marginStart"/>
+        <attr name="android:layout_marginEnd"/>
+
+        <attr name="android:padding"/>
+        <attr name="android:paddingLeft"/>
+        <attr name="android:paddingTop"/>
+        <attr name="android:paddingRight"/>
+        <attr name="android:paddingBottom"/>
+        <attr name="android:paddingStart"/>
+        <attr name="android:paddingEnd"/>
+
+        <!-- TextView -->
+        <attr name="android:textSize"/>
+
+    </declare-styleable>
+
+</resources>

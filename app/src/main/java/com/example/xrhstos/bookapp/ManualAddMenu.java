@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
@@ -80,6 +81,7 @@ public class ManualAddMenu extends AppCompatActivity {
   private GridAdapter3 ga1;
   private GridAdapter3 ga2;
   private GridAdapter3 ga3;
+  private boolean useSmallInflater = false;
 
   @Override
   public void onBackPressed(){
@@ -104,18 +106,15 @@ public class ManualAddMenu extends AppCompatActivity {
     menu = this;
     MyApp.getInstance().manualAddMenu = this;
     orientation = this.getResources().getConfiguration().orientation;
-
-    if(savedInstanceState!=null){
-      currentIndexInflated = savedInstanceState.getInt("INFLATED_INDEX");
-      int child = savedInstanceState.getInt("VISIBLE_CHILD");
-      if(currentIndexInflated == 0){
-        fliplayout1.showChild(child,false);
-      }else if(currentIndexInflated == 1){
-        fliplayout2.showChild(child,false);
-      }else if(currentIndexInflated == 2){
-        fliplayout3.showChild(child,false);
-      }
+    if(orientation == Configuration.ORIENTATION_PORTRAIT){
+      useSmallInflater = true;
+    }else{
+      useSmallInflater = false;
     }
+
+    VolleyNetworking.refresh(MyApp.getContext());
+
+
 
 
     fliplayout1 = findViewById(R.id.fliplayout1);
@@ -130,6 +129,17 @@ public class ManualAddMenu extends AppCompatActivity {
     isbnBut = findViewById(R.id.isbnButton);
     isbnBut.setButtonColor(this.getResources().getColor(R.color.fbutton_color_beige));
 
+    if(savedInstanceState!=null){
+      currentIndexInflated = savedInstanceState.getInt("INFLATED_INDEX");
+      int child = savedInstanceState.getInt("VISIBLE_CHILD");
+      if(currentIndexInflated == 0){
+        fliplayout1.showChild(child,false);
+      }else if(currentIndexInflated == 1){
+        fliplayout2.showChild(child,false);
+      }else if(currentIndexInflated == 2){
+        fliplayout3.showChild(child,false);
+      }
+    }
 
     bookTitle = (EditText) findViewById(R.id.book);//bookTitle editText
     publisher = (EditText) findViewById(R.id.bookPublisher);//publisher editText
@@ -204,7 +214,6 @@ public class ManualAddMenu extends AppCompatActivity {
     isbnBut.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        //fliplayout3.showChild(1,true);
         fliplayout3.showNextChild();
         if(currentIndexInflated == 0){
           fliplayout1.showChild(0,true);
@@ -219,7 +228,6 @@ public class ManualAddMenu extends AppCompatActivity {
     manBut.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        //fliplayout2.showChild(1,true);
         fliplayout2.showNextChild();
         if(currentIndexInflated == 0){
           fliplayout1.showChild(0,true);
@@ -235,15 +243,44 @@ public class ManualAddMenu extends AppCompatActivity {
     addBook.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        addBookManually();
-        fliplayout2.showNextChild();
+        String title = bookTitle.getText().toString().trim();
+        String author = publisher.getText().toString().trim();
+
+        if(title.isEmpty())
+        {
+          //bookTitle.setHint("Enter book title");//it gives user to hint
+          bookTitle.setError("Enter book title");//it gives user to info message
+          if(author.isEmpty()){
+            publisher.setHint("Enter book author");
+            publisher.setError("Enter book author");
+          }
+        }else if(author.isEmpty()){
+          publisher.setHint("Enter book author");
+          publisher.setError("Enter book author");
+          if(title.isEmpty()) {
+            bookTitle.setHint("Enter book title");
+            bookTitle.setError("Enter book title");
+          }
+        }else{
+          addBookManually(title,author);
+          //fliplayout2.showNextChild();
+        }
       }
     });
 
     searchByIsbn.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        addBookByISBN();
+        String isbn = isbnText.getText().toString();
+        String replaced = isbn.replace("-", "");
+        String replaced2 = replaced.replace(" ", "");
+        if(replaced2.length() == 10 || replaced2.length() == 13){
+          addBookByISBN(replaced2);
+        }else{
+          isbnText.setHint("Enter a valid ISBN");
+          bookTitle.setError("Enter a valid ISBN");
+        }
+
         //fliplayout3.showNextChild();
       }
     });
@@ -303,23 +340,22 @@ public class ManualAddMenu extends AppCompatActivity {
     if(scannerCounter==2){
       scannerCounter = 0;
       if(currentIndexInflated == 0){
-        ga1 = new GridAdapter3(this,booksFromScanner);
+        ga1 = new GridAdapter3(this,booksFromScanner,useSmallInflater);
         fliplayout1.showChild(2,false);
         recyclerView1.setAdapter(ga1);
       }else if(currentIndexInflated == 2){
-        ga3 = new GridAdapter3(this,booksFromScanner);
+        ga3 = new GridAdapter3(this,booksFromScanner,useSmallInflater);
         fliplayout3.showChild(3,false);
         recyclerView3.setAdapter(ga3);
       }
 
     }
+    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
   }
 
-  private void addBookManually(){
-
-    String title = bookTitle.getText().toString();
+  private void addBookManually(String title,String author){
     String[] bookPublisher = new String[1];
-    bookPublisher[0] = publisher.getText().toString();
+    bookPublisher[0] = author;
     Book book = new Book(null,title,bookPublisher,null);
 
     //hotfix for bookinfoactivity to bypass api search
@@ -331,15 +367,17 @@ public class ManualAddMenu extends AppCompatActivity {
 
     ArrayList<Book> list = new ArrayList<>();
     list.add(book);
-    ga2 = new GridAdapter3(this,list);
+    ga2 = new GridAdapter3(this,list,useSmallInflater);
+
+
+    fliplayout2.showNextChild();
     recyclerView2.setAdapter(ga2);
+
+    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
 
   }
 
-  private void addBookByISBN(){
-    String isbn = isbnText.getText().toString();
-    String replaced = isbn.replace("-", "");
-    String replaced2 = replaced.replace(" ", "");
+  private void addBookByISBN(String isbn){
     showLoading(); // swap with flipchild
 
     VolleyNetworking.getInstance(this).getRequestQueue().cancelAll(new RequestQueue.RequestFilter() {
@@ -349,9 +387,9 @@ public class ManualAddMenu extends AppCompatActivity {
       }
     });
 
-    StringRequest grISBN = VolleyNetworking.getInstance(MyApp.getContext()).goodReadsRequestByISBN(replaced2);
+    StringRequest grISBN = VolleyNetworking.getInstance(MyApp.getContext()).goodReadsRequestByISBN(isbn);
     VolleyNetworking.getInstance(this).addToRequestQueue(grISBN);
-    JsonObjectRequest gISBN = VolleyNetworking.getInstance(MyApp.getContext()).googleRequestByISBN(replaced2);
+    JsonObjectRequest gISBN = VolleyNetworking.getInstance(MyApp.getContext()).googleRequestByISBN(isbn);
     VolleyNetworking.getInstance(this).addToRequestQueue(gISBN);
 
 
@@ -361,12 +399,14 @@ public class ManualAddMenu extends AppCompatActivity {
 
     DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
     float dpWidth;
-    if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+    int noOfColumns;
+    if (useSmallInflater) {
       dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+      noOfColumns = (int) (dpWidth / 96); //small inflater
     } else {
-      dpWidth = (displayMetrics.widthPixels/3) / displayMetrics.density;
+      dpWidth = (displayMetrics.widthPixels/3) / displayMetrics.density; // divided by 3 to get
+      noOfColumns = (int) (dpWidth / 120); //normal inflater       // actual size
     }
-    int noOfColumns = (int) (dpWidth / 120);
     return noOfColumns;
   }
 
@@ -396,6 +436,7 @@ public class ManualAddMenu extends AppCompatActivity {
   }
 
   private void showLoading(){
+    LockActivityOrientation.lockActivityOrientation(this);
     if(currentIndexInflated == 0){
       fliplayout1.showChild(1,false);
     }else if(currentIndexInflated == 2){

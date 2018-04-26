@@ -35,13 +35,15 @@ public class GridAdapter3 extends RecyclerView.Adapter<GridAdapter3.ViewHolder> 
   private ArrayList<Book> data;
   private int lastPosition = -1;
   private Picasso instance;
+  private boolean useSmallInflater;
 
   // Pass in the contact array into the constructor
-  public GridAdapter3(Context c, ArrayList<Book> data){
+  public GridAdapter3(Context c, ArrayList<Book> data, boolean useSmallInflater){
     mContext = c;
     mam = (ManualAddMenu) c;
     this.data = data;
     instance = Picasso.with(mContext);
+    this.useSmallInflater = useSmallInflater;
     //setHasStableIds(true);
   }
 
@@ -52,7 +54,12 @@ public class GridAdapter3 extends RecyclerView.Adapter<GridAdapter3.ViewHolder> 
     LayoutInflater inflater = LayoutInflater.from(context);
 
     // Inflate the custom layout
-    View gridInflater = inflater.inflate(R.layout.grid_item_inflater, parent, false);
+    View gridInflater;
+    if(useSmallInflater){
+      gridInflater = inflater.inflate(R.layout.grid_item_inflater_small, parent, false);
+    }else{
+      gridInflater = inflater.inflate(R.layout.grid_item_inflater, parent, false);
+    }
 
     // Return a new holder instance
     ViewHolder viewHolder = new ViewHolder(gridInflater);

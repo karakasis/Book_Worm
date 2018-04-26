@@ -15,17 +15,24 @@ public class Collection {
   private HashMap<String,Book> bookMap;
   private Book currentBookLoaded;
   private boolean isBookLoaded;
-  private String currentQuery ;
   private static Collection mInstance;
   private boolean sqlFetched;
+
+
+  private ArrayList<Book> booksWishlist;
+  private HashMap<String,Book> bookWishlistMap;
+  private Book currentBookWishlistLoaded;
+  private boolean isBookWishlistLoaded;
 
   private Collection() {
 
     books = new ArrayList<>();
     bookMap = new HashMap<>();
-    currentQuery = "";
     isBookLoaded = false;
     sqlFetched = false;
+
+    booksWishlist = new ArrayList<>();
+    bookWishlistMap = new HashMap<>();
   }
 
   public static synchronized Collection getInstance() {
@@ -82,10 +89,38 @@ public class Collection {
     }
   }
 
-  public boolean isEmpty(){
-    boolean reply = bookMap.isEmpty() && !sqlFetched;
+  public boolean isSqlFetched(){
+    boolean reply = sqlFetched;
     sqlFetched = true;
     return reply;
+  }
+
+  public Book matchBookWishlist(String key){
+    isBookWishlistLoaded = false;
+    if(bookWishlistMap.containsKey(key)){
+      currentBookLoaded = bookWishlistMap.get(key);
+      isBookWishlistLoaded = true;
+      return currentBookWishlistLoaded;
+    }else{
+      return null;
+    }
+  }
+
+  public void addBookWishlist(Book newBook){
+    //books.add(newBook);
+    bookWishlistMap.put(newBook.getKey(),newBook);
+    currentBookWishlistLoaded = newBook;
+    isBookWishlistLoaded = true;
+  }
+
+  public Book removeBookWishlist(){
+    if(isBookWishlistLoaded){
+      String key = currentBookWishlistLoaded.getKey();
+      isBookLoaded = false;
+      return bookMap.remove(key);
+    }else{
+      return null;
+    }
   }
 
 }
