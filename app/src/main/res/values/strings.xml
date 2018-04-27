@@ -9,6 +9,7 @@
   <string name="ServerError">The server could not be found. Please try again after some time!</string>
   <string name="ParseError">Parsing error! Please try again after some time!</string>
   <string name="TimeoutError">Connection TimeOut! Please check your internet connection.</string>
+  <string name="RefreshPage">REFRESH</string>
 
   <!--BookInfo>-->
 

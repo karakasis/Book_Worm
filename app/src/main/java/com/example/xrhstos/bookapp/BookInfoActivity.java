@@ -385,6 +385,7 @@ public class BookInfoActivity extends AppCompatActivity {
   }
 
   private void apiCall(){
+    showLoading();
     if(googleID != null){
       JsonObjectRequest jor = VolleyNetworking.getInstance(MyApp.getContext()).googleRequestByID(googleID,currentBook);
       VolleyNetworking.getInstance(MyApp.getContext()).addToRequestQueue(jor);

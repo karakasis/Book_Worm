@@ -10,6 +10,7 @@
     <string name="ServerError">Δεν ήταν δυνατή η εύρεση του διακομιστή. Δοκιμάστε ξανά μετά από λίγο!</string>
     <string name="ParseError">Σφάλμα αναζήτησης! Δοκιμάστε ξανά μετά από λίγο!</string>
     <string name="TimeoutError">Λήξη σύνδεσης! Ελέγξτε τη σύνδεση στο διαδίκτυο.</string>
+    <string name="RefreshPage">ΑΝΑΝΕΩΣΗ</string>
 
     <!--BookInfo>-->
     <string name="Average_Rating">Μέση βαθμολογία:&#160;</string>

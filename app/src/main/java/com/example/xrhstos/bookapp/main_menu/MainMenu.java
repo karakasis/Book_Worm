@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
@@ -443,7 +444,7 @@ public class MainMenu extends AppCompatActivity{
     showError();
     if(refreshable){
       snackbar = Snackbar.make(findViewById(R.id.main),error,Snackbar.LENGTH_INDEFINITE)
-          .setAction("REFRESH", new View.OnClickListener() {
+          .setAction(R.string.RefreshPage, new OnClickListener() {
             @Override
             public void onClick(View view) {
               searchView.setQuery(query,true);
