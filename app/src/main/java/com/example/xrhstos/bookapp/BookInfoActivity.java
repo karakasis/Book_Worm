@@ -15,11 +15,14 @@ import android.support.v7.widget.AppCompatTextView;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.RatingBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 import com.android.volley.Request;
@@ -155,28 +158,26 @@ public class BookInfoActivity extends AppCompatActivity {
   }
 
   private void createButtons(){
-    buttonsController = new Buttons(this
-        , (LinearLayout) findViewById(R.id.addCollection)
-        , (LinearLayout) findViewById(R.id.addWishlist_read));
+    buttonsController = new Buttons(this);
 
     if(currentBook.isBookInCollection()){ // <remove from collection
-      ImageButton removeButton = buttonsController.remove();
+      buttonsController.remove();
 
       if(currentBook.isBookRead()){ // <remove read tag
-        FButton bookNotRead = buttonsController.markNotRead();
+        buttonsController.markNotRead();
 
       }else{ // <apply read tag
-        FButton bookRead = buttonsController.markRead();
+        buttonsController.markRead();
 
       }
     }else{ // <add to collection
-      ImageButton addButton = buttonsController.add();
+      buttonsController.add();
 
       if(currentBook.isBookInWishlist()){ // <remove from wishlist
-        ImageButton wishlistButtonNo = buttonsController.wishRemove();
+        buttonsController.wishRemove();
 
       }else{ // <add to wishlist
-        ImageButton wishlistButtonYes = buttonsController.wishAdd();
+        buttonsController.wishAdd();
 
       }
     }
@@ -303,7 +304,7 @@ public class BookInfoActivity extends AppCompatActivity {
     LinearLayout infoLL = view.findViewById(R.id.moreInfo);
     if(currentBook.getPublishedDate()!=null){
       TextView tvPublishedDate = new TextView(this);
-      tvPublishedDate.setText(R.string.Published+""+currentBook.getPublishedDate());
+      tvPublishedDate.setText(getString(R.string.Published)+""+currentBook.getPublishedDate());
       infoLL.addView(tvPublishedDate);
     }
     if(currentBook.getCategories()!=null){
@@ -311,30 +312,42 @@ public class BookInfoActivity extends AppCompatActivity {
       int cat = catStr.length;
       TextView tvCatTitle = new TextView(this);
       tvCatTitle.setText(R.string.Genres);
-      infoLL.addView(tvCatTitle);
+      ScrollView sv = new ScrollView(this);
+      sv.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+          200));
+      LinearLayout llcat  = new LinearLayout(this);
+      llcat.setOrientation(LinearLayout.HORIZONTAL);
+      infoLL.addView(llcat);
+      llcat.addView(tvCatTitle);
+      llcat.addView(sv);
+      LinearLayout llcatScroll  = new LinearLayout(this);
+      llcatScroll.setOrientation(LinearLayout.VERTICAL);
       TextView[] tvcats = new TextView[cat];
       for(int i=0; i<cat; i++){
         tvcats[i] = new TextView(this);
         tvcats[i].setText(catStr[i]);
-        infoLL.addView(tvcats[i]);
+        llcatScroll.addView(tvcats[i]);
+        /*
         if(i==3){
           break;
         }
+        */
       }
+      sv.addView(llcatScroll);
     }
     if(currentBook.getISBN13()!= null){
       TextView tvISBN13 = new TextView(this);
-      tvISBN13.setText(R.string.ISBN_13+""+currentBook.getISBN13());
+      tvISBN13.setText(getString(R.string.ISBN_13)+""+currentBook.getISBN13());
       infoLL.addView(tvISBN13);
     }
     if(currentBook.getISBN10()!= null){
       TextView tvISBN10 = new TextView(this);
-      tvISBN10.setText(R.string.ISBN_10+""+currentBook.getISBN10());
+      tvISBN10.setText(getString(R.string.ISBN_10)+""+currentBook.getISBN10());
       infoLL.addView(tvISBN10);
     }
     if(currentBook.getPageCount()!=-1){
       TextView tvPagecount = new TextView(this);
-      tvPagecount.setText(R.string.Pages+""+String.valueOf(currentBook.getPageCount()));
+      tvPagecount.setText(getString(R.string.Pages)+""+String.valueOf(currentBook.getPageCount()));
       infoLL.addView(tvPagecount);
     }
 

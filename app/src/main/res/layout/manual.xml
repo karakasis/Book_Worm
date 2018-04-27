@@ -29,9 +29,17 @@
         android:text="@string/Scanbarcode"
         android:textColor="@color/gridColor"
         android:textSize="32sp"
+
+        app:autoSizeMaxTextSize="32sp"
+        app:autoSizeMinTextSize="8sp"
+        app:autoSizeStepGranularity="0.5sp"
+        android:maxLines="2"
+        app:autoSizeTextType="uniform"
+
         fbutton:shadowEnabled="true"
         fbutton:shadowHeight="5dp"
         fbutton:cornerRadius="5dp"
+
         />
 
       <FrameLayout
@@ -67,6 +75,7 @@
       android:layout_weight="1"
       app:transition="TRANSLATE_X">
 
+
       <info.hoang8f.widget.FButton
         android:id="@+id/manualButton"
         android:layout_width="match_parent"
@@ -74,7 +83,15 @@
         android:alpha="0.7"
         android:text="@string/AddManual"
         android:textColor="@color/gridColor"
+
         android:textSize="32sp"
+
+        app:autoSizeMaxTextSize="32sp"
+        app:autoSizeMinTextSize="8sp"
+        app:autoSizeStepGranularity="0.5sp"
+        android:maxLines="2"
+        app:autoSizeTextType="uniform"
+
         fbutton:shadowEnabled="true"
         fbutton:shadowHeight="5dp"
         fbutton:cornerRadius="5dp"
@@ -111,6 +128,7 @@
       android:layout_weight="1"
       app:transition="TRANSLATE_X">
 
+
       <info.hoang8f.widget.FButton
         android:id="@+id/isbnButton"
         android:layout_width="match_parent"
@@ -119,6 +137,13 @@
         android:text="@string/AddISBN"
         android:textColor="@color/gridColor"
         android:textSize="32sp"
+
+        app:autoSizeMaxTextSize="32sp"
+        app:autoSizeMinTextSize="8sp"
+        app:autoSizeStepGranularity="0.5sp"
+        android:maxLines="2"
+        app:autoSizeTextType="uniform"
+
         fbutton:shadowEnabled="true"
         fbutton:shadowHeight="5dp"
         fbutton:cornerRadius="5dp"

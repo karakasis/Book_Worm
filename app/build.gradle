@@ -34,6 +34,7 @@ dependencies {
     compile 'com.github.cmfsotelo:fliplayout:v1.1.1'
     compile 'com.github.ybq:Android-SpinKit:1.1.0'
     compile 'com.eightbitlab:bottomnavigationbar:0.9.5'
+    compile 'com.marcouberti.autofitbutton:android-auto-fit-button:0.1.1@aar'
 
     compile 'com.android.support:support-v4:27.1.1'
     compile 'com.android.support:appcompat-v7:27.1.1'

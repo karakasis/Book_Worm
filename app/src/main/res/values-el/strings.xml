@@ -16,8 +16,8 @@
     <string name="Pages">Σελίδες:&#160;</string>
     <string name="WeCantGetInfo">Δεν υπάρχουν πληροφορίες αυτή τη στιγμή, προσπαθήστε αργότερα."</string>
     <!--Buttons>-->
-    <string name="MarkAsRead">Μαρκάρισμα ως διαβασμένο</string>
-    <string name="MarkAsNotRead">Ξεμαρκάρισμα από διαβασμένο</string>
+    <string name="MarkAsRead">Διαβάστηκε</string>
+    <string name="MarkAsNotRead">Δε διαβάστηκε</string>
     <string name="AddtoCollection">Προσθήκη στη συλλογή</string>
     <string name="RemovefromCollection">Διαγραφή από τη συλλογή</string>
     <string name="AddtoWishlist">Προσθήκη στη λίστα επιθυμιών</string>
@@ -28,8 +28,8 @@
 
     <!--menu>-->
     <string name="Search">Αναζήτηση</string>
-    <string name="Collection">Προσωπική Συλλογή</string>
-    <string name="AddManual">Χειροκίνητη εισαγωγή</string>
+    <string name="Collection">Συλλογή</string>
+    <string name="AddManual">Offline Προσθήκη</string>
     <!--error_page-->
     <string name="TryAddingManually">Προσπαθήστε να προσθέσετε ένα βιβλίο χειροκίνητα από την γραμμή εργαλιών.</string>
     <!--manual-->
