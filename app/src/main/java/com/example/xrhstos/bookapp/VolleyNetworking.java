@@ -117,22 +117,22 @@ public class VolleyNetworking {
         MainMenu mm = (MainMenu) mCtx;
         String message = "";
         if (volleyError instanceof ServerError) {
-          message = "The server could not be found. Please try again after some time!!";
+          message = mCtx.getResources().getString(R.string.ServerError);
           mm.errorHandling(message,true, 0);
         } else if (volleyError instanceof AuthFailureError) {
-          message = "Cannot connect to Internet...Please check your connection!";
+          message = mCtx.getResources().getString(R.string.no_network);
           mm.errorHandling(message,false, 1);
         } else if (volleyError instanceof ParseError) {
-          message = "Parsing error! Please try again after some time!!";
+          message = mCtx.getResources().getString(R.string.ParseError);
           mm.errorHandling(message,false, 0);
         } else if (volleyError instanceof NoConnectionError) {
-          message = "Cannot connect to Internet...Please check your connection!";
+          message = mCtx.getResources().getString(R.string.no_network);
           mm.errorHandling(message,true, 1);
         } else if (volleyError instanceof TimeoutError) {
-          message = "Connection TimeOut! Please check your internet connection.";
+          message = mCtx.getResources().getString(R.string.TimeoutError);
           mm.errorHandling(message,true, 1);
         } else if (volleyError instanceof NetworkError) {
-          message = "Cannot connect to Internet...Please check your connection!";
+          message = mCtx.getResources().getString(R.string.no_network);
           mm.errorHandling(message,true, 1);
         }
         //mm.notifier.setText(message);
@@ -261,22 +261,22 @@ public class VolleyNetworking {
         MainMenu mm = (MainMenu) mCtx;
         String message = "";
         if (volleyError instanceof ServerError) {
-          message = "The server could not be found. Please try again after some time!!";
+          message = mCtx.getResources().getString(R.string.ServerError);
           mm.errorHandling(message,true, 0);
         } else if (volleyError instanceof AuthFailureError) {
-          message = "Cannot connect to Internet...Please check your connection!";
+          message = mCtx.getResources().getString(R.string.no_network);
           mm.errorHandling(message,false, 1);
         } else if (volleyError instanceof ParseError) {
-          message = "Parsing error! Please try again after some time!!";
+          message = mCtx.getResources().getString(R.string.ParseError);
           mm.errorHandling(message,false, 0);
         } else if (volleyError instanceof NoConnectionError) {
-          message = "Cannot connect to Internet...Please check your connection!";
+          message = mCtx.getResources().getString(R.string.no_network);
           mm.errorHandling(message,true, 1);
         } else if (volleyError instanceof TimeoutError) {
-          message = "Connection TimeOut! Please check your internet connection.";
+          message = mCtx.getResources().getString(R.string.TimeoutError);
           mm.errorHandling(message,true, 1);
         } else if (volleyError instanceof NetworkError) {
-          message = "Cannot connect to Internet...Please check your connection!";
+          message = mCtx.getResources().getString(R.string.no_network);
           mm.errorHandling(message,true, 1);
         }
         //mm.notifier.setText(message);
@@ -405,22 +405,22 @@ public class VolleyNetworking {
         BookInfoActivity mm = MyApp.getInstance().bookInfoActivity;
         String message = "";
         if (volleyError instanceof ServerError) {
-          message = "The server could not be found. Please try again after some time!!";
+          message = mCtx.getResources().getString(R.string.ServerError);
           mm.errorHandling(message,true, 0);
         } else if (volleyError instanceof AuthFailureError) {
-          message = "Cannot connect to Internet...Please check your connection!";
+          message = mCtx.getResources().getString(R.string.no_network);
           mm.errorHandling(message,false, 1);
         } else if (volleyError instanceof ParseError) {
-          message = "Parsing error! Please try again after some time!!";
+          message = mCtx.getResources().getString(R.string.ParseError);
           mm.errorHandling(message,false, 0);
         } else if (volleyError instanceof NoConnectionError) {
-          message = "Cannot connect to Internet...Please check your connection!";
+          message = mCtx.getResources().getString(R.string.no_network);
           mm.errorHandling(message,true, 1);
         } else if (volleyError instanceof TimeoutError) {
-          message = "Connection TimeOut! Please check your internet connection.";
+          message = mCtx.getResources().getString(R.string.TimeoutError);
           mm.errorHandling(message,true, 1);
         } else if (volleyError instanceof NetworkError) {
-          message = "Cannot connect to Internet...Please check your connection!";
+          message = mCtx.getResources().getString(R.string.no_network);
           mm.errorHandling(message,true, 1);
         }
       }
@@ -452,22 +452,22 @@ public class VolleyNetworking {
         BookInfoActivity mm = MyApp.getInstance().bookInfoActivity;
         String message = "";
         if (volleyError instanceof ServerError) {
-          message = "The server could not be found. Please try again after some time!!";
+          message = mCtx.getResources().getString(R.string.ServerError);
           mm.errorHandling(message,true, 0);
         } else if (volleyError instanceof AuthFailureError) {
-          message = "Cannot connect to Internet...Please check your connection!";
+          message = mCtx.getResources().getString(R.string.no_network);
           mm.errorHandling(message,false, 1);
         } else if (volleyError instanceof ParseError) {
-          message = "Parsing error! Please try again after some time!!";
+          message = mCtx.getResources().getString(R.string.ParseError);
           mm.errorHandling(message,false, 0);
         } else if (volleyError instanceof NoConnectionError) {
-          message = "Cannot connect to Internet...Please check your connection!";
+          message = mCtx.getResources().getString(R.string.no_network);
           mm.errorHandling(message,true, 1);
         } else if (volleyError instanceof TimeoutError) {
-          message = "Connection TimeOut! Please check your internet connection.";
+          message = mCtx.getResources().getString(R.string.TimeoutError);
           mm.errorHandling(message,true, 1);
         } else if (volleyError instanceof NetworkError) {
-          message = "Cannot connect to Internet...Please check your connection!";
+          message = mCtx.getResources().getString(R.string.no_network);
           mm.errorHandling(message,true, 1);
         }
       }

@@ -348,7 +348,7 @@ public class GalleryBackend extends AppCompatActivity {
   private void showBooksUI(ArrayList<Book> data){
     //look for search query first
     if(searchQuery){
-      data = startSearch(searchQueryString);
+      data = startSearch(searchQueryString,data);
     }
     //sort first
     if(itemId!=-1){ // if sorting is not disabled
@@ -370,7 +370,7 @@ public class GalleryBackend extends AppCompatActivity {
     handleTabs();
   }
 
-  private ArrayList<Book> startSearch(String query) {
+  private ArrayList<Book> startSearch(String query,ArrayList<Book> myDataset) {
     ArrayList<Book> matched = new ArrayList<>();
     String dummy1,dummyp;
     String dummy2[];

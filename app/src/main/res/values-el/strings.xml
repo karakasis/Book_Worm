@@ -7,6 +7,9 @@
     <string name="no_search_term">Εισάγετε έναν όρο αναζήτησης.</string>
     <string name="no_network">Ελέγξτε την σύνδεση σας στο ίντερνετ και ξαναπροσπαθήστε.</string>
     <string name="no_results">Δεν βρέθηκαν αποτελέσματα</string>
+    <string name="ServerError">Δεν ήταν δυνατή η εύρεση του διακομιστή. Δοκιμάστε ξανά μετά από λίγο!</string>
+    <string name="ParseError">Σφάλμα αναζήτησης! Δοκιμάστε ξανά μετά από λίγο!</string>
+    <string name="TimeoutError">Λήξη σύνδεσης! Ελέγξτε τη σύνδεση στο διαδίκτυο.</string>
 
     <!--BookInfo>-->
     <string name="Average_Rating">Μέση βαθμολογία:&#160;</string>
@@ -30,23 +33,23 @@
     <string name="Search">Αναζήτηση</string>
     <string name="Collection">Συλλογή</string>
     <string name="AddManual">Offline Προσθήκη</string>
-    <string name="Sort">Sort</string>
+    <string name="Sort">Ταξινόμηση</string>
 
-    <string name="Sort_Rating">by rating</string>
-    <string name="Sort_Rating_ASC">by rating (asc)</string>
-    <string name="Sort_Rating_DESC">by rating (desc)</string>
+    <string name="Sort_Rating">βάση βαθμολογίας</string>
+    <string name="Sort_Rating_ASC">βάση βαθμολογίας (αυξ)</string>
+    <string name="Sort_Rating_DESC">βάση βαθμολογίας (φθιν)</string>
 
-    <string name="Sort_AvgRating">by avg rating</string>
-    <string name="Sort_AvgRating_ASC">by avg rating (asc)</string>
-    <string name="Sort_AvgRating_DESC">by avg rating (desc)</string>
+    <string name="Sort_AvgRating">βάση μέσης βαθμολογίας</string>
+    <string name="Sort_AvgRating_ASC">βάση μέσης βαθμολογίας (αυξ)</string>
+    <string name="Sort_AvgRating_DESC">βάση μέσης βαθμολογίας (φθιν)</string>
 
-    <string name="Sort_Title">by title</string>
-    <string name="Sort_Title_ASC">by title (asc)</string>
-    <string name="Sort_Title_DESC">by title (desc)</string>
+    <string name="Sort_Title">βάση τίτλου</string>
+    <string name="Sort_Title_ASC">βάση τίτλου (αυξ)</string>
+    <string name="Sort_Title_DESC">βάση τίτλου (φθιν)</string>
 
-    <string name="Sort_Author">by author</string>
-    <string name="Sort_Author_ASC">by author (asc)</string>
-    <string name="Sort_Author_DESC">by author (desc)</string>
+    <string name="Sort_Author">βάση συγγραφέα</string>
+    <string name="Sort_Author_ASC">βάση συγγραφέα (αυξ)</string>
+    <string name="Sort_Author_DESC">βάση συγγραφέα (φθιν)</string>
 
     <!--error_page-->
     <string name="TryAddingManually">Προσθέσετε ένα βιβλίο χωρίς σύνδεση από την γραμμή εργαλιών.</string>

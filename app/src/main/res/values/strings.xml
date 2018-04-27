@@ -6,6 +6,9 @@
   <string name="no_search_term">Please enter a search term.</string>
   <string name="no_network">Please check your network connection and try again.</string>
   <string name="no_results">No Results Found</string>
+  <string name="ServerError">The server could not be found. Please try again after some time!</string>
+  <string name="ParseError">Parsing error! Please try again after some time!</string>
+  <string name="TimeoutError">Connection TimeOut! Please check your internet connection.</string>
 
   <!--BookInfo>-->
 
