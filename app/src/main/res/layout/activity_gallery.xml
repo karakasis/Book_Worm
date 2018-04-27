@@ -14,7 +14,18 @@
   android:orientation="vertical"
   >
 
+  <android.support.v7.widget.Toolbar
+    android:id="@+id/my_toolbar2"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="?attr/colorPrimary"
+    android:elevation="4dp"
+    android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
   <FrameLayout
+    android:layout_below="@id/my_toolbar2"
+    android:layout_above="@id/bottom_bar"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -22,6 +33,13 @@
     <include
       android:id="@+id/previewGridGallery"
       layout="@layout/recycler_view"/>
+
+    <ViewStub
+      android:id="@+id/no_books_stub"
+      android:inflatedId="@+id/no_books_page"
+      android:layout="@layout/error_page"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"/>
 
   </FrameLayout>
 

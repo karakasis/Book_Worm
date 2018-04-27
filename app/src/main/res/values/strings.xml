@@ -35,9 +35,28 @@
   <string name="Search">Search</string>
   <string name="Collection">Go to Collection</string>
   <string name="AddManual">Add Manually</string>
+  <string name="Sort">Sort</string>
+
+  <string name="Sort_Rating">by rating</string>
+  <string name="Sort_Rating_ASC">by rating (asc)</string>
+  <string name="Sort_Rating_DESC">by rating (desc)</string>
+
+  <string name="Sort_AvgRating">by avg rating</string>
+  <string name="Sort_AvgRating_ASC">by avg rating (asc)</string>
+  <string name="Sort_AvgRating_DESC">by avg rating (desc)</string>
+
+  <string name="Sort_Title">by title</string>
+  <string name="Sort_Title_ASC">by title (asc)</string>
+  <string name="Sort_Title_DESC">by title (desc)</string>
+
+  <string name="Sort_Author">by author</string>
+  <string name="Sort_Author_ASC">by author (asc)</string>
+  <string name="Sort_Author_DESC">by author (desc)</string>
 
   <!--error_page-->
   <string name="TryAddingManually">Try adding a book manually from the toolbar.</string>
+  <string name="NoBooksCollection">Your collection is empty, add some books.</string>
+  <string name="NoBooksWishlist">Your wishlist is empty, add some books.</string>
 
   <!--manual-->
   <string name="Scanbarcode">Scan barcode</string>

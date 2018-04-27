@@ -25,7 +25,6 @@ public class PreviewController2{
   private static GridAdapter2 gridAdapter;
   private RecyclerView recyclerView;
   private WrapContentGridLayoutManager glm;
-  private EndlessScrollListener esl;
 
 
   public PreviewController2(RecyclerView rv, final GalleryBackend parent){
@@ -38,16 +37,6 @@ public class PreviewController2{
     );
     recyclerView.setLayoutManager(glm);
 
-    esl =new EndlessScrollListener(glm) {
-      @Override
-      public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-        // Triggered only when new data needs to be appended to the list
-        loadNextDataFromApi(page);
-      }
-    };
-
-    recyclerView.addOnScrollListener(esl);
-
   }
 
   public void setData(ArrayList<Book> books){
@@ -57,7 +46,7 @@ public class PreviewController2{
       gridAdapter.getDataSet().clear();
       gridAdapter.notifyItemRangeChanged(oldSize-1,0);
       //gridAdapter.notifyDataSetChanged();
-      esl.resetState();
+      //esl.resetState();
       recyclerView.scrollToPosition(0);
 
       gridAdapter.getDataSet().addAll(books);
@@ -77,7 +66,7 @@ public class PreviewController2{
       recyclerView.scrollToPosition(0);
     }else{
       PreviewController2.gridAdapter = new GridAdapter2(this, MyApp.getInstance().galleryBackend,books);
-      Handler handler = new Handler();
+      //Handler handler = new Handler();
             /*
             handler.postDelayed(new Runnable() {
                 public void run() {
@@ -88,12 +77,11 @@ public class PreviewController2{
             */
       recyclerView.setAdapter(gridAdapter);
 
-
     }
 
 
   }
-
+/*
   private void loadNextDataFromApi(int page) {
     //MainMenu.loadingData = true;
     MyApp.getInstance().galleryBackend.requestMoreResults();
@@ -112,7 +100,7 @@ public class PreviewController2{
       }
     });
   }
-
+*/
   public GalleryBackend getParent() {
     return MyApp.getInstance().galleryBackend;
   }

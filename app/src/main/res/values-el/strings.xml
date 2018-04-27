@@ -30,8 +30,29 @@
     <string name="Search">Αναζήτηση</string>
     <string name="Collection">Συλλογή</string>
     <string name="AddManual">Offline Προσθήκη</string>
+    <string name="Sort">Sort</string>
+
+    <string name="Sort_Rating">by rating</string>
+    <string name="Sort_Rating_ASC">by rating (asc)</string>
+    <string name="Sort_Rating_DESC">by rating (desc)</string>
+
+    <string name="Sort_AvgRating">by avg rating</string>
+    <string name="Sort_AvgRating_ASC">by avg rating (asc)</string>
+    <string name="Sort_AvgRating_DESC">by avg rating (desc)</string>
+
+    <string name="Sort_Title">by title</string>
+    <string name="Sort_Title_ASC">by title (asc)</string>
+    <string name="Sort_Title_DESC">by title (desc)</string>
+
+    <string name="Sort_Author">by author</string>
+    <string name="Sort_Author_ASC">by author (asc)</string>
+    <string name="Sort_Author_DESC">by author (desc)</string>
+
     <!--error_page-->
-    <string name="TryAddingManually">Προσπαθήστε να προσθέσετε ένα βιβλίο χειροκίνητα από την γραμμή εργαλιών.</string>
+    <string name="TryAddingManually">Προσθέσετε ένα βιβλίο χωρίς σύνδεση από την γραμμή εργαλιών.</string>
+    <string name="NoBooksCollection">Η συλλογή σας είναι κενή, προσθέστε μερικά βιβλία.</string>
+    <string name="NoBooksWishlist">Η λίστα επιθυμιών σας είναι κενή, προσθέστε μερικά βιβλία.</string>
+
     <!--manual-->
     <string name="Scanbarcode">Σκανάρετε barcode</string>
     <string name="AddISBN">Προσθήκη από ISBN</string>

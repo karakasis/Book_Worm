@@ -11,14 +11,15 @@
     <item
       android:id="@+id/collectionButton"
       android:title="@string/Collection"
-      android:icon="@drawable/ic_local_library_indigo_a200_24dp"
+      android:icon="@drawable/ic_library_books_white_24dp"
       android:onClick="toGallery"
       app:showAsAction="ifRoom|collapseActionView"/>
 
     <item
       android:id="@+id/addManual"
       android:title="@string/AddManual"
-      android:icon="@drawable/ic_add_green_800_24dp"
+      android:icon="@drawable/ic_library_add_white_24dp"
       app:showAsAction="ifRoom|collapseActionView"
       android:onClick="addBookManual"/>
+
 </menu>
