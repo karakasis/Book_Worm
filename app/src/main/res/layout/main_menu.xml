@@ -55,7 +55,6 @@
       android:layout_alignParentBottom="true">
 
       <include
-        android:visibility="invisible"
         android:id="@+id/footer"
         layout="@layout/footer_logo"/>
 

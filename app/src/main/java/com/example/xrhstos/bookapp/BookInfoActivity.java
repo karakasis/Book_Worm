@@ -300,6 +300,19 @@ public class BookInfoActivity extends AppCompatActivity {
       tvDesc.setText("");
     }
 
+    if (currentBook.getGoogleID() == null) {
+      if(currentBook.getBuyURL() == null){
+        ImageButton buyButton = view.findViewById(R.id.googlePlay);
+        buyButton.setVisibility(View.INVISIBLE);
+      }else{
+        ImageButton buyButton = view.findViewById(R.id.googlePlay);
+        buyButton.setBackgroundResource(R.drawable.amazon_logo);
+      }
+    }else{
+      ImageButton buyButton = view.findViewById(R.id.googlePlay);
+      buyButton.setBackgroundResource(R.drawable.en_badge_web_generic);
+    }
+
 
     LinearLayout infoLL = view.findViewById(R.id.moreInfo);
     if(currentBook.getPublishedDate()!=null){
@@ -360,8 +373,8 @@ public class BookInfoActivity extends AppCompatActivity {
       if(currentBook.getMarketURI() == null){
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(currentBook.getBuyURL())));
       }else{
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://"+currentBook.getMarketURI())));
-
+        //startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id="+currentBook.getMarketURI())));
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/books/details?id=" + currentBook.getMarketURI())));
       }
      } catch (android.content.ActivityNotFoundException anfe) {
       try {
