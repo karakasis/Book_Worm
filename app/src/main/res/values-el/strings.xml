@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">BookApp</string>
-    <string name="instructions">Εισάγετε ένα πλήρες ή μερικό όνομα βιβλίου ή κείμενο από το βιβλίο. Πατήστε αναζήτηση βιβλίου για να βρείτε τον συγγραφέα.</string>
+    <string name="instructions">Ξεκινήστε να ψάχνεται βιβλία</string>
     <string name="button_text">Αναζήτηση βιβλίων</string>
     <string name="input_hint">Τίτλος βιβλίου</string>
     <string name="no_search_term">Εισάγετε έναν όρο αναζήτησης.</string>
     <string name="no_network">Ελέγξτε την σύνδεση σας στο ίντερνετ και ξαναπροσπαθήστε.</string>
     <string name="no_results">Δεν βρέθηκαν αποτελέσματα</string>
+    <string name="end_results">Δεν υπάρχουν άλλα αποτελέσματα.</string>
     <string name="ServerError">Δεν ήταν δυνατή η εύρεση του διακομιστή. Δοκιμάστε ξανά μετά από λίγο!</string>
     <string name="ParseError">Σφάλμα αναζήτησης! Δοκιμάστε ξανά μετά από λίγο!</string>
     <string name="TimeoutError">Λήξη σύνδεσης! Ελέγξτε τη σύνδεση στο διαδίκτυο.</string>

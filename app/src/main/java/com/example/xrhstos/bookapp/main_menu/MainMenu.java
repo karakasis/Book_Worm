@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.SearchView.OnQueryTextListener;
@@ -165,6 +166,14 @@ public class MainMenu extends AppCompatActivity{
       showGrid();
     }
 
+    if(Bookshelf.getInstance().getBooks().isEmpty()){
+      flipViews(2); // error page
+      AppCompatTextView tv = vFlipper.getChildAt(2).findViewById(R.id.error_text);
+      ImageView iv = vFlipper.getChildAt(2).findViewById(R.id.error_image);
+      iv.setImageResource(R.drawable.books_logo);
+      tv.setText(getString(R.string.instructions));
+    }
+
   }
 
   @Override
@@ -215,6 +224,18 @@ public class MainMenu extends AppCompatActivity{
       //rotateUpdate();
       previewController.getLayoutManager().onRestoreInstanceState(glmState);
     }
+    if(currentFlippedView==0){
+      if(googleON){
+        ImageView logo = (ImageView) findViewById(R.id.logo);
+        logo.setImageResource(R.drawable.google_logo);
+      }else if (goodreadsON){
+        ImageView logo = (ImageView) findViewById(R.id.logo);
+        logo.setImageResource(R.drawable.goodreads_logo);
+      }else{
+        footer.setVisibility(View.INVISIBLE);
+      }
+    }
+
   }
 
   @Override
@@ -338,6 +359,14 @@ public class MainMenu extends AppCompatActivity{
       requestMoreResults();
     }else{
       startUI();
+    }
+    if(bookData.size() == 0){
+      snackbar = Snackbar.make(findViewById(R.id.main),getString(R.string.end_results),Snackbar.LENGTH_LONG);
+      View sbView = snackbar.getView();
+      TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+      textView.setTextColor(getResources().getColor(R.color.fbutton_color_wet_asphalt));
+      sbView.setBackgroundColor(getResources().getColor(R.color.logoBackgroundColor));
+      snackbar.show();
     }
 
   }

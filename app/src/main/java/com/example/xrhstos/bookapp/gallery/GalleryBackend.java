@@ -245,6 +245,8 @@ public class GalleryBackend extends AppCompatActivity {
     handleTabs();
     if(itemId!=-1 && sortItems!=null){ // custom select sort method
       customCheck(sortItems[itemId]);
+    }
+    if(searchQuery){
 
     }
   }
@@ -359,6 +361,19 @@ public class GalleryBackend extends AppCompatActivity {
       customCheck(sortItems[itemId]);
 
     }
+    SearchView sv = (SearchView) menu.findItem(R.id.action_search2).getActionView();
+    if(searchQuery){
+      sv.setIconified(false);
+      sv.setQuery(searchQueryString,false);
+      sv.requestFocus();
+    }else{
+      sv.setIconified(true);
+      //Clear query
+      sv.setQuery("", false);
+      //Collapse the action view
+      sv.onActionViewCollapsed();
+      sv.clearFocus();
+    }
 
     return super.onCreateOptionsMenu(menu);
   }
@@ -420,6 +435,7 @@ public class GalleryBackend extends AppCompatActivity {
         (RecyclerView) includedView.findViewById(R.id.grid_view), this);
 
     previewController.setData(data);
+    myDataset = new ArrayList<>(data);
     includedView.setVisibility(View.VISIBLE);
   }
 
@@ -445,13 +461,17 @@ public class GalleryBackend extends AppCompatActivity {
           if(dummy1.contains(" ")){
             String[] titleParts = dummy1.split(Pattern.quote(" "));
             for(int m = 0;m<titleParts.length;m++){
-              if(dummyp == titleParts[m]){
-                matched.add(myDataset.get(j));
+              if(dummyp.equals(titleParts[m])){
+                if(!matched.contains(myDataset.get(j))){
+                  matched.add(myDataset.get(j));
+                  break;
+                }
               }
+
             }
           }
           else{
-            if(dummyp == dummy1){
+            if(dummyp.equals(dummy1)){
               matched.add(myDataset.get(j));
             }
           }
@@ -461,13 +481,16 @@ public class GalleryBackend extends AppCompatActivity {
             if(dummy2[k].contains(" ")){
               String[] authorParts = dummy2[k].split(Pattern.quote(" "));
               for(int n = 0;n<authorParts.length;n++){
-                if(dummyp == authorParts[n].toUpperCase()){
-                  matched.add(myDataset.get(j));
+                if(dummyp.equals(authorParts[n].toUpperCase())){
+                  if(!matched.contains(myDataset.get(j))){
+                    matched.add(myDataset.get(j));
+                    break;
+                  }
                 }
               }
             }
             else{
-              if(dummyp == dummy2[k].toUpperCase()){
+              if(dummyp.equals(dummy2[k].toUpperCase())){
                 matched.add(myDataset.get(j));
               }
             }
@@ -480,15 +503,18 @@ public class GalleryBackend extends AppCompatActivity {
       for(int i = 0;i<myDataset.size();i++){
         dummy1 = myDataset.get(i).getBookTitle().toUpperCase();
         if(dummy1.contains(" ")){
-          String[] titleParts = query.split(Pattern.quote(" "));
+          String[] titleParts = dummy1.split(Pattern.quote(" "));
           for(int m = 0;m<titleParts.length;m++){
-            if(query.toUpperCase()==titleParts[m]){
-              matched.add(myDataset.get(i));
+            if(query.toUpperCase().equals(titleParts[m])){
+              if(!matched.contains(myDataset.get(i))){
+                matched.add(myDataset.get(i));
+                break;
+              }
             }
           }
         }
         else{
-          if(query.toUpperCase() == dummy1){
+          if(query.toUpperCase().equals(dummy1)){
             matched.add(myDataset.get(i));
           }
         }
@@ -496,15 +522,19 @@ public class GalleryBackend extends AppCompatActivity {
         dummy2 = myDataset.get(i).getAuthor();
         for(int l = 0;l<dummy2.length;l++){
           if(dummy2[l].contains(" ")){
-            String[] authorParts = query.split(Pattern.quote(" "));
+            String[] authorParts = dummy2[l].split(Pattern.quote(" "));
             for(int n = 0;n<authorParts.length;n++){
-              if(query.toUpperCase()==authorParts[n].toUpperCase()){
-                matched.add(myDataset.get(i));
+              if(query.toUpperCase().equals(authorParts[n].toUpperCase())){
+                if(!matched.contains(myDataset.get(i))){
+                  matched.add(myDataset.get(i));
+                  break;
+                }
+
               }
             }
           }
           else{
-            if(query.toUpperCase()==dummy2[l].toUpperCase()){
+            if(query.toUpperCase().equals(dummy2[l].toUpperCase())){
               matched.add(myDataset.get(i));
             }
           }
