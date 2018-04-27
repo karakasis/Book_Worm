@@ -12,6 +12,10 @@
     <string name="TimeoutError">Λήξη σύνδεσης! Ελέγξτε τη σύνδεση στο διαδίκτυο.</string>
     <string name="RefreshPage">ΑΝΑΝΕΩΣΗ</string>
 
+    <string name="valid_isbn">Άκυρο ISBN</string>
+    <string name="valid_title">Εισάγετε τίτλο</string>
+    <string name="valid_author">Εισάγετε συγγραφέα</string>
+
     <!--BookInfo>-->
     <string name="Average_Rating">Μέση βαθμολογία:&#160;</string>
     <string name="by">από&#160;</string>

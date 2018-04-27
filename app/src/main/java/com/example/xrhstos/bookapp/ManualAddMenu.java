@@ -13,7 +13,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.Display;
@@ -25,9 +27,11 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.RatingBar;
+import android.widget.TextView;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -82,6 +86,20 @@ public class ManualAddMenu extends AppCompatActivity {
   private GridAdapter3 ga2;
   private GridAdapter3 ga3;
   private boolean useSmallInflater = false;
+
+  private static final String IS_API_ERROR_KEY = "IS_API_ERROR";
+  private static final String IS_API_ERROR_STRING_KEY = "IS_API_ERROR_STRING";
+  private static final String IS_API_ERROR_REF_KEY = "IS_API_ERROR_REF";
+  private static final String IS_API_ERROR_TYPE_KEY = "IS_API_ERROR_TYPE";
+  private static final String ISBN_KEY = "ISBN";
+
+  private boolean isError;
+  private String error;
+  private boolean refreshable;
+  private int errorType;
+  private Snackbar snackbar;
+
+  private String isbnFetched;
 
   @Override
   public void onBackPressed(){
@@ -272,17 +290,17 @@ public class ManualAddMenu extends AppCompatActivity {
         if(title.isEmpty())
         {
           //bookTitle.setHint("Enter book title");//it gives user to hint
-          bookTitle.setError("Enter book title");//it gives user to info message
+          bookTitle.setError(getString(R.string.valid_title));//it gives user to info message
           if(author.isEmpty()){
-            publisher.setHint("Enter book author");
-            publisher.setError("Enter book author");
+            publisher.setHint(getString(R.string.valid_author));
+            publisher.setError(getString(R.string.valid_author));
           }
         }else if(author.isEmpty()){
-          publisher.setHint("Enter book author");
-          publisher.setError("Enter book author");
+          publisher.setHint(getString(R.string.valid_author));
+          publisher.setError(getString(R.string.valid_author));
           if(title.isEmpty()) {
-            bookTitle.setHint("Enter book title");
-            bookTitle.setError("Enter book title");
+            bookTitle.setHint(getString(R.string.valid_title));
+            bookTitle.setError(getString(R.string.valid_title));
           }
         }else{
           addBookManually(title,author);
@@ -300,8 +318,8 @@ public class ManualAddMenu extends AppCompatActivity {
         if(replaced2.length() == 10 || replaced2.length() == 13){
           addBookByISBN(replaced2);
         }else{
-          isbnText.setHint("Enter a valid ISBN");
-          isbnText.setError("Enter a valid ISBN");
+          isbnText.setHint(getString(R.string.valid_isbn));
+          isbnText.setError(getString(R.string.valid_isbn));
         }
 
         //fliplayout3.showNextChild();
@@ -378,6 +396,10 @@ public class ManualAddMenu extends AppCompatActivity {
         recyclerView3.setAdapter(ga3);
       }
 
+      if(booksFromScanner.isEmpty()){
+        errorHandling(getString(R.string.no_results),true,0);
+      }
+
     }
     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
   }
@@ -408,7 +430,7 @@ public class ManualAddMenu extends AppCompatActivity {
 
   private void addBookByISBN(String isbn){
     showLoading(); // swap with flipchild
-
+    isbnFetched = isbn;
     VolleyNetworking.getInstance(this).getRequestQueue().cancelAll(new RequestQueue.RequestFilter() {
       @Override
       public boolean apply(Request<?> request) {
@@ -472,4 +494,49 @@ public class ManualAddMenu extends AppCompatActivity {
       fliplayout3.showChild(2,false);
     }
   }
+
+  public void showError(){
+    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+    isError = true;
+  }
+
+  //TODO: This errorhandling is poorly handled, so that deadlines can be met
+  public void errorHandling(String error,boolean refreshable,int errorType){
+    this.error = error;
+    this.refreshable = refreshable;
+    this.errorType = errorType;
+    showError();
+    View errorView = null;
+    if(currentIndexInflated == 0){
+       errorView = fliplayout1;
+    }else if(currentIndexInflated == 2){
+       errorView = fliplayout3;
+    }
+    if(refreshable){
+      snackbar = Snackbar.make(errorView,error,Snackbar.LENGTH_LONG)
+          .setAction("REFRESH", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+              addBookByISBN(isbnFetched);
+            }
+          })
+          .setActionTextColor(getResources().getColor(R.color.poweredColor));
+      View sbView = snackbar.getView();
+      TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+      textView.setTextColor(getResources().getColor(R.color.fbutton_color_wet_asphalt));
+      sbView.setBackgroundColor(getResources().getColor(R.color.logoBackgroundColor));
+      snackbar.show();
+
+    }else{
+      snackbar = Snackbar.make(errorView,error,Snackbar.LENGTH_LONG);
+      View sbView = snackbar.getView();
+      TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+      textView.setTextColor(getResources().getColor(R.color.fbutton_color_wet_asphalt));
+      sbView.setBackgroundColor(getResources().getColor(R.color.logoBackgroundColor));
+      snackbar.show();
+    }
+
+
+  }
+
 }

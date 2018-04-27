@@ -1,9 +1,13 @@
 package com.example.xrhstos.bookapp.gallery;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Parcelable;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatTextView;
@@ -16,8 +20,10 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MenuItem.OnActionExpandListener;
 import android.view.View;
 import android.view.ViewStub;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.eightbitlab.bottomnavigationbar.BottomBarItem;
@@ -251,42 +257,96 @@ public class GalleryBackend extends AppCompatActivity {
 
     final MenuItem searchMenuItem = menu.findItem(R.id.action_search2);
 
-    final SearchView searchView = (SearchView) searchMenuItem.getActionView();
-    searchView.setQueryHint("Enter book title or author...");
-    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+    //final SearchView searchView = (SearchView) searchMenuItem.getActionView();
 
-      @Override
-      public boolean onQueryTextSubmit(String query) {
 
-        if(!query.equals("")){
-          searchBooks(query);
-        }else{
-          searchMenuItem.collapseActionView();
-          searchView.setIconified(true);
-          searchView.clearFocus();
+
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+      // Get the SearchView and set the searchable configuration
+      SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+      final SearchView searchView = (SearchView) menu.findItem(R.id.action_search2).getActionView();
+      searchView.setQueryHint("Enter book title or author...");
+      // Assumes current activity is the searchable activity
+      searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+      searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+
+      searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+
+          if(!query.equals("")){
+            searchBooks(query);
+          }else{
+            searchMenuItem.collapseActionView();
+            searchView.setIconified(true);
+            searchView.clearFocus();
+          }
+
+          return false;
         }
 
-        return false;
+        @Override
+        public boolean onQueryTextChange(String queryPiece) {
+          if(queryPiece.equals("")){
+
+          }
+          return false;
+        }
+      });
+
+      // Get the search close button image view
+      ImageView closeButton = (ImageView)searchView.findViewById(R.id.search_close_btn);
+
+      // Set on click listener
+      closeButton.setOnClickListener(new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+          //LoggerUtils.d(LOG, "Search close button clicked");
+          //Find EditText view
+          EditText et = (EditText) findViewById(R.id.search_src_text);
+
+          searchQuery = false;
+          searchQueryString = "";
+
+          //Clear the text from EditText view
+          et.setText("");
+
+          //Clear query
+          searchView.setQuery("", false);
+          //Collapse the action view
+          searchView.onActionViewCollapsed();
+          //Collapse the search widget
+          searchMenuItem.collapseActionView();
+          searchView.clearFocus();
+          handleTabs();
+        }
+      });
+
+
+    }
+
+    // When using the support library, the setOnActionExpandListener() method is
+    // static and accepts the MenuItem object as an argument
+    searchMenuItem.setOnActionExpandListener(new OnActionExpandListener() {
+
+      @Override
+      public boolean onMenuItemActionExpand(MenuItem item) {
+        //Nothing to do here
+        //LoggerUtils.d(LOG, "Search widget expand ");
+        return true; // Return true to expand action view
       }
 
       @Override
-      public boolean onQueryTextChange(String queryPiece) {
-
-        return false;
+      public boolean onMenuItemActionCollapse(MenuItem item) {
+        //LoggerUtils.d(LOG, "Search widget colapsed ");
+        return true; // Return true to collapse action view
       }
     });
 
-    searchView.setOnCloseListener(new OnCloseListener() {
-      @Override
-      public boolean onClose() {
-        searchQuery = false;
-        searchQueryString = "";
-        searchMenuItem.collapseActionView();
-        searchView.setIconified(true);
-        searchView.clearFocus();
-        return false;
-      }
-    });
+
 
     sortItems = new MenuItem[4];
     sortItems[0] = menu.findItem(R.id.menuSortRating);
@@ -370,7 +430,7 @@ public class GalleryBackend extends AppCompatActivity {
     handleTabs();
   }
 
-  private ArrayList<Book> startSearch(String query,ArrayList<Book> myDataset) {
+  private ArrayList<Book> startSearch(String query, ArrayList<Book> myDataset) {
     ArrayList<Book> matched = new ArrayList<>();
     String dummy1,dummyp;
     String dummy2[];
@@ -378,32 +438,77 @@ public class GalleryBackend extends AppCompatActivity {
     if(query.contains(" ")){
       String[] parts = query.split(Pattern.quote(" "));
       for(int i = 0;i<parts.length;i++){
+        dummyp = parts[i].toUpperCase();
+
         for(int j = 0;j<myDataset.size();j++){
-          dummyp = parts[i].toUpperCase();
           dummy1 = myDataset.get(j).getBookTitle().toUpperCase();
-          dummy2 = myDataset.get(j).getAuthor();
-          //to getAuthor einai pinakas, to if elenxei mexri kai dio authors.
-          if(dummyp == dummy1){
-            matched.add(myDataset.get(j));
-          }
-          else{
-            for(int k = 0;k<dummy2.length;k++){
-              if(parts[i]==dummy2[k]){
+          if(dummy1.contains(" ")){
+            String[] titleParts = dummy1.split(Pattern.quote(" "));
+            for(int m = 0;m<titleParts.length;m++){
+              if(dummyp == titleParts[m]){
                 matched.add(myDataset.get(j));
               }
             }
           }
+          else{
+            if(dummyp == dummy1){
+              matched.add(myDataset.get(j));
+            }
+          }
+
+          dummy2 = myDataset.get(j).getAuthor();
+          for(int k = 0;k<dummy2.length;k++){
+            if(dummy2[k].contains(" ")){
+              String[] authorParts = dummy2[k].split(Pattern.quote(" "));
+              for(int n = 0;n<authorParts.length;n++){
+                if(dummyp == authorParts[n].toUpperCase()){
+                  matched.add(myDataset.get(j));
+                }
+              }
+            }
+            else{
+              if(dummyp == dummy2[k].toUpperCase()){
+                matched.add(myDataset.get(j));
+              }
+            }
+
+          }
         }
       }
-
-
-
     }
     else{
       for(int i = 0;i<myDataset.size();i++){
-        //omoiws
-        if(query == myDataset.get(i).getBookTitle() || query == myDataset.get(i).getAuthor()[0] || query == myDataset.get(i).getAuthor()[1]){
-          matched.add(myDataset.get(i));
+        dummy1 = myDataset.get(i).getBookTitle().toUpperCase();
+        if(dummy1.contains(" ")){
+          String[] titleParts = query.split(Pattern.quote(" "));
+          for(int m = 0;m<titleParts.length;m++){
+            if(query.toUpperCase()==titleParts[m]){
+              matched.add(myDataset.get(i));
+            }
+          }
+        }
+        else{
+          if(query.toUpperCase() == dummy1){
+            matched.add(myDataset.get(i));
+          }
+        }
+
+        dummy2 = myDataset.get(i).getAuthor();
+        for(int l = 0;l<dummy2.length;l++){
+          if(dummy2[l].contains(" ")){
+            String[] authorParts = query.split(Pattern.quote(" "));
+            for(int n = 0;n<authorParts.length;n++){
+              if(query.toUpperCase()==authorParts[n].toUpperCase()){
+                matched.add(myDataset.get(i));
+              }
+            }
+          }
+          else{
+            if(query.toUpperCase()==dummy2[l].toUpperCase()){
+              matched.add(myDataset.get(i));
+            }
+          }
+
         }
       }
 
