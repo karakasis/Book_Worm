@@ -1,83 +1,157 @@
 package com.example.xrhstos.bookapp.gallery;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Parcelable;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.SearchView.OnCloseListener;
+import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MenuItem.OnActionExpandListener;
 import android.view.View;
+import android.view.ViewStub;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+import com.eightbitlab.bottomnavigationbar.BottomBarItem;
+import com.eightbitlab.bottomnavigationbar.BottomNavigationBar;
 import com.example.xrhstos.bookapp.Book;
 import com.example.xrhstos.bookapp.BookInfoActivity;
 import com.example.xrhstos.bookapp.Collection;
-import com.example.xrhstos.bookapp.DatabaseHelper;
+import com.example.xrhstos.bookapp.Database;
 import com.example.xrhstos.bookapp.MyApp;
 import com.example.xrhstos.bookapp.R;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.regex.Pattern;
 
 public class GalleryBackend extends AppCompatActivity {
 
-  private static final String BOOKSHELF_KEY = "BOOKSHELF";
   private static final String SEARCH_ONLINE_QUERY_KEY = "QUERY_ONLINE";
   private static final String SEARCH_ONLINE_PAGE_KEY = "PAGE_ONLINE";
   private static final String SEARCH_ONLINE_LANG_QUERY_KEY = "LANG_QUERY_ONLINE";
   private static final String FIRST_VISIBLE_KEY = "LAST_VISIBLE";
   private static final String LOADING_KEY = "LOADING";
   private static final String GLM_KEY = "GLM";
-  private static final String GOOGLE_ON_KEY = "GOOGLE";
-  private static final String GOODREADS_ON_KEY = "GOODREADS";
 
-  private boolean googleON;
-  private boolean goodreadsON;
+  private static final String TAB_KEY = "TAB";
+  private static final String SORT_ITEM_KEY = "SORT_ITEM";
+  private static final String SORT_ORDER_KEY = "SORT_ORDER";
+  private static final String SORT_TRIGGER_KEY = "SORT_TRIGGER";
+
+  private static final String QUERY_KEY = "QUERY";
+  private static final String QUERY_STRING_KEY = "QUERY_STRING";
+
   public static boolean loadingData;
   public static String query;
   public static String langQuery;
   private static int currentPage;
-  public TextView notifier;
-
-  private View footer;
 
   private PreviewController2 previewController;
   private int firstVisibleItem;
   private Parcelable glmState;
 
-  private DatabaseHelper myDb;
-
-  private RecyclerView galleryRecycler;
-  private RecyclerView.Adapter gAdapter;
-  private RecyclerView.LayoutManager gLayoutManager;
   private ArrayList<Book> myDataset;
 
+  private View includedView;
+  private View noBooksView;
+  private BottomNavigationBar bottomNavigationBar;
+  private int currentTab;
+  private int lastVisibleCollection;
+  private int lastVisibleWishlist;
 
+  private MenuItem[] sortItems;
+  private int itemId; //of selected sort item
+  private boolean order; //of sorting false=ASC , true=DESC
+  private boolean trigger; //sorting related
+  private boolean searchQuery;
+  private String searchQueryString;
 
+  private void SavePreferences(){
+    SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+    SharedPreferences.Editor editor = sharedPreferences.edit();
+    editor.putInt(TAB_KEY,currentTab);
+    editor.putString(SEARCH_ONLINE_QUERY_KEY,query);
+    editor.putString(SEARCH_ONLINE_LANG_QUERY_KEY,langQuery);
+    editor.putInt(SEARCH_ONLINE_PAGE_KEY,currentPage);
+    firstVisibleItem = previewController.getFirstVisibleItem();
+    editor.putInt(FIRST_VISIBLE_KEY, firstVisibleItem);
+
+    editor.putBoolean(LOADING_KEY,loadingData);
+
+    editor.putInt(SORT_ITEM_KEY,itemId);
+
+    editor.putBoolean(SORT_ORDER_KEY,order);
+    editor.putBoolean(SORT_TRIGGER_KEY,trigger);
+
+    editor.putBoolean(QUERY_KEY,searchQuery);
+    editor.putString(QUERY_STRING_KEY,searchQueryString);
+    editor.apply();   // I missed to save the data to preference here,.
+  }
+
+  private void LoadPreferences(){
+    SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+    currentTab = sharedPreferences.getInt(TAB_KEY,0);
+    firstVisibleItem = sharedPreferences.getInt(FIRST_VISIBLE_KEY,0);
+
+    loadingData = sharedPreferences.getBoolean(LOADING_KEY,false);
+
+    itemId = sharedPreferences.getInt(SORT_ITEM_KEY,-1);
+    order = sharedPreferences.getBoolean(SORT_ORDER_KEY,false);
+    trigger = sharedPreferences.getBoolean(SORT_TRIGGER_KEY,false);
+
+    searchQuery = sharedPreferences.getBoolean(QUERY_KEY,false);
+    searchQueryString = sharedPreferences.getString(QUERY_STRING_KEY,"");
+  }
+
+  @Override
+  public boolean onSupportNavigateUp() {
+    onBackPressed();
+    return true;
+  }
+
+  @Override
+  public void onPause() {
+    SavePreferences();
+    super.onPause();
+  }
+  //TODO find a way to display either all books, collection only or wishlist only
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_gallery);
 
-    // myDb = new DatabaseHelper(this);
-
     MyApp app = (MyApp) getApplication();
     app.galleryBackend = this;
 
-    myDataset = Collection.getInstance().getBooks();
+    Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar2);
+    setSupportActionBar(myToolbar);
+    getSupportActionBar().setDisplayShowTitleEnabled(false);
+    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+    ViewStub vs = (ViewStub) findViewById(R.id.no_books_stub);
+    noBooksView = vs.inflate();
+    noBooksView.setVisibility(View.INVISIBLE);
 
-    //footer = (View) findViewById(R.id.logo_container);
-
-    //Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-    //setSupportActionBar(myToolbar);
-
-    //notifier = (TextView) findViewById(R.id.resultNotify);
-
-    if(previewController == null){
-      previewController = new PreviewController2(
-          (RecyclerView) findViewById(R.id.grid_view),this);
-    }
-
-    previewController.setData(myDataset);
+    includedView = findViewById(R.id.previewGridGallery);
 
     if (savedInstanceState != null) {
+      currentTab = savedInstanceState.getInt(TAB_KEY);
       query = savedInstanceState.getString(SEARCH_ONLINE_QUERY_KEY);
       langQuery = savedInstanceState.getString(SEARCH_ONLINE_LANG_QUERY_KEY);
       currentPage = savedInstanceState.getInt(SEARCH_ONLINE_PAGE_KEY);
@@ -86,14 +160,45 @@ public class GalleryBackend extends AppCompatActivity {
 
       loadingData = savedInstanceState.getBoolean(LOADING_KEY);
 
+      itemId = savedInstanceState.getInt(SORT_ITEM_KEY);
+      order = savedInstanceState.getBoolean(SORT_ORDER_KEY);
+      trigger = savedInstanceState.getBoolean(SORT_TRIGGER_KEY);
+      searchQuery = savedInstanceState.getBoolean(QUERY_KEY);
+      searchQueryString = savedInstanceState.getString(QUERY_STRING_KEY);
+
     }else{
 
+      currentTab = 0;
       currentPage = 1;
       loadingData = false;
 
       query = "";
       langQuery = "";
+
+      lastVisibleCollection = 0;
+      lastVisibleWishlist = 0;
+      itemId = -1;
+      order = false;
     }
+
+    BottomBarItem collectionTab = new BottomBarItem(R.drawable.ic_local_library_indigo_a200_24dp);
+    BottomBarItem wishlistTab = new BottomBarItem(R.drawable.ic_favorite_red_400_24dp);
+    bottomNavigationBar = findViewById(R.id.bottom_bar);
+    bottomNavigationBar.addTab(collectionTab);
+    bottomNavigationBar.addTab(wishlistTab);
+
+    bottomNavigationBar.setOnSelectListener(new BottomNavigationBar.OnSelectListener() {
+      @Override
+      public void onSelect(int position) {
+        System.out.println("onselect");
+        currentTab = position;
+        handleTabs();
+      }
+    });
+
+    //bottomNavigationBar.selectTab(currentTab,false);
+    //handleTabs();
+
 
   }
 
@@ -101,6 +206,7 @@ public class GalleryBackend extends AppCompatActivity {
   protected void onSaveInstanceState(Bundle bundle) {
     super.onSaveInstanceState(bundle);
     //bundle.putSerializable(BOOKSHELF_KEY, bookshelf);
+    bundle.putInt(TAB_KEY,currentTab);
     bundle.putString(SEARCH_ONLINE_QUERY_KEY,query);
     bundle.putString(SEARCH_ONLINE_LANG_QUERY_KEY,langQuery);
     bundle.putInt(SEARCH_ONLINE_PAGE_KEY,currentPage);
@@ -109,6 +215,13 @@ public class GalleryBackend extends AppCompatActivity {
 
     bundle.putBoolean(LOADING_KEY,loadingData);
 
+    bundle.putInt(SORT_ITEM_KEY,itemId);
+
+    bundle.putBoolean(SORT_ORDER_KEY,order);
+    bundle.putBoolean(SORT_TRIGGER_KEY,trigger);
+
+    bundle.putBoolean(QUERY_KEY,searchQuery);
+    bundle.putString(QUERY_STRING_KEY,searchQueryString);
 
     // Save list state
     glmState = previewController.getLayoutManager().onSaveInstanceState();
@@ -127,62 +240,560 @@ public class GalleryBackend extends AppCompatActivity {
   @Override
   protected void onResume() {
     super.onResume();
+    LoadPreferences();
+    bottomNavigationBar.selectTab(currentTab,false);
+    handleTabs();
+    if(itemId!=-1 && sortItems!=null){ // custom select sort method
+      customCheck(sortItems[itemId]);
+    }
+    if(searchQuery){
 
-    if (glmState != null) {
-      rotateUpdate();
-      previewController.getLayoutManager().onRestoreInstanceState(glmState);
     }
   }
 
 
-/*
+
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
-    getMenuInflater().inflate(R.menu.menu, menu);
+    getMenuInflater().inflate(R.menu.menu_collection, menu);
 
-    final MenuItem searchMenuItem = menu.findItem(R.id.action_search);
+    final MenuItem searchMenuItem = menu.findItem(R.id.action_search2);
 
-    final SearchView searchView = (SearchView) searchMenuItem.getActionView();
-    searchView.setQueryHint("Dan Brown :el");
-    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+    //final SearchView searchView = (SearchView) searchMenuItem.getActionView();
+
+
+
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+      // Get the SearchView and set the searchable configuration
+      SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+      final SearchView searchView = (SearchView) menu.findItem(R.id.action_search2).getActionView();
+      searchView.setQueryHint("Enter book title or author...");
+      // Assumes current activity is the searchable activity
+      searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+      searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+
+      searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+
+          if(!query.equals("")){
+            searchBooks(query);
+          }else{
+            searchMenuItem.collapseActionView();
+            searchView.setIconified(true);
+            searchView.clearFocus();
+          }
+
+          return false;
+        }
+
+        @Override
+        public boolean onQueryTextChange(String queryPiece) {
+          if(queryPiece.equals("")){
+
+          }
+          return false;
+        }
+      });
+
+      // Get the search close button image view
+      ImageView closeButton = (ImageView)searchView.findViewById(R.id.search_close_btn);
+
+      // Set on click listener
+      closeButton.setOnClickListener(new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+          //LoggerUtils.d(LOG, "Search close button clicked");
+          //Find EditText view
+          EditText et = (EditText) findViewById(R.id.search_src_text);
+
+          searchQuery = false;
+          searchQueryString = "";
+
+          //Clear the text from EditText view
+          et.setText("");
+
+          //Clear query
+          searchView.setQuery("", false);
+          //Collapse the action view
+          searchView.onActionViewCollapsed();
+          //Collapse the search widget
+          searchMenuItem.collapseActionView();
+          searchView.clearFocus();
+          handleTabs();
+        }
+      });
+
+
+    }
+
+    // When using the support library, the setOnActionExpandListener() method is
+    // static and accepts the MenuItem object as an argument
+    searchMenuItem.setOnActionExpandListener(new OnActionExpandListener() {
 
       @Override
-      public boolean onQueryTextSubmit(String query) {
-
-        currentPage = 1;
-        langQuery = "";
-        if(query.equals("")){
-          footer.setVisibility(View.GONE);
-        }
-        if (searchMenuItem != null) {
-          searchMenuItem.collapseActionView();
-        }
-        searchView.setIconified(true);
-        searchView.clearFocus();
-
-        searchBooks(query);
-
-        return false;
+      public boolean onMenuItemActionExpand(MenuItem item) {
+        //Nothing to do here
+        //LoggerUtils.d(LOG, "Search widget expand ");
+        return true; // Return true to expand action view
       }
 
       @Override
-      public boolean onQueryTextChange(String queryPiece) {
-
-        return false;
+      public boolean onMenuItemActionCollapse(MenuItem item) {
+        //LoggerUtils.d(LOG, "Search widget colapsed ");
+        return true; // Return true to collapse action view
       }
     });
 
+
+
+    sortItems = new MenuItem[4];
+    sortItems[0] = menu.findItem(R.id.menuSortRating);
+    sortItems[1] = menu.findItem(R.id.menuSortAvgRating);
+    sortItems[2] = menu.findItem(R.id.menuSortTitle);
+    sortItems[3] = menu.findItem(R.id.menuSortAuthor);
+    //sortItems[4] = menu.findItem(R.id.menuSortNewest);
+
+    if(itemId!=-1){ // custom select sort method
+      customCheck(sortItems[itemId]);
+
+    }
+    SearchView sv = (SearchView) menu.findItem(R.id.action_search2).getActionView();
+    if(searchQuery){
+      sv.setIconified(false);
+      sv.setQuery(searchQueryString,false);
+      sv.requestFocus();
+    }else{
+      sv.setIconified(true);
+      //Clear query
+      sv.setQuery("", false);
+      //Collapse the action view
+      sv.onActionViewCollapsed();
+      sv.clearFocus();
+    }
+
     return super.onCreateOptionsMenu(menu);
   }
-  */
+
+
+  private void handleTabs(){
+    if(currentTab == 0){
+      showGallery();
+    }else if(currentTab == 1){
+      showWishlist();
+    }
+  }
+
+  private void showGallery(){
+    myDataset = Collection.getInstance().getBooks();
+    if(myDataset.isEmpty()){
+      includedView.setVisibility(View.INVISIBLE);
+      AppCompatTextView tv = noBooksView.findViewById(R.id.error_text);
+      ImageView iv = noBooksView.findViewById(R.id.error_image);
+      iv.setImageResource(R.drawable.books_logo);
+      tv.setText(getString(R.string.NoBooksCollection));
+      noBooksView.setVisibility(View.VISIBLE);
+    }else{
+      showBooksUI(myDataset);
+      previewController.scrollToVisibleItem(lastVisibleCollection);
+    }
+  }
+
+  private void showWishlist(){
+    myDataset = Collection.getInstance().getBooksWishlist();
+    if(myDataset.isEmpty()){
+      includedView.setVisibility(View.INVISIBLE);
+      AppCompatTextView tv = noBooksView.findViewById(R.id.error_text);
+      ImageView iv = noBooksView.findViewById(R.id.error_image);
+      iv.setImageResource(R.drawable.books_logo);
+      tv.setText(getString(R.string.NoBooksWishlist));
+      noBooksView.setVisibility(View.VISIBLE);
+    }else {
+      showBooksUI(myDataset);
+      previewController.scrollToVisibleItem(lastVisibleWishlist);
+      if (glmState != null) {
+        previewController.getLayoutManager().onRestoreInstanceState(glmState);
+      }
+    }
+  }
+
+  private void showBooksUI(ArrayList<Book> data){
+    //look for search query first
+    if(searchQuery){
+      data = startSearch(searchQueryString,data);
+    }
+    //sort first
+    if(itemId!=-1){ // if sorting is not disabled
+      data = new ArrayList<>(sortingAlgorithms(data));
+    }
+    noBooksView.setVisibility(View.INVISIBLE);
+
+    previewController = new PreviewController2(
+        (RecyclerView) includedView.findViewById(R.id.grid_view), this);
+
+    previewController.setData(data);
+    myDataset = new ArrayList<>(data);
+    includedView.setVisibility(View.VISIBLE);
+  }
 
   //to theloume, na mpei anazitisi analoga me title ktl sto gallery.
   private void searchBooks(String query) {
+    searchQuery = true;
+    searchQueryString = query;
+    handleTabs();
   }
 
-  //ipefthino gia to scroll
-  public void requestMoreResults(){
+  private ArrayList<Book> startSearch(String query, ArrayList<Book> myDataset) {
+    ArrayList<Book> matched = new ArrayList<>();
+    String dummy1,dummyp;
+    String dummy2[];
 
+    if(query.contains(" ")){
+      String[] parts = query.split(Pattern.quote(" "));
+      for(int i = 0;i<parts.length;i++){
+        dummyp = parts[i].toUpperCase();
+
+        for(int j = 0;j<myDataset.size();j++){
+          dummy1 = myDataset.get(j).getBookTitle().toUpperCase();
+          if(dummy1.contains(" ")){
+            String[] titleParts = dummy1.split(Pattern.quote(" "));
+            for(int m = 0;m<titleParts.length;m++){
+              if(dummyp.equals(titleParts[m])){
+                if(!matched.contains(myDataset.get(j))){
+                  matched.add(myDataset.get(j));
+                  break;
+                }
+              }
+
+            }
+          }
+          else{
+            if(dummyp.equals(dummy1)){
+              matched.add(myDataset.get(j));
+            }
+          }
+
+          dummy2 = myDataset.get(j).getAuthor();
+          for(int k = 0;k<dummy2.length;k++){
+            if(dummy2[k].contains(" ")){
+              String[] authorParts = dummy2[k].split(Pattern.quote(" "));
+              for(int n = 0;n<authorParts.length;n++){
+                if(dummyp.equals(authorParts[n].toUpperCase())){
+                  if(!matched.contains(myDataset.get(j))){
+                    matched.add(myDataset.get(j));
+                    break;
+                  }
+                }
+              }
+            }
+            else{
+              if(dummyp.equals(dummy2[k].toUpperCase())){
+                matched.add(myDataset.get(j));
+              }
+            }
+
+          }
+        }
+      }
+    }
+    else{
+      for(int i = 0;i<myDataset.size();i++){
+        dummy1 = myDataset.get(i).getBookTitle().toUpperCase();
+        if(dummy1.contains(" ")){
+          String[] titleParts = dummy1.split(Pattern.quote(" "));
+          for(int m = 0;m<titleParts.length;m++){
+            if(query.toUpperCase().equals(titleParts[m])){
+              if(!matched.contains(myDataset.get(i))){
+                matched.add(myDataset.get(i));
+                break;
+              }
+            }
+          }
+        }
+        else{
+          if(query.toUpperCase().equals(dummy1)){
+            matched.add(myDataset.get(i));
+          }
+        }
+
+        dummy2 = myDataset.get(i).getAuthor();
+        for(int l = 0;l<dummy2.length;l++){
+          if(dummy2[l].contains(" ")){
+            String[] authorParts = dummy2[l].split(Pattern.quote(" "));
+            for(int n = 0;n<authorParts.length;n++){
+              if(query.toUpperCase().equals(authorParts[n].toUpperCase())){
+                if(!matched.contains(myDataset.get(i))){
+                  matched.add(myDataset.get(i));
+                  break;
+                }
+
+              }
+            }
+          }
+          else{
+            if(query.toUpperCase().equals(dummy2[l].toUpperCase())){
+              matched.add(myDataset.get(i));
+            }
+          }
+
+        }
+      }
+
+    }
+    return matched;
+
+
+  }
+
+  public void sortBooks(final MenuItem item) {
+
+    if(itemId == translateItemToID(item)){ //trigger ASC-DESC
+      trigger = true;
+      order = !order;
+    }else{
+      trigger = false;
+      order = false;
+    }
+    itemId = translateItemToID(item);
+    //itemId = item.getItemId();
+    if (!myDataset.isEmpty()) {
+      showBooksUI(myDataset); // will take the data set and sort it and display the sorted
+      customCheck(item); // will check the sort tab, if rotation the check will be done
+      //on resume or in createoptionsmenu
+    }
+
+  }
+
+  private ArrayList<Book> sortingAlgorithms(ArrayList<Book> myDataset){
+    switch (itemId) {
+      case 0:
+        if(trigger){
+          if(!order){ //asc
+            Collections.sort(myDataset, new Comparator<Book>() {
+              @Override
+              public int compare(Book lhs, Book rhs) {
+
+                return Float.valueOf(lhs.getPersonalRating())
+                    .compareTo(rhs.getPersonalRating());
+              }
+            });
+
+            //item.setTitle(getString(R.string.Sort_Rating_ASC));
+          }else{ //des
+            Collections.sort(myDataset, new Comparator<Book>() {
+              @Override
+              public int compare(Book lhs, Book rhs) {
+
+                return Float.valueOf(rhs.getPersonalRating())
+                    .compareTo(lhs.getPersonalRating());
+              }
+            });
+
+            //item.setTitle(getString(R.string.Sort_Rating_DESC));
+          }
+        }else{
+          Collections.sort(myDataset, new Comparator<Book>() {
+            @Override
+            public int compare(Book lhs, Book rhs) {
+
+              return Float.valueOf(lhs.getPersonalRating())
+                  .compareTo(rhs.getPersonalRating());
+            }
+          });
+
+          //item.setTitle(getString(R.string.Sort_Rating_ASC));
+        }
+
+        break;
+      case 1:
+        if(trigger){
+          if(!order){ //asc
+            Collections.sort(myDataset, new Comparator<Book>() {
+              @Override
+              public int compare(Book lhs, Book rhs) {
+
+                return Float.valueOf(lhs.getAverageRating())
+                    .compareTo(rhs.getAverageRating());
+              }
+            });
+
+            //item.setTitle(getString(R.string.Sort_AvgRating_ASC));
+          }else{ //des
+            Collections.sort(myDataset, new Comparator<Book>() {
+              @Override
+              public int compare(Book lhs, Book rhs) {
+
+                return Float.valueOf(rhs.getAverageRating())
+                    .compareTo(lhs.getAverageRating());
+              }
+            });
+
+            //item.setTitle(getString(R.string.Sort_AvgRating_DESC));
+          }
+        }else{
+          Collections.sort(myDataset, new Comparator<Book>() {
+            @Override
+            public int compare(Book lhs, Book rhs) {
+
+              return Float.valueOf(lhs.getAverageRating())
+                  .compareTo(rhs.getAverageRating());
+            }
+          });
+
+          //item.setTitle(getString(R.string.Sort_AvgRating_ASC));
+        }
+        break;
+      case 2:
+        if(trigger){
+          if(!order){ //asc
+            Collections.sort(myDataset, new Comparator<Book>() {
+              public int compare(Book obj1, Book obj2) {
+                // ##       Ascending order
+                return obj1.getBookTitle().compareToIgnoreCase(obj2.getBookTitle());
+              }
+
+            });
+
+            //item.setTitle(getString(R.string.Sort_Title_ASC));
+          }else{ //des
+            Collections.sort(myDataset, new Comparator<Book>() {
+              public int compare(Book obj1, Book obj2) {
+                // ##       Ascending order
+                return obj2.getBookTitle().compareToIgnoreCase(obj1.getBookTitle());
+              }
+
+            });
+
+            //item.setTitle(getString(R.string.Sort_Title_DESC));
+          }
+        }else{
+          Collections.sort(myDataset, new Comparator<Book>() {
+            public int compare(Book obj1, Book obj2) {
+              // ##       Ascending order
+              return obj1.getBookTitle().compareToIgnoreCase(obj2.getBookTitle());
+            }
+
+          });
+
+          //item.setTitle(getString(R.string.Sort_Title_ASC));
+        }
+        break;
+      case 3:
+
+        if(trigger){
+          if(!order){ //asc
+            Collections.sort(myDataset, new Comparator<Book>() {
+              public int compare(Book obj1, Book obj2) {
+                // ##       Ascending order
+                return obj1.getAuthor()[0].compareToIgnoreCase(obj2.getAuthor()[0]);
+              }
+
+            });
+
+            //item.setTitle(getString(R.string.Sort_Author_ASC));
+          }else{ //des
+            Collections.sort(myDataset, new Comparator<Book>() {
+              public int compare(Book obj1, Book obj2) {
+                // ##       Ascending order
+                return obj2.getAuthor()[0].compareToIgnoreCase(obj1.getAuthor()[0]);
+              }
+
+            });
+
+            //item.setTitle(getString(R.string.Sort_Author_DESC));
+          }
+        }else{
+          Collections.sort(myDataset, new Comparator<Book>() {
+            public int compare(Book obj1, Book obj2) {
+              // ##       Ascending order
+              return obj1.getAuthor()[0].compareToIgnoreCase(obj2.getAuthor()[0]);
+            }
+
+          });
+
+          //item.setTitle(getString(R.string.Sort_Author_ASC));
+        }
+        break;
+
+
+    }
+
+    return myDataset;
+  }
+
+  private void customCheck(MenuItem item){
+    for(MenuItem mi : sortItems){
+      if(item == mi){
+        SpannableString s;
+        if(itemId == 0){
+          if(order) // false = asc , true = desc
+          {
+            s = new SpannableString(getString(R.string.Sort_Rating_DESC));
+          }else{
+            s = new SpannableString(getString(R.string.Sort_Rating_ASC));
+          }
+
+        }else if(itemId == 1){
+          if(order) // false = asc , true = desc
+          {
+            s = new SpannableString(getString(R.string.Sort_AvgRating_DESC));
+          }else{
+            s = new SpannableString(getString(R.string.Sort_AvgRating_ASC));
+          }
+        }else if(itemId == 2){
+          if(order) // false = asc , true = desc
+          {
+            s = new SpannableString(getString(R.string.Sort_Title_DESC));
+          }else{
+            s = new SpannableString(getString(R.string.Sort_Title_ASC));
+          }
+        }else{
+          if(order) // false = asc , true = desc
+          {
+            s = new SpannableString(getString(R.string.Sort_Author_DESC));
+          }else{
+            s = new SpannableString(getString(R.string.Sort_Author_ASC));
+          }
+        }
+        s.setSpan(new ForegroundColorSpan(
+            getResources().getColor(R.color.fbutton_color_belize_hole))
+            , 0, s.length(), 0);
+        s.setSpan(new StyleSpan(Typeface.BOLD),0,s.length(),0);
+        mi.setTitle(s);
+      }else{
+        SpannableString s;
+        if(translateItemToID(mi) == 0){
+          s = new SpannableString(getString(R.string.Sort_Rating));
+        }else if(translateItemToID(mi) == 1){
+          s = new SpannableString(getString(R.string.Sort_AvgRating));
+        }else if(translateItemToID(mi) == 2){
+          s = new SpannableString(getString(R.string.Sort_Title));
+        }else{
+          s = new SpannableString(getString(R.string.Sort_Author));
+        }
+        s.setSpan(new ForegroundColorSpan(
+            getResources().getColor(R.color.blackButtonShadow)), 0, s.length(), 0);
+        s.setSpan(new StyleSpan(Typeface.NORMAL),0,s.length(),0);
+        mi.setTitle(s);
+      }
+    }
+  }
+
+  private int translateItemToID(MenuItem item){
+    int itemId;
+    if(item == sortItems[0]){
+      itemId = 0;
+    }else if(item == sortItems[1]){
+      itemId = 1;
+    }else if(item == sortItems[2]){
+      itemId = 2;
+    }else{
+      itemId = 3;
+    }
+    return itemId;
   }
 
   public void bookClick(int position){
@@ -190,7 +801,15 @@ public class GalleryBackend extends AppCompatActivity {
     Intent intent = new Intent(this, BookInfoActivity.class);
     //this will pass the book object itself so any changes will be made to the Book
     //class as well
-    intent.putExtra("gallery", Collection.getInstance().getSingleBook(position));
+    //if(currentTab == 0){
+      intent.putExtra("gallery", myDataset.get(position));
+    //}
+    /*
+    else if( currentTab == 1){
+      intent.putExtra("gallery", Collection.getInstance()
+          .getSingleBookWishlist(position));
+    }
+    */
     startActivity(intent);
   }
 
@@ -204,7 +823,7 @@ public class GalleryBackend extends AppCompatActivity {
 
   public void updateAdapter(ArrayList<Book> data){
     previewController = new PreviewController2(
-        (RecyclerView) findViewById(R.id.grid_view),this);
+        (RecyclerView) includedView.findViewById(R.id.grid_view),this);
     previewController.setData(data);
   }
 }

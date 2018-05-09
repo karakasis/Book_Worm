@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BookApp</string>
+    <string name="instructions">Ξεκινήστε να ψάχνεται βιβλία</string>
+    <string name="button_text">Αναζήτηση βιβλίων</string>
+    <string name="input_hint">Τίτλος βιβλίου</string>
+    <string name="no_search_term">Εισάγετε έναν όρο αναζήτησης.</string>
+    <string name="no_network">Ελέγξτε την σύνδεση σας στο ίντερνετ και ξαναπροσπαθήστε.</string>
+    <string name="no_results">Δεν βρέθηκαν αποτελέσματα</string>
+    <string name="end_results">Δεν υπάρχουν άλλα αποτελέσματα.</string>
+    <string name="ServerError">Δεν ήταν δυνατή η εύρεση του διακομιστή. Δοκιμάστε ξανά μετά από λίγο!</string>
+    <string name="ParseError">Σφάλμα αναζήτησης! Δοκιμάστε ξανά μετά από λίγο!</string>
+    <string name="TimeoutError">Λήξη σύνδεσης! Ελέγξτε τη σύνδεση στο διαδίκτυο.</string>
+    <string name="RefreshPage">ΑΝΑΝΕΩΣΗ</string>
+
+    <string name="valid_isbn">Άκυρο ISBN</string>
+    <string name="valid_title">Εισάγετε τίτλο</string>
+    <string name="valid_author">Εισάγετε συγγραφέα</string>
+
+    <!--BookInfo>-->
+    <string name="Average_Rating">Μέση βαθμολογία:&#160;</string>
+    <string name="by">από&#160;</string>
+    <string name="Published">Εκδόθηκε:&#160;</string>
+    <string name="Genres">Είδος:&#160;</string>
+    <string name="Pages">Σελίδες:&#160;</string>
+    <string name="WeCantGetInfo">Δεν υπάρχουν πληροφορίες αυτή τη στιγμή, προσπαθήστε αργότερα."</string>
+    <!--Buttons>-->
+    <string name="MarkAsRead">Διαβάστηκε</string>
+    <string name="MarkAsNotRead">Δε διαβάστηκε</string>
+    <string name="AddtoCollection">Προσθήκη στη συλλογή</string>
+    <string name="RemovefromCollection">Διαγραφή από τη συλλογή</string>
+    <string name="AddtoWishlist">Προσθήκη στη λίστα επιθυμιών</string>
+    <string name="RemovefromWishlist">Διαγραφή από τη λίστα επιθυμιών</string>
+
+    <!--MainMenu>-->
+    <string name="couldNotQR">Δεν ήταν δυνατή η εύρεση του βιβλίου με κωδικό QR.</string>
+
+    <!--menu>-->
+    <string name="Search">Αναζήτηση</string>
+    <string name="Collection">Συλλογή</string>
+    <string name="AddManual">Offline Προσθήκη</string>
+    <string name="Sort">Ταξινόμηση</string>
+
+    <string name="Sort_Rating">βάση βαθμολογίας</string>
+    <string name="Sort_Rating_ASC">βάση βαθμολογίας (αυξ)</string>
+    <string name="Sort_Rating_DESC">βάση βαθμολογίας (φθιν)</string>
+
+    <string name="Sort_AvgRating">βάση μέσης βαθμολογίας</string>
+    <string name="Sort_AvgRating_ASC">βάση μέσης βαθμολογίας (αυξ)</string>
+    <string name="Sort_AvgRating_DESC">βάση μέσης βαθμολογίας (φθιν)</string>
+
+    <string name="Sort_Title">βάση τίτλου</string>
+    <string name="Sort_Title_ASC">βάση τίτλου (αυξ)</string>
+    <string name="Sort_Title_DESC">βάση τίτλου (φθιν)</string>
+
+    <string name="Sort_Author">βάση συγγραφέα</string>
+    <string name="Sort_Author_ASC">βάση συγγραφέα (αυξ)</string>
+    <string name="Sort_Author_DESC">βάση συγγραφέα (φθιν)</string>
+
+    <!--error_page-->
+    <string name="TryAddingManually">Προσθέσετε ένα βιβλίο χωρίς σύνδεση από την γραμμή εργαλιών.</string>
+    <string name="NoBooksCollection">Η συλλογή σας είναι κενή, προσθέστε μερικά βιβλία.</string>
+    <string name="NoBooksWishlist">Η λίστα επιθυμιών σας είναι κενή, προσθέστε μερικά βιβλία.</string>
+
+    <!--manual-->
+    <string name="Scanbarcode">Σκανάρετε barcode</string>
+    <string name="AddISBN">Προσθήκη από ISBN</string>
+    <!--manual_add-->
+    <string name="title">Τίτλος :</string>
+    <string name="author">Συγγραφέας :</string>
+    <string name="add">Προσθήκη</string>
+
+    <!--manual_add_isbn-->
+    <string name="ISBN">ISBN</string>
+</resources>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:fbutton="http://schemas.android.com/tools"
+  xmlns:tools="http://schemas.android.com/tools">
+
+
+  <LinearLayout
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      android:orientation="horizontal"
+      android:layout_margin="4dp">
+      <android.support.v7.widget.AppCompatTextView
+        android:id = "@+id/view1"
+        android:layout_width="0dp"
+        android:layout_weight="0.3"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:gravity="start"
+
+        android:text="@string/title"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textSize="16sp"
+        app:autoSizeMaxTextSize="16sp"
+        app:autoSizeMinTextSize="8sp"
+        app:autoSizeStepGranularity="0.5sp"
+        app:autoSizeTextType="uniform"
+        />
+      <EditText
+        android:layout_weight="0.7"
+        android:inputType="text"
+        android:id = "@+id/book"
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:ems="10"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      android:orientation="horizontal"
+      android:layout_margin="4dp">
+      <android.support.v7.widget.AppCompatTextView
+        android:id = "@+id/view2"
+        android:layout_width="0dp"
+        android:layout_weight="0.3"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:gravity="start"
+
+        android:text="@string/author"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textSize="16sp"
+        app:autoSizeMaxTextSize="16sp"
+        app:autoSizeMinTextSize="8sp"
+        app:autoSizeStepGranularity="0.5sp"
+        app:autoSizeTextType="uniform"
+        />
+      <EditText
+        android:layout_weight="0.7"
+        android:inputType="text"
+        android:id = "@+id/bookPublisher"
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:ems="10"/>
+
+    </LinearLayout>
+
+
+    <RatingBar
+      android:layout_margin="8dp"
+      android:id="@+id/ratingBar"
+      android:layout_gravity="center"
+      android:layout_width="wrap_content"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      android:layout_centerHorizontal="true"
+      android:progressTint="@color/orange300"
+      android:secondaryProgressTint="@color/orange300"
+      android:backgroundTint="@color/orange300"
+      android:numStars="5"
+      android:rating="0"
+      android:stepSize="0.5"
+      android:isIndicator="false"
+      style="@style/Base.Widget.AppCompat.RatingBar.Indicator"/>
+    <info.hoang8f.widget.FButton
+      android:id = "@+id/addManualButtonYES"
+      android:layout_margin="8dp"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      android:text="@string/add"
+      android:textSize="24sp"
+      app:autoSizeMaxTextSize="32sp"
+      app:autoSizeMinTextSize="8sp"
+      app:autoSizeStepGranularity="0.5sp"
+      android:maxLines="1"
+      app:autoSizeTextType="uniform"
+      android:textColor="@color/gridColor"
+      app:fButtonColor="@color/fbutton_color_clouds"
+      android:alpha="0.7"
+      fbutton:shadowEnabled="true"
+      fbutton:shadowHeight="5dp"
+      fbutton:cornerRadius="5dp"
+      />
+
+
+  </LinearLayout>
+</android.support.constraint.ConstraintLayout>
+

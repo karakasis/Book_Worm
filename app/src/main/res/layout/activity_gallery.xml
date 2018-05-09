@@ -1,22 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
+<android.support.constraint.ConstraintLayout
+  android:id="@+id/main"
+  xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
-  android:layout_height="wrap_content"
-  tools:context="com.example.xrhstos.bookapp.gallery.GalleryBackend">
+  android:layout_height="match_parent"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+
+<RelativeLayout
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical"
+  >
+
+  <android.support.v7.widget.Toolbar
+    android:id="@+id/my_toolbar2"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="?attr/colorPrimary"
+    android:elevation="4dp"
+    android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
   <FrameLayout
+    android:layout_below="@id/my_toolbar2"
+    android:layout_above="@id/bottom_bar"
     android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_below="@id/my_toolbar"
-    android:layout_above="@id/logo_container">
+    android:layout_height="match_parent">
 
     <include
-      android:id="@+id/previewGrid"
+      android:id="@+id/previewGridGallery"
       layout="@layout/recycler_view"/>
 
+    <ViewStub
+      android:id="@+id/no_books_stub"
+      android:inflatedId="@+id/no_books_page"
+      android:layout="@layout/error_page"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"/>
+
   </FrameLayout>
+
+  <com.eightbitlab.bottomnavigationbar.BottomNavigationBar
+    android:id="@+id/bottom_bar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:background="@color/logoBackgroundColor"
+    app:activeTabColor="@color/poweredColor"
+    app:inactiveTabColor="@color/bottomBarDefaultTextColor"/>
+
+
+</RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>

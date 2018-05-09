@@ -87,6 +87,12 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
 
   }
 
+  @Override
+  public void onViewDetachedFromWindow(final GridAdapter.ViewHolder holder)
+  {
+    ((ViewHolder)holder).itemView.clearAnimation();
+  }
+
   /**
    * Here is the key method to apply the animation
    */
@@ -139,11 +145,6 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
 
   }
 
-  @Override
-  public void onViewDetachedFromWindow(final GridAdapter.ViewHolder holder)
-  {
-    ((ViewHolder)holder).itemView.clearAnimation();
-  }
 
 
   private void setImage(final ImageView container, final String url,final int position,final Book book){
@@ -153,11 +154,14 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
       loader.into(new Target() {
         @Override
         public void onBitmapLoaded(Bitmap bitmap, LoadedFrom from) {
+          //container.invalidate();
           container.setImageBitmap(bitmap);
+          container.invalidate();
+          System.out.println("Picasso called : bitmap Loaded for " +book.getBookTitle());
           if(book.getBookCover() == null){
             book.setBookCover(bitmap);
+            System.out.println("Picasso called : bitmap saved in class for " +book.getBookTitle());
           }
-          container.invalidate();
         }
 
         @Override

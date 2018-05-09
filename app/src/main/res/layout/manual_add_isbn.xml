@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:fbutton="http://schemas.android.com/tools">
+  <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      android:orientation="horizontal"
+      android:layout_margin="4dp">
+      <android.support.v7.widget.AppCompatTextView
+        android:id = "@+id/view1"
+        android:layout_width="0dp"
+        android:layout_weight="0.2"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:gravity="start"
+
+        android:text="@string/ISBN"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textSize="16sp"
+        app:autoSizeMaxTextSize="16sp"
+        app:autoSizeMinTextSize="8sp"
+        app:autoSizeStepGranularity="0.5sp"
+        app:autoSizeTextType="uniform"
+        />
+      <EditText
+        android:layout_weight="0.8"
+        android:inputType="text"
+        android:id = "@+id/isbnEditText"
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:ems="10"/>
+
+    </LinearLayout>
+
+    <info.hoang8f.widget.FButton
+      android:id = "@+id/findIsbnButtonYES"
+      android:layout_margin="8dp"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      android:text="@string/Search"
+      android:textSize="24sp"
+      app:autoSizeMaxTextSize="32sp"
+      app:autoSizeMinTextSize="8sp"
+      app:autoSizeStepGranularity="0.5sp"
+      android:maxLines="1"
+      app:autoSizeTextType="uniform"
+      android:textColor="@color/gridColor"
+      app:fButtonColor="@color/fbutton_color_clouds"
+      android:alpha="0.7"
+      fbutton:shadowEnabled="true"
+      fbutton:shadowHeight="5dp"
+      fbutton:cornerRadius="5dp"
+      />
+
+
+  </LinearLayout>
+</android.support.constraint.ConstraintLayout>
+
+

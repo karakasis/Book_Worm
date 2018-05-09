@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.widget.ImageView.ScaleType;
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkError;
 import com.android.volley.NoConnectionError;
 import com.android.volley.ParseError;
@@ -60,6 +61,11 @@ public class VolleyNetworking {
     return mInstance;
   }
 
+  public static synchronized  VolleyNetworking refresh(Context context){
+    mInstance = new VolleyNetworking(context);
+    return  mInstance;
+  }
+
   public RequestQueue getRequestQueue() {
     if (mRequestQueue == null) {
       // getApplicationContext() is key, it keeps you from leaking the
@@ -91,7 +97,7 @@ public class VolleyNetworking {
         .build();
     String requestURL = builtURI.toString();
 
-    return new StringRequest(Request.Method.GET, requestURL,
+    StringRequest sr = new StringRequest(Request.Method.GET, requestURL,
         new Response.Listener<String>() {
           @Override
           public void onResponse(String response) {
@@ -108,24 +114,38 @@ public class VolleyNetworking {
         , new Response.ErrorListener() {
       @Override
       public void onErrorResponse(VolleyError volleyError) {
-        String message = "";
-        if (volleyError instanceof NetworkError) {
-          message = "Cannot connect to Internet...Please check your connection!";
-        } else if (volleyError instanceof ServerError) {
-          message = "The server could not be found. Please try again after some time!!";
-        } else if (volleyError instanceof AuthFailureError) {
-          message = "Cannot connect to Internet...Please check your connection!";
-        } else if (volleyError instanceof ParseError) {
-          message = "Parsing error! Please try again after some time!!";
-        } else if (volleyError instanceof NoConnectionError) {
-          message = "Cannot connect to Internet...Please check your connection!";
-        } else if (volleyError instanceof TimeoutError) {
-          message = "Connection TimeOut! Please check your internet connection.";
-        }
         MainMenu mm = (MainMenu) mCtx;
-        mm.notifier.setText(message);
+        String message = "";
+        if (volleyError instanceof ServerError) {
+          message = mCtx.getResources().getString(R.string.ServerError);
+          mm.errorHandling(message,true, 0);
+        } else if (volleyError instanceof AuthFailureError) {
+          message = mCtx.getResources().getString(R.string.no_network);
+          mm.errorHandling(message,false, 1);
+        } else if (volleyError instanceof ParseError) {
+          message = mCtx.getResources().getString(R.string.ParseError);
+          mm.errorHandling(message,false, 0);
+        } else if (volleyError instanceof NoConnectionError) {
+          message = mCtx.getResources().getString(R.string.no_network);
+          mm.errorHandling(message,true, 1);
+        } else if (volleyError instanceof TimeoutError) {
+          message = mCtx.getResources().getString(R.string.TimeoutError);
+          mm.errorHandling(message,true, 1);
+        } else if (volleyError instanceof NetworkError) {
+          message = mCtx.getResources().getString(R.string.no_network);
+          mm.errorHandling(message,true, 1);
+        }
+        //mm.notifier.setText(message);
+        //System.out.println(message);
       }
     });
+
+    sr.setRetryPolicy(new DefaultRetryPolicy(
+        5000,
+        0,
+        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+    return sr;
   }
 
 
@@ -138,7 +158,7 @@ public class VolleyNetworking {
           @Override
           public void onResponse(String response) {
 
-            MainMenu mm = (MainMenu) mCtx;
+            //MainMenu mm = (MainMenu) mCtx;
             XmlParserISBN.stringToList(response);
             Book book = XmlParserISBN.parse(
                 new String[]{"id", "title", "image_url", "name", "isbn13", "isbn",
@@ -149,9 +169,9 @@ public class VolleyNetworking {
             ArrayList<Book> res = new ArrayList<>();
             res.add(book);
             if (book == null) {
-              mm.updateByISBN(null);
+              MyApp.getInstance().manualAddMenu.updateByISBN(null);
             } else {
-              mm.updateByISBN(res);
+              MyApp.getInstance().manualAddMenu.updateByISBN(res);
             }
 
             System.out.println("Source : Goodreads");
@@ -174,9 +194,11 @@ public class VolleyNetworking {
         } else if (volleyError instanceof TimeoutError) {
           message = "Connection TimeOut! Please check your internet connection.";
         }
-        MainMenu mm = (MainMenu) mCtx;
-        mm.notifier.setText(message);
-        mm.updateByISBN(null);
+        //MainMenu mm = (MainMenu) mCtx;
+        //mm.notifier.setText(message);
+        MyApp.getInstance().manualAddMenu.updateByISBN(null);
+
+        System.out.println(message);
       }
     });
 
@@ -235,22 +257,30 @@ public class VolleyNetworking {
 
       @Override
       public void onErrorResponse(VolleyError volleyError) {
-        String message = "";
-        if (volleyError instanceof NetworkError) {
-          message = "Cannot connect to Internet...Please check your connection!";
-        } else if (volleyError instanceof ServerError) {
-          message = "The server could not be found. Please try again after some time!!";
-        } else if (volleyError instanceof AuthFailureError) {
-          message = "Cannot connect to Internet...Please check your connection!";
-        } else if (volleyError instanceof ParseError) {
-          message = "Parsing error! Please try again after some time!!";
-        } else if (volleyError instanceof NoConnectionError) {
-          message = "Cannot connect to Internet...Please check your connection!";
-        } else if (volleyError instanceof TimeoutError) {
-          message = "Connection TimeOut! Please check your internet connection.";
-        }
+
         MainMenu mm = (MainMenu) mCtx;
-        mm.notifier.setText(message);
+        String message = "";
+        if (volleyError instanceof ServerError) {
+          message = mCtx.getResources().getString(R.string.ServerError);
+          mm.errorHandling(message,true, 0);
+        } else if (volleyError instanceof AuthFailureError) {
+          message = mCtx.getResources().getString(R.string.no_network);
+          mm.errorHandling(message,false, 1);
+        } else if (volleyError instanceof ParseError) {
+          message = mCtx.getResources().getString(R.string.ParseError);
+          mm.errorHandling(message,false, 0);
+        } else if (volleyError instanceof NoConnectionError) {
+          message = mCtx.getResources().getString(R.string.no_network);
+          mm.errorHandling(message,true, 1);
+        } else if (volleyError instanceof TimeoutError) {
+          message = mCtx.getResources().getString(R.string.TimeoutError);
+          mm.errorHandling(message,true, 1);
+        } else if (volleyError instanceof NetworkError) {
+          message = mCtx.getResources().getString(R.string.no_network);
+          mm.errorHandling(message,true, 1);
+        }
+        //mm.notifier.setText(message);
+        //System.out.println(message);
       }
     });
 
@@ -269,8 +299,8 @@ public class VolleyNetworking {
       @Override
       public void onResponse(JSONObject response) {
 
-        MainMenu mm = (MainMenu) mCtx;
-        mm.updateByISBN(JsonParser.parse(response, true));
+        //MainMenu mm = (MainMenu) mCtx;
+        MyApp.getInstance().manualAddMenu.updateByISBN(JsonParser.parse(response, true));
 
         System.out.println("Source : Google");
       }
@@ -292,47 +322,14 @@ public class VolleyNetworking {
         } else if (volleyError instanceof TimeoutError) {
           message = "Connection TimeOut! Please check your internet connection.";
         }
-        MainMenu mm = (MainMenu) mCtx;
-        mm.notifier.setText(message);
-        mm.updateByISBN(null);
+        //MainMenu mm = (MainMenu) mCtx;
+        //mm.notifier.setText(message);
+        MyApp.getInstance().manualAddMenu.updateByISBN(null);
+        System.out.println(message);
       }
     });
 
 
-  }
-
-  public ImageRequest bitmapRequest(final String mImageURLString, final Book book) {
-    return new ImageRequest(
-        mImageURLString, // Image URL
-        new Response.Listener<Bitmap>() { // Bitmap listener
-          @Override
-          public void onResponse(Bitmap response) {
-            // Do something with response
-            /*
-            book.responseBookCover(response);
-            MainMenu mm = (MainMenu) mCtx;
-            mm.startUI();
-            */
-
-            // Save this downloaded bitmap to internal storage
-            //Uri uri = saveImageToInternalStorage(response);
-
-            // Display the internal storage saved image to image view
-            //mImageViewInternal.setImageURI(uri);
-          }
-        }, 0, // Image width
-        0, // Image height
-        ScaleType.FIT_XY, // Image scale type
-        Bitmap.Config.RGB_565,
-        new Response.ErrorListener() { // Error listener
-          @Override
-          public void onErrorResponse(VolleyError error) {
-            // Do something with error response
-            //error.printStackTrace();
-            System.out.println("Failed loading " + book.getId());
-          }
-        }
-    );
   }
 
   // Custom method to save a bitmap into internal storage
@@ -391,10 +388,10 @@ public class VolleyNetworking {
           @Override
           public void onResponse(String response) {
 
-            BookInfoActivity bia = (BookInfoActivity) mCtx;
+            //BookInfoActivity bia = (BookInfoActivity) mCtx;
             XmlParserID.stringToList(response);
 
-            bia.update(XmlParserID
+            MyApp.getInstance().bookInfoActivity.update(XmlParserID
                 .parse(new String[]{"isbn13", "isbn", "publication_year", "publication_month"
                         , "publication_day", "description", "average_rating", "num_pages", "url"},
                     "book", book));
@@ -405,19 +402,26 @@ public class VolleyNetworking {
         , new Response.ErrorListener() {
       @Override
       public void onErrorResponse(VolleyError volleyError) {
+        BookInfoActivity mm = MyApp.getInstance().bookInfoActivity;
         String message = "";
-        if (volleyError instanceof NetworkError) {
-          message = "Cannot connect to Internet...Please check your connection!";
-        } else if (volleyError instanceof ServerError) {
-          message = "The server could not be found. Please try again after some time!!";
+        if (volleyError instanceof ServerError) {
+          message = mCtx.getResources().getString(R.string.ServerError);
+          mm.errorHandling(message,true, 0);
         } else if (volleyError instanceof AuthFailureError) {
-          message = "Cannot connect to Internet...Please check your connection!";
+          message = mCtx.getResources().getString(R.string.no_network);
+          mm.errorHandling(message,false, 1);
         } else if (volleyError instanceof ParseError) {
-          message = "Parsing error! Please try again after some time!!";
+          message = mCtx.getResources().getString(R.string.ParseError);
+          mm.errorHandling(message,false, 0);
         } else if (volleyError instanceof NoConnectionError) {
-          message = "Cannot connect to Internet...Please check your connection!";
+          message = mCtx.getResources().getString(R.string.no_network);
+          mm.errorHandling(message,true, 1);
         } else if (volleyError instanceof TimeoutError) {
-          message = "Connection TimeOut! Please check your internet connection.";
+          message = mCtx.getResources().getString(R.string.TimeoutError);
+          mm.errorHandling(message,true, 1);
+        } else if (volleyError instanceof NetworkError) {
+          message = mCtx.getResources().getString(R.string.no_network);
+          mm.errorHandling(message,true, 1);
         }
       }
     });
@@ -436,8 +440,8 @@ public class VolleyNetworking {
       @Override
       public void onResponse(JSONObject response) {
 
-        BookInfoActivity bia = (BookInfoActivity) mCtx;
-        bia.update(JsonIDParser.parse(response, book));
+        //BookInfoActivity bia = (BookInfoActivity) mCtx;
+        MyApp.getInstance().bookInfoActivity.update(JsonIDParser.parse(response, book));
 
         System.out.println("Source : GoogleID");
       }
@@ -445,19 +449,26 @@ public class VolleyNetworking {
 
       @Override
       public void onErrorResponse(VolleyError volleyError) {
+        BookInfoActivity mm = MyApp.getInstance().bookInfoActivity;
         String message = "";
-        if (volleyError instanceof NetworkError) {
-          message = "Cannot connect to Internet...Please check your connection!";
-        } else if (volleyError instanceof ServerError) {
-          message = "The server could not be found. Please try again after some time!!";
+        if (volleyError instanceof ServerError) {
+          message = mCtx.getResources().getString(R.string.ServerError);
+          mm.errorHandling(message,true, 0);
         } else if (volleyError instanceof AuthFailureError) {
-          message = "Cannot connect to Internet...Please check your connection!";
+          message = mCtx.getResources().getString(R.string.no_network);
+          mm.errorHandling(message,false, 1);
         } else if (volleyError instanceof ParseError) {
-          message = "Parsing error! Please try again after some time!!";
+          message = mCtx.getResources().getString(R.string.ParseError);
+          mm.errorHandling(message,false, 0);
         } else if (volleyError instanceof NoConnectionError) {
-          message = "Cannot connect to Internet...Please check your connection!";
+          message = mCtx.getResources().getString(R.string.no_network);
+          mm.errorHandling(message,true, 1);
         } else if (volleyError instanceof TimeoutError) {
-          message = "Connection TimeOut! Please check your internet connection.";
+          message = mCtx.getResources().getString(R.string.TimeoutError);
+          mm.errorHandling(message,true, 1);
+        } else if (volleyError instanceof NetworkError) {
+          message = mCtx.getResources().getString(R.string.no_network);
+          mm.errorHandling(message,true, 1);
         }
       }
     });

@@ -2,8 +2,14 @@ package com.example.xrhstos.bookapp;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Picasso.LoadedFrom;
+import com.squareup.picasso.Target;
 import java.io.ByteArrayOutputStream;
 
 /**
@@ -59,22 +65,45 @@ public class Book implements Parcelable {
   }
 
 
-  public class DbBitmapUtility {
-
-    // convert from bitmap to byte array
-    public byte[] getBytes(Bitmap bitmap) {
+  // convert from bitmap to byte array
+  public void setByteArrayFromBitmap() {
+    if(bookCover!=null){
       ByteArrayOutputStream stream = new ByteArrayOutputStream();
-      bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
-      return stream.toByteArray();
-    }
-
-    // convert from byte array to bitmap
-    public Bitmap getImage(byte[] image) {
-      return BitmapFactory.decodeByteArray(image, 0, image.length);
+      bookCover.compress(Bitmap.CompressFormat.PNG, 0, stream);
+      byteArray = stream.toByteArray();
+      System.out.println("Bitmap loaded and saved");
+    }else{
+      /*
+      int placeholder = R.drawable.placeholder;
+      Drawable myIcon = MyApp.getContext().getResources().getDrawable( placeholder );
+      bookCover = ((BitmapDrawable)myIcon).getBitmap();
+      ByteArrayOutputStream stream = new ByteArrayOutputStream();
+      bookCover.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+      byteArray = stream.toByteArray();
+      */
+      byteArray = null;
+      System.out.println("Bitmap saved - loaded placeholder");
     }
   }
 
-  public byte[] getByteArray(){ return byteArray; }
+  // convert from byte array to bitmap
+  public Bitmap getImage(byte[] image) {
+    return BitmapFactory.decodeByteArray(image, 0, image.length);
+  }
+
+  public void setBitmapFromByteArray(byte[] byteArray){
+    this.bookCover = getImage(byteArray);
+  }
+  public byte[] getByteArray(){
+    if(byteArray==null){
+      setByteArrayFromBitmap();
+    }
+    return byteArray;
+  }
+
+  public Book(){ // for sql
+    pageCount = -1;
+  }
 
   public Book(String id, String title, String[] authors, String url){
     this.id = id;
@@ -86,7 +115,7 @@ public class Book implements Parcelable {
 
   public String getKey(){
     if(googleID == null){
-      return String.valueOf(id);
+      return id;
     }else{
       return googleID;
     }
@@ -216,7 +245,7 @@ public class Book implements Parcelable {
     return personalRating;
   }
 
-  public void setPersonalRating(int personalRating) {
+  public void setPersonalRating(float personalRating) {
     this.personalRating = personalRating;
   }
 
@@ -308,9 +337,10 @@ public class Book implements Parcelable {
     if(googleID==null){
 
       return null;
-    }else if(id==null){
+    }else if(id==null && buyURL!=null){
       String market;
-      market = buyURL.replace("https://play.google.com/store/books/","");
+      //market = buyURL.replace("https://play.google.com/store/books/","");
+      market = googleID;
       return market;
     }else{
       return null;

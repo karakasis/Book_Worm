@@ -67,8 +67,9 @@ public class XmlParserID {
           fetchedBook.setAverageRating(0);
         }
         fetchedBook.setPublishedDate(publication_day+"/"+publication_month+"/"+publication_year);
-        fetchedBook.setBuyURL("https://www.goodreads.com/book_link/follow/8036?book_id="+fetchedBook.getId());
-        break;
+        //fetchedBook.setBuyURL("https://www.goodreads.com/book_link/follow/8036?book_id="+fetchedBook.getId());
+        fetchedBook.setBuyURL("https://www.goodreads.com/buy_buttons/12/follow/?book_id="+fetchedBook.getId());
+        break;//follow/8036?book_id for google
       }
       if(lookForParent){
         if(str.startsWith("</" + parent + ">")){

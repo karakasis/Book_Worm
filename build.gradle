@@ -23,6 +23,10 @@ allprojects {
             url "https://maven.google.com"
 
         }
+        maven { url "https://jitpack.io" }
+        maven {
+            url  "http://dl.bintray.com/marcouberti/maven"
+        }
     }
 }
 

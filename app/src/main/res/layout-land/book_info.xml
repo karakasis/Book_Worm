@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:fbutton="http://schemas.android.com/tools">
+
+  <RelativeLayout
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:layout_alignParentTop="true"
+        android:id="@+id/left"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+
+        android:orientation="vertical"
+        android:paddingBottom="8dp">
+      <android.support.v7.widget.CardView
+          android:id="@+id/cardTag"
+          android:layout_width="wrap_content"
+          android:layout_height="0dp"
+          android:layout_weight="0.7"
+          android:layout_centerHorizontal="false"
+          app:cardCornerRadius="8dp"
+
+          android:layout_marginBottom="-8dp"
+          android:layout_marginTop="4dp"
+          android:layout_marginLeft="4dp"
+          android:layout_marginRight="4dp"
+          android:background="@android:color/transparent"
+          app:cardElevation="8dp"
+          app:contentPadding="0dp"
+          app:cardPreventCornerOverlap="false"
+          app:cardUseCompatPadding="true">
+
+        <ImageButton
+            android:id="@+id/bookImage"
+            android:layout_width="160dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/da_vinci_code"
+            android:scaleType="centerCrop"
+            android:background="@color/fbutton_color_transparent"
+            android:onClick="previewCallback"/>
+
+      </android.support.v7.widget.CardView>
+
+      <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="0.1">
+        <RatingBar
+          android:scaleY="0.7"
+          android:scaleX="0.7"
+          android:layout_below="@id/cardTag"
+          android:layout_gravity="center"
+          android:id="@+id/ratingBar1"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:progressTint="@color/orange300"
+          android:secondaryProgressTint="@color/orange300"
+          android:backgroundTint="@color/orange300"
+          android:numStars="5"
+          android:rating="0"
+          android:stepSize="0.5"
+          android:isIndicator="false"
+          style="@style/Base.Widget.AppCompat.RatingBar.Indicator"/>
+      </LinearLayout>
+
+
+
+      <info.hoang8f.widget.FButton
+        android:id="@+id/addCollection"
+        android:layout_below="@id/ratingBar1"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:paddingTop="2dp"
+
+        android:layout_width="160dp"
+        android:layout_height="0dp"
+        android:layout_weight="0.1"
+        android:text="@string/AddtoCollection"
+        android:textColor="@color/gridColor"
+        android:textSize="14sp"
+
+        app:autoSizeMaxTextSize="32sp"
+        app:autoSizeMinTextSize="8sp"
+        app:autoSizeStepGranularity="0.5sp"
+        android:maxLines="1"
+        app:autoSizeTextType="uniform"
+        app:fButtonColor="@color/green800"
+
+        fbutton:shadowEnabled="true"
+        fbutton:shadowHeight="5dp"
+        fbutton:cornerRadius="5dp"
+        >
+
+      </info.hoang8f.widget.FButton>
+
+      <info.hoang8f.widget.FButton
+        android:id="@+id/addWishlist-read"
+        android:layout_below="@id/addCollection"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:paddingTop="2dp"
+
+        android:layout_width="160dp"
+        android:layout_height="0dp"
+        android:layout_weight="0.1"
+        android:text="@string/AddtoCollection"
+        android:textColor="@color/gridColor"
+        android:textSize="14sp"
+
+        app:autoSizeMaxTextSize="32sp"
+        app:autoSizeMinTextSize="8sp"
+        app:autoSizeStepGranularity="0.5sp"
+        android:maxLines="1"
+        app:autoSizeTextType="uniform"
+        app:fButtonColor="@color/green800"
+
+        fbutton:shadowEnabled="true"
+        fbutton:shadowHeight="5dp"
+        fbutton:cornerRadius="5dp"
+        >
+
+      </info.hoang8f.widget.FButton>
+        
+      
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:paddingBottom="8dp"
+        android:id="@+id/right"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_toEndOf="@id/left">
+
+      <android.support.v7.widget.AppCompatTextView
+        android:layout_marginTop="8dp"
+        android:layout_alignParentTop="true"
+          android:id = "@+id/bookTitle"
+
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+
+          android:textAlignment="textStart"
+          android:gravity="start"
+
+          android:ellipsize="end"
+          android:maxLines="2"
+          android:textSize="24sp"
+          android:textColor="@color/primaryTextColor"
+          app:autoSizeMaxTextSize="32sp"
+          app:autoSizeMinTextSize="12sp"
+          app:autoSizeStepGranularity="0.5sp"
+          app:autoSizeTextType="uniform"
+          />
+      <android.support.v7.widget.AppCompatTextView
+          android:layout_below="@id/bookTitle"
+          android:id = "@+id/bookPublisher"
+          android:paddingBottom="8dp"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+
+          android:textAlignment="textStart"
+          android:gravity="start"
+
+          android:ellipsize="end"
+          android:maxLines="2"
+          android:textSize="16sp"
+          android:textColor="@color/secondaryTextColor"
+          app:autoSizeMaxTextSize="16sp"
+          app:autoSizeMinTextSize="8sp"
+          app:autoSizeStepGranularity="0.5sp"
+          app:autoSizeTextType="uniform"
+          />
+
+      <LinearLayout
+        android:id="@+id/ratingAverage"
+        android:layout_below="@id/bookPublisher"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal">
+        <android.support.v7.widget.AppCompatTextView
+          android:layout_width="0dp"
+          android:layout_weight="0.5"
+          android:layout_height="wrap_content"
+          android:text="@string/Average_Rating"
+
+          android:textAlignment="textStart"
+          android:gravity="start"
+
+          android:ellipsize="end"
+          android:maxLines="1"
+          android:textSize="16sp"
+          app:autoSizeMaxTextSize="16sp"
+          app:autoSizeMinTextSize="8sp"
+          app:autoSizeStepGranularity="0.5sp"
+          app:autoSizeTextType="uniform"
+          />
+        <LinearLayout
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.5">
+          <RatingBar
+            android:id="@+id/ratingBar2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:progressTint="@color/orange300"
+            android:secondaryProgressTint="@color/orange300"
+            android:backgroundTint="@color/orange300"
+            android:numStars="5"
+            android:rating="0"
+            android:stepSize="0.5"
+            style="@style/Base.Widget.AppCompat.RatingBar.Small"/>
+        </LinearLayout>
+
+
+      </LinearLayout>
+
+      <ScrollView
+          android:layout_below="@id/ratingAverage"
+        android:layout_above="@id/moreInfo"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+      </ScrollView>
+
+      <LinearLayout
+          android:layout_above="@id/googlePlay"
+          android:paddingTop="8dp"
+          android:id="@+id/moreInfo"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical">
+
+      </LinearLayout>
+
+      <ImageButton
+        android:paddingTop="8dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:id="@+id/googlePlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/en_badge_web_generic"
+        android:onClick="buyBook"
+        />
+
+    </RelativeLayout>
+
+
+
+
+
+  </RelativeLayout>
+
+
+
+
+</android.support.constraint.ConstraintLayout>

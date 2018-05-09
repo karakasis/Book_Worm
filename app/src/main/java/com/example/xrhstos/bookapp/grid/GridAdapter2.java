@@ -148,28 +148,35 @@ public class GridAdapter2 extends RecyclerView.Adapter<GridAdapter2.ViewHolder> 
 
   private void setImage(final ImageView container, final String url,final int position,final Book book){
 
-    RequestCreator loader = instance.load(url);
-    //loader.into((AppCompatImageView) container);
-    loader.into(new Target() {
-      @Override
-      public void onBitmapLoaded(Bitmap bitmap, LoadedFrom from) {
-        container.setImageBitmap(bitmap);
-        if(book.getBookCover() == null){
-          book.setBookCover(bitmap);
+    if(url == null){
+      container.setImageBitmap(book.getBookCover());
+    }else{
+      RequestCreator loader = instance.load(url);
+      //loader.into((AppCompatImageView) container);
+      loader.into(new Target() {
+        @Override
+        public void onBitmapLoaded(Bitmap bitmap, LoadedFrom from) {
+          //container.invalidate();
+          container.setImageBitmap(bitmap);
+          container.invalidate();
+          System.out.println("Picasso called : bitmap Loaded for " +book.getBookTitle());
+          if(book.getBookCover() == null){
+            book.setBookCover(bitmap);
+            System.out.println("Picasso called : bitmap saved in class for " +book.getBookTitle());
+          }
         }
-        container.invalidate();
-      }
 
-      @Override
-      public void onBitmapFailed(Drawable errorDrawable) {
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable) {
 
-      }
+        }
 
-      @Override
-      public void onPrepareLoad(Drawable placeHolderDrawable) {
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
 
-      }
-    });
+        }
+      });
+    }
 
   }
 

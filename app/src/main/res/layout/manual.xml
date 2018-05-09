@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:fbutton="http://schemas.android.com/tools">
+
+  <LinearLayout
+    android:id="@+id/framesContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_margin="8dp">
+
+    <com.csot.fliplayout.lib.FlipLayout
+      android:layout_marginBottom="8dp"
+      android:id="@+id/fliplayout1"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      app:transition="TRANSLATE_X">
+
+      <info.hoang8f.widget.FButton
+        android:id="@+id/barcodeButton"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.7"
+        android:text="@string/Scanbarcode"
+        android:textColor="@color/gridColor"
+        android:textSize="32sp"
+
+        app:autoSizeMaxTextSize="32sp"
+        app:autoSizeMinTextSize="8sp"
+        app:autoSizeStepGranularity="0.5sp"
+        android:maxLines="2"
+        app:autoSizeTextType="uniform"
+
+        fbutton:shadowEnabled="true"
+        fbutton:shadowHeight="5dp"
+        fbutton:cornerRadius="5dp"
+
+        />
+
+      <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
+
+        <include
+          android:id="@+id/load_view_1"
+          layout="@layout/loading"/>
+
+      </FrameLayout>
+
+      <FrameLayout
+        android:id="@+id/pr_view_1"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
+
+        <include
+          android:id="@+id/r_view_1"
+          layout="@layout/recycler_view"/>
+
+      </FrameLayout>
+
+    </com.csot.fliplayout.lib.FlipLayout>
+
+    <com.csot.fliplayout.lib.FlipLayout
+      android:layout_marginBottom="8dp"
+      android:id="@+id/fliplayout2"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      app:transition="TRANSLATE_X">
+
+
+      <info.hoang8f.widget.FButton
+        android:id="@+id/manualButton"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.7"
+        android:text="@string/AddManual"
+        android:textColor="@color/gridColor"
+
+        android:textSize="32sp"
+
+        app:autoSizeMaxTextSize="32sp"
+        app:autoSizeMinTextSize="8sp"
+        app:autoSizeStepGranularity="0.5sp"
+        android:maxLines="2"
+        app:autoSizeTextType="uniform"
+
+        fbutton:shadowEnabled="true"
+        fbutton:shadowHeight="5dp"
+        fbutton:cornerRadius="5dp"
+        />
+
+      <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <include
+          layout="@layout/manual_add"/>
+
+      </FrameLayout>
+
+      <FrameLayout
+        android:id="@+id/pr_view_2"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
+
+        <include
+          android:id="@+id/r_view_2"
+          layout="@layout/recycler_view"/>
+
+      </FrameLayout>
+
+    </com.csot.fliplayout.lib.FlipLayout>
+
+    <com.csot.fliplayout.lib.FlipLayout
+      android:id="@+id/fliplayout3"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      app:transition="TRANSLATE_X">
+
+
+      <info.hoang8f.widget.FButton
+        android:id="@+id/isbnButton"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.7"
+        android:text="@string/AddISBN"
+        android:textColor="@color/gridColor"
+        android:textSize="32sp"
+
+        app:autoSizeMaxTextSize="32sp"
+        app:autoSizeMinTextSize="8sp"
+        app:autoSizeStepGranularity="0.5sp"
+        android:maxLines="2"
+        app:autoSizeTextType="uniform"
+
+        fbutton:shadowEnabled="true"
+        fbutton:shadowHeight="5dp"
+        fbutton:cornerRadius="5dp"
+        />
+
+      <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <include
+          layout="@layout/manual_add_isbn"/>
+
+      </FrameLayout>
+
+      <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
+
+        <include
+          android:id="@+id/load_view_3"
+          layout="@layout/loading"/>
+
+      </FrameLayout>
+
+      <FrameLayout
+        android:id="@+id/pr_view_3"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
+
+        <include
+          android:id="@+id/r_view_3"
+          layout="@layout/recycler_view"/>
+
+      </FrameLayout>
+
+    </com.csot.fliplayout.lib.FlipLayout>
+
+  </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>
